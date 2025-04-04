@@ -1,4 +1,4 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -19,6 +19,7 @@ import OfficerDashboard from "@/pages/officer-dashboard";
 import ForgotPassword from "./pages/forgot-password";
 import ResetPassword from "./pages/reset-password";
 import PrivacyPolicy from "./pages/privacy-policy";
+import { AnimatePresence } from "framer-motion";
 
 // Public pages
 import HomePage from "./pages/public/home";
@@ -27,33 +28,37 @@ import AboutPage from "./pages/public/about";
 import ContactPage from "./pages/public/contact";
 
 function Router() {
+  const [location] = useLocation();
+  
   return (
-    <Switch>
-      {/* Public Routes */}
-      <Route path="/" component={HomePage} />
-      <Route path="/services" component={ServicesPage} />
-      <Route path="/about" component={AboutPage} />
-      <Route path="/contact" component={ContactPage} />
-      <Route path="/privacy-policy" component={PrivacyPolicy} />
-      
-      {/* Auth Routes */}
-      <Route path="/auth" component={AuthPage} />
-      <Route path="/forgot-password" component={ForgotPassword} />
-      <Route path="/reset-password" component={ResetPassword} />
-      
-      {/* Protected Routes */}
-      <ProtectedRoute path="/dashboard" component={Dashboard} />
-      <ProtectedRoute path="/applications" component={Applications} />
-      <ProtectedRoute path="/applications/new" component={ApplicationForm} />
-      <ProtectedRoute path="/applications/:id" component={ApplicationDetails} />
-      <ProtectedRoute path="/documents" component={Documents} />
-      <ProtectedRoute path="/appointments" component={Appointments} />
-      <ProtectedRoute path="/admin" component={AdminDashboard} />
-      <ProtectedRoute path="/admin/settings" component={AdminSettings} />
-      <ProtectedRoute path="/admin/users" component={AdminUsers} />
-      <ProtectedRoute path="/officer" component={OfficerDashboard} />
-      <Route component={NotFound} />
-    </Switch>
+    <AnimatePresence mode="wait" initial={false}>
+      <Switch key={location}>
+        {/* Public Routes */}
+        <Route path="/" component={HomePage} />
+        <Route path="/services" component={ServicesPage} />
+        <Route path="/about" component={AboutPage} />
+        <Route path="/contact" component={ContactPage} />
+        <Route path="/privacy-policy" component={PrivacyPolicy} />
+        
+        {/* Auth Routes */}
+        <Route path="/auth" component={AuthPage} />
+        <Route path="/forgot-password" component={ForgotPassword} />
+        <Route path="/reset-password" component={ResetPassword} />
+        
+        {/* Protected Routes */}
+        <ProtectedRoute path="/dashboard" component={Dashboard} />
+        <ProtectedRoute path="/applications" component={Applications} />
+        <ProtectedRoute path="/applications/new" component={ApplicationForm} />
+        <ProtectedRoute path="/applications/:id" component={ApplicationDetails} />
+        <ProtectedRoute path="/documents" component={Documents} />
+        <ProtectedRoute path="/appointments" component={Appointments} />
+        <ProtectedRoute path="/admin" component={AdminDashboard} />
+        <ProtectedRoute path="/admin/settings" component={AdminSettings} />
+        <ProtectedRoute path="/admin/users" component={AdminUsers} />
+        <ProtectedRoute path="/officer" component={OfficerDashboard} />
+        <Route component={NotFound} />
+      </Switch>
+    </AnimatePresence>
   );
 }
 

@@ -1,7 +1,7 @@
 import { PublicLayout } from "@/components/layout/public-layout";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-import { motion } from "framer-motion";
+import { PageTransition } from "@/components/ui/page-transition";
 import { 
   ArrowRight, 
   CalendarCheck, 
@@ -10,18 +10,14 @@ import {
   UserCheck,
   GraduationCap,
   Building,
+  Building2,
   Landmark
 } from "lucide-react";
 
 export default function HomePage() {
   return (
     <PublicLayout>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -20 }}
-        transition={{ duration: 0.3, ease: "easeInOut" }}
-      >
+      <PageTransition>
         {/* Hero Section */}
         <section className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
           <div className="container mx-auto px-4 py-20 md:py-28">
@@ -136,6 +132,122 @@ export default function HomePage() {
             </div>
           </div>
         </section>
+        
+        {/* Additional Services */}
+        <section className="py-16 bg-gradient-to-r from-blue-50 to-green-50">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">Yeni Hayatınız İçin Özel Hizmetler</h2>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                Amerika'daki yaşamınızın her aşamasında size destek olacak özel hizmetlerimiz.
+              </p>
+            </div>
+
+            <div className="grid lg:grid-cols-2 gap-8">
+              {/* Green Card Integration Services */}
+              <div className="bg-white rounded-lg shadow-sm overflow-hidden transform transition duration-300 hover:shadow-md hover:-translate-y-1">
+                <div className="h-3 bg-green-600"></div>
+                <div className="p-6">
+                  <div className="flex items-start mb-4">
+                    <div className="bg-green-100 text-green-700 w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 mr-4">
+                      <UserCheck size={28} />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold mb-2">Green Card Entegrasyon Hizmetleri</h3>
+                      <p className="text-gray-600 mb-4">
+                        Amerika'ya yeni adım atan Green Card sahiplerine ülkeye hızlı ve sorunsuz uyum sağlamaları için kapsamlı destek.
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="grid md:grid-cols-2 gap-4 mb-6">
+                    <div>
+                      <h4 className="font-semibold text-green-700 mb-2">Sosyal Entegrasyon</h4>
+                      <ul className="space-y-1 text-sm">
+                        <li className="flex items-start">
+                          <span className="text-green-500 mr-1">✓</span>
+                          <span>Kültürel uyum danışmanlığı</span>
+                        </li>
+                        <li className="flex items-start">
+                          <span className="text-green-500 mr-1">✓</span>
+                          <span>Sosyal ağ oluşturma</span>
+                        </li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-green-700 mb-2">Kariyer Gelişimi</h4>
+                      <ul className="space-y-1 text-sm">
+                        <li className="flex items-start">
+                          <span className="text-green-500 mr-1">✓</span>
+                          <span>CV ve mülakat koçluğu</span>
+                        </li>
+                        <li className="flex items-start">
+                          <span className="text-green-500 mr-1">✓</span>
+                          <span>İş fırsatları danışmanlığı</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  
+                  <Link href="/services">
+                    <Button variant="outline" className="w-full border-green-600 text-green-700 hover:bg-green-50">Detaylı Bilgi</Button>
+                  </Link>
+                </div>
+              </div>
+
+              {/* Housing and Auto Services */}
+              <div className="bg-white rounded-lg shadow-sm overflow-hidden transform transition duration-300 hover:shadow-md hover:-translate-y-1">
+                <div className="h-3 bg-blue-600"></div>
+                <div className="p-6">
+                  <div className="flex items-start mb-4">
+                    <div className="bg-blue-100 text-blue-700 w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 mr-4">
+                      <Building2 size={28} />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold mb-2">Konaklama ve Araç Kiralama</h3>
+                      <p className="text-gray-600 mb-4">
+                        Amerika'ya adım attığınız andan itibaren konforlu ve sorunsuz bir yaşam deneyimi için konaklama ve ulaşım çözümleri.
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="grid md:grid-cols-2 gap-4 mb-6">
+                    <div>
+                      <h4 className="font-semibold text-blue-700 mb-2">Konaklama Hizmetleri</h4>
+                      <ul className="space-y-1 text-sm">
+                        <li className="flex items-start">
+                          <span className="text-blue-500 mr-1">✓</span>
+                          <span>Kısa ve uzun dönem kiralama</span>
+                        </li>
+                        <li className="flex items-start">
+                          <span className="text-blue-500 mr-1">✓</span>
+                          <span>Mobilyalı/eşyasız seçenekler</span>
+                        </li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-blue-700 mb-2">Araç Kiralama</h4>
+                      <ul className="space-y-1 text-sm">
+                        <li className="flex items-start">
+                          <span className="text-blue-500 mr-1">✓</span>
+                          <span>Geniş araç portföyü</span>
+                        </li>
+                        <li className="flex items-start">
+                          <span className="text-blue-500 mr-1">✓</span>
+                          <span>Esnek kiralama planları</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  
+                  <Link href="/services">
+                    <Button variant="outline" className="w-full border-blue-600 text-blue-700 hover:bg-blue-50">Detaylı Bilgi</Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
         {/* Team Showcase */}
         <section className="py-16 bg-white">
@@ -149,48 +261,32 @@ export default function HomePage() {
             
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
               <div className="text-center">
-                <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden mx-auto mb-4">
-                  <img 
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&h=300&q=80" 
-                    alt="Murat Şimşek" 
-                    className="w-full h-full object-cover"
-                  />
+                <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-4">
+                  <span className="text-blue-700 text-2xl font-bold">MS</span>
                 </div>
                 <h3 className="text-lg font-semibold">Murat Şimşek</h3>
                 <p className="text-blue-600 text-sm">Kurucu & Vize Uzmanı</p>
               </div>
               
               <div className="text-center">
-                <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden mx-auto mb-4">
-                  <img 
-                    src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&h=300&q=80" 
-                    alt="İsmail Kaçmaz" 
-                    className="w-full h-full object-cover"
-                  />
+                <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
+                  <span className="text-green-700 text-2xl font-bold">İK</span>
                 </div>
                 <h3 className="text-lg font-semibold">İsmail Kaçmaz</h3>
                 <p className="text-blue-600 text-sm">Göçmenlik Danışmanı</p>
               </div>
               
               <div className="text-center">
-                <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden mx-auto mb-4">
-                  <img 
-                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&h=300&q=80" 
-                    alt="Tayyip Can Sarıtaş" 
-                    className="w-full h-full object-cover"
-                  />
+                <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-purple-100 flex items-center justify-center mx-auto mb-4">
+                  <span className="text-purple-700 text-2xl font-bold">TCS</span>
                 </div>
                 <h3 className="text-lg font-semibold">Tayyip Can Sarıtaş</h3>
                 <p className="text-blue-600 text-sm">Öğrenci Vizesi Uzmanı</p>
               </div>
               
               <div className="text-center">
-                <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden mx-auto mb-4">
-                  <img 
-                    src="https://images.unsplash.com/photo-1566492031773-4f4e44671857?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&h=300&q=80" 
-                    alt="Samet Çetinbay" 
-                    className="w-full h-full object-cover"
-                  />
+                <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-yellow-100 flex items-center justify-center mx-auto mb-4">
+                  <span className="text-yellow-700 text-2xl font-bold">SÇ</span>
                 </div>
                 <h3 className="text-lg font-semibold">Samet Çetinbay</h3>
                 <p className="text-blue-600 text-sm">İş Vizesi Uzmanı</p>
@@ -223,7 +319,7 @@ export default function HomePage() {
             </div>
           </div>
         </section>
-      </motion.div>
+      </PageTransition>
     </PublicLayout>
   );
 }
