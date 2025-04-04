@@ -17,46 +17,46 @@ export function PublicNavbar() {
           {/* Logo and Brand */}
           <div className="flex items-center">
             <Link href="/">
-              <a className="flex items-center">
+              <div className="flex items-center cursor-pointer">
                 <img 
                   src="https://images.unsplash.com/photo-1508722830436-0faffb8ba5f6?ixlib=rb-1.2.1&auto=format&fit=crop&w=32&h=32&q=80" 
                   alt="SadeceAmerika logo" 
-                  className="w-8 h-8 mr-2" 
+                  className="w-8 h-8 mr-2 rounded-full" 
                 />
-                <span className="text-lg font-semibold text-gray-800">SadeceAmerika</span>
-              </a>
+                <span className="text-lg font-bold text-primary">SadeceAmerika</span>
+              </div>
             </Link>
           </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             <Link href="/">
-              <a className="text-gray-700 hover:text-primary font-medium">Anasayfa</a>
+              <span className="text-gray-700 hover:text-primary font-medium cursor-pointer transition-all duration-200 hover:scale-105">Anasayfa</span>
             </Link>
             <Link href="/services">
-              <a className="text-gray-700 hover:text-primary font-medium">Hizmetlerimiz</a>
+              <span className="text-gray-700 hover:text-primary font-medium cursor-pointer transition-all duration-200 hover:scale-105">Hizmetlerimiz</span>
             </Link>
             <Link href="/about">
-              <a className="text-gray-700 hover:text-primary font-medium">Hakkımızda</a>
+              <span className="text-gray-700 hover:text-primary font-medium cursor-pointer transition-all duration-200 hover:scale-105">Hakkımızda</span>
             </Link>
             <Link href="/contact">
-              <a className="text-gray-700 hover:text-primary font-medium">İletişim</a>
+              <span className="text-gray-700 hover:text-primary font-medium cursor-pointer transition-all duration-200 hover:scale-105">İletişim</span>
             </Link>
           </nav>
 
           {/* Auth Buttons - Desktop */}
           <div className="hidden md:flex items-center space-x-4">
-            <Link href="/auth">
-              <Button variant="outline">Giriş Yap</Button>
+            <Link href="/dashboard">
+              <Button variant="outline" className="font-medium hover:shadow-md transition-all duration-200 hover:translate-y-[-2px]">Giriş Yap</Button>
             </Link>
             <Link href="/auth?mode=register">
-              <Button>Kayıt Ol</Button>
+              <Button className="font-medium hover:shadow-md transition-all duration-200 hover:translate-y-[-2px]">Kayıt Ol</Button>
             </Link>
           </div>
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden text-gray-500 hover:text-gray-700 focus:outline-none"
+            className="md:hidden text-gray-500 hover:text-primary focus:outline-none transition-all duration-200"
             onClick={toggleMobileMenu}
             aria-label="Toggle mobile menu"
           >
@@ -71,46 +71,46 @@ export function PublicNavbar() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-white border-t border-gray-200 py-2">
+        <div className="md:hidden bg-white border-t border-gray-200 py-2 shadow-lg">
           <div className="container mx-auto px-4">
             <nav className="flex flex-col space-y-3 py-3">
               <Link href="/">
-                <a 
-                  className="text-gray-700 hover:text-primary py-2 font-medium"
+                <span 
+                  className="text-gray-700 hover:text-primary py-2 font-medium block cursor-pointer"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Anasayfa
-                </a>
+                </span>
               </Link>
               <Link href="/services">
-                <a 
-                  className="text-gray-700 hover:text-primary py-2 font-medium"
+                <span 
+                  className="text-gray-700 hover:text-primary py-2 font-medium block cursor-pointer"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Hizmetlerimiz
-                </a>
+                </span>
               </Link>
               <Link href="/about">
-                <a 
-                  className="text-gray-700 hover:text-primary py-2 font-medium"
+                <span 
+                  className="text-gray-700 hover:text-primary py-2 font-medium block cursor-pointer"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Hakkımızda
-                </a>
+                </span>
               </Link>
               <Link href="/contact">
-                <a 
-                  className="text-gray-700 hover:text-primary py-2 font-medium"
+                <span 
+                  className="text-gray-700 hover:text-primary py-2 font-medium block cursor-pointer"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   İletişim
-                </a>
+                </span>
               </Link>
               <div className="flex flex-col space-y-2 pt-2 border-t border-gray-100">
-                <Link href="/auth">
+                <Link href="/dashboard">
                   <Button 
                     variant="outline" 
-                    className="w-full justify-center"
+                    className="w-full justify-center font-medium"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Giriş Yap
@@ -118,7 +118,7 @@ export function PublicNavbar() {
                 </Link>
                 <Link href="/auth?mode=register">
                   <Button 
-                    className="w-full justify-center"
+                    className="w-full justify-center font-medium"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Kayıt Ol
