@@ -18,9 +18,9 @@ export function PublicNavbar() {
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
               <img 
-                src="https://images.unsplash.com/photo-1508722830436-0faffb8ba5f6?ixlib=rb-1.2.1&auto=format&fit=crop&w=32&h=32&q=80" 
+                src="/logo.jpg" 
                 alt="SadeceAmerika logo" 
-                className="w-8 h-8 mr-2" 
+                className="h-10 mr-2" 
               />
               <span className="text-lg font-semibold text-gray-800">SadeceAmerika</span>
             </Link>
