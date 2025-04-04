@@ -20,14 +20,29 @@ import ForgotPassword from "./pages/forgot-password";
 import ResetPassword from "./pages/reset-password";
 import PrivacyPolicy from "./pages/privacy-policy";
 
+// Public pages
+import HomePage from "./pages/public/home";
+import ServicesPage from "./pages/public/services";
+import AboutPage from "./pages/public/about";
+import ContactPage from "./pages/public/contact";
+
 function Router() {
   return (
     <Switch>
+      {/* Public Routes */}
+      <Route path="/" component={HomePage} />
+      <Route path="/services" component={ServicesPage} />
+      <Route path="/about" component={AboutPage} />
+      <Route path="/contact" component={ContactPage} />
+      <Route path="/privacy-policy" component={PrivacyPolicy} />
+      
+      {/* Auth Routes */}
       <Route path="/auth" component={AuthPage} />
       <Route path="/forgot-password" component={ForgotPassword} />
       <Route path="/reset-password" component={ResetPassword} />
-      <Route path="/privacy-policy" component={PrivacyPolicy} />
-      <ProtectedRoute path="/" component={Dashboard} />
+      
+      {/* Protected Routes */}
+      <ProtectedRoute path="/dashboard" component={Dashboard} />
       <ProtectedRoute path="/applications" component={Applications} />
       <ProtectedRoute path="/applications/new" component={ApplicationForm} />
       <ProtectedRoute path="/applications/:id" component={ApplicationDetails} />

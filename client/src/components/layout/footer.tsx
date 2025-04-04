@@ -40,6 +40,21 @@ export function Footer() {
                   </Link>
                 </li>
                 <li>
+                  <Link href="/services">
+                    <span className="hover:text-primary cursor-pointer">Hizmetlerimiz</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/about">
+                    <span className="hover:text-primary cursor-pointer">Hakkımızda</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/contact">
+                    <span className="hover:text-primary cursor-pointer">İletişim</span>
+                  </Link>
+                </li>
+                <li>
                   <Link href="/privacy-policy">
                     <span className="hover:text-primary cursor-pointer">Gizlilik Sözleşmesi</span>
                   </Link>
