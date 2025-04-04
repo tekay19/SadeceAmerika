@@ -15,11 +15,15 @@ import ApplicationDetails from "@/pages/application-details";
 import AdminDashboard from "@/pages/admin-dashboard";
 import AdminSettings from "./pages/admin-settings";
 import OfficerDashboard from "@/pages/officer-dashboard";
+import ForgotPassword from "./pages/forgot-password";
+import ResetPassword from "./pages/reset-password";
 
 function Router() {
   return (
     <Switch>
       <Route path="/auth" component={AuthPage} />
+      <Route path="/forgot-password" component={ForgotPassword} />
+      <Route path="/reset-password" component={ResetPassword} />
       <ProtectedRoute path="/" component={Dashboard} />
       <ProtectedRoute path="/applications" component={Applications} />
       <ProtectedRoute path="/applications/new" component={ApplicationForm} />

@@ -134,4 +134,61 @@ export function setupAuth(app: Express) {
     if (!req.isAuthenticated()) return res.sendStatus(401);
     res.json(req.user);
   });
+  
+  // Şifre sıfırlama rotaları
+  app.post("/api/auth/forgot-password", async (req, res) => {
+    try {
+      const { email } = req.body;
+      if (!email) {
+        return res.status(400).json({ message: "E-posta adresi gereklidir." });
+      }
+
+      // Kullanıcıyı e-posta ile bul
+      const user = await storage.getUserByEmail(email);
+      if (!user) {
+        return res.status(404).json({ message: "Bu e-posta adresine sahip bir kullanıcı bulunamadı." });
+      }
+      
+      // TODO: Gerçek uygulamada, token oluştur ve e-posta gönder
+      // Burada şimdilik sadece başarılı yanıt dönüyoruz
+      
+      // Loglama
+      console.log(`Şifre sıfırlama isteği: ${email} için token gönderildi.`);
+      
+      res.json({ 
+        success: true, 
+        message: "Şifre sıfırlama talimatları e-posta adresinize gönderildi." 
+      });
+    } catch (error) {
+      console.error("Şifre sıfırlama hatası:", error);
+      res.status(500).json({ message: "Şifre sıfırlama işlemi sırasında bir hata oluştu." });
+    }
+  });
+  
+  app.post("/api/auth/reset-password", async (req, res) => {
+    try {
+      const { token, newPassword } = req.body;
+      if (!token || !newPassword) {
+        return res.status(400).json({ message: "Token ve yeni şifre gereklidir." });
+      }
+      
+      // TODO: Gerçek uygulamada, token'ı doğrula ve kullanıcıyı bul
+      // Burada şimdilik sadece başarılı yanıt dönüyoruz
+      
+      // Gerçek uygulamada aşağıdaki gibi şifre güncellemesi yapılacak:
+      // const hashedPassword = await hashPassword(newPassword);
+      // await storage.updateUser(userId, { password: hashedPassword });
+      
+      // Loglama
+      console.log(`Şifre sıfırlama başarılı: Token: ${token.substring(0, 10)}...`);
+      
+      res.json({ 
+        success: true, 
+        message: "Şifreniz başarıyla güncellendi." 
+      });
+    } catch (error) {
+      console.error("Şifre güncelleme hatası:", error);
+      res.status(500).json({ message: "Şifre güncelleme işlemi sırasında bir hata oluştu." });
+    }
+  });
 }

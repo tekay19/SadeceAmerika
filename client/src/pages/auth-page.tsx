@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Redirect, useLocation } from "wouter";
+import { Redirect, useLocation, Link } from "wouter";
 import { Loader2 } from "lucide-react";
 
 const loginSchema = z.object({
@@ -129,7 +129,7 @@ export default function AuthPage() {
                           <input type="checkbox" id="remember" className="rounded border-gray-300 text-blue-600" />
                           <label htmlFor="remember" className="text-sm text-gray-600">Beni Hatırla</label>
                         </div>
-                        <a href="#" className="text-sm text-blue-600 hover:text-blue-800">Şifremi Unuttum</a>
+                        <Link href="/forgot-password" className="text-sm text-blue-600 hover:text-blue-800">Şifremi Unuttum</Link>
                       </div>
                       
                       <Button 

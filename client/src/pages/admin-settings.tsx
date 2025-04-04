@@ -56,7 +56,7 @@ export default function AdminSettings() {
   // Update settings mutation
   const updateSettingsMutation = useMutation({
     mutationFn: async (settings: Record<string, Record<string, string>>) => {
-      const response = await apiRequest("/api/admin/settings", "PUT", settings);
+      const response = await apiRequest("PUT", "/api/admin/settings", settings);
       return response;
     },
     onSuccess: () => {
@@ -78,7 +78,7 @@ export default function AdminSettings() {
   // Update single category settings
   const updateCategoryMutation = useMutation({
     mutationFn: async ({ category, settings }: { category: string; settings: Record<string, string> }) => {
-      const response = await apiRequest(`/api/admin/settings/${category}`, "PUT", settings);
+      const response = await apiRequest("PUT", `/api/admin/settings/${category}`, settings);
       return response;
     },
     onSuccess: (_, variables) => {
