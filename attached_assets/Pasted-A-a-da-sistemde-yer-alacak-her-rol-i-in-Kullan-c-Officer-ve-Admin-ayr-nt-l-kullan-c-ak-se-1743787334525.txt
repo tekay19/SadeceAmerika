@@ -1,0 +1,88 @@
+Aşağıda, sistemde yer alacak her rol için (Kullanıcı, Officer ve Admin) ayrıntılı kullanıcı akışı senaryoları yer alıyor:
+
+⸻
+
+1. Kullanıcı (Visa Applicant) Senaryosu
+
+Senaryo Özeti:
+Kullanıcı sisteme kayıt olur, giriş yaptıktan sonra vize başvurusunu oluşturur, gerekli belgeleri yükler, randevu bilgilerini görüntüler ve başvuru durumunu takip eder. Ayrıca, deneyimle ilgili geri bildirim gönderme imkanı bulunur.
+
+Adım Adım Akış:
+	1.	Kayıt ve Giriş:
+	•	Kayıt: Kullanıcı, POST /api/auth/register endpoint’ini kullanarak kayıt formunu doldurur. (Gerekirse e-posta doğrulaması eklenebilir.)
+	•	Giriş: Kayıt sonrası, POST /api/auth/login ile sisteme giriş yapar ve JWT token alır.
+	2.	Profil Yönetimi:
+	•	Profil Görüntüleme: GET /api/user/profile endpoint’i ile kullanıcı kendi profil bilgilerini görüntüler.
+	•	Profil Güncelleme: İhtiyaç duyulması halinde PUT /api/user/profile ile kişisel bilgilerini günceller.
+	3.	Vize Başvurusu Oluşturma:
+	•	Yeni Başvuru: Kullanıcı, POST /api/applications endpoint’i üzerinden yeni bir vize başvurusu oluşturur.
+	•	Başvuru Bilgileri: Form üzerinden kişisel bilgiler, seyahat planı ve diğer gerekli veriler girilir.
+	4.	Belge Yükleme:
+	•	Belge Gönderimi: Başvuruya ek olarak, POST /api/documents/upload endpoint’i kullanılarak istenen belgeler (pasaport, fotoğraf, destekleyici dökümanlar) yüklenir.
+	•	Durum Takibi: Yüklenen belgeler, sistemdeki doğrulama sürecine alınır.
+	5.	Randevu ve Başvuru Takibi:
+	•	Randevu Görüntüleme: Başvuru onaylandıktan sonra GET /api/appointments/:application_id endpoint’i üzerinden randevu detayları görüntülenir.
+	•	Başvuru Durumu: Kullanıcı, kendi başvurularını GET /api/user/applications ile takip eder.
+	6.	Geri Bildirim:
+	•	Geri Bildirim Gönderme: Deneyim veya sistemle ilgili görüşlerini POST /api/feedback endpoint’i üzerinden iletir.
+
+⸻
+
+2. Officer (Vize İşlemleri Sorumlusu) Senaryosu
+
+Senaryo Özeti:
+Officer, sisteme giriş yaparak kendisine atanan veya genel başvuruları görüntüler, başvuruların detaylarını inceler, yüklenen belgeleri doğrular ve gerekli durum güncellemelerini yapar.
+
+Adım Adım Akış:
+	1.	Giriş ve Yetkilendirme:
+	•	Giriş: Officer, POST /api/auth/login endpoint’i ile sisteme giriş yapar ve rolü doğrulanan token alır.
+	•	Yetki Kontrolü: Role middleware, kullanıcının officer rolüne sahip olduğunu teyit eder.
+	2.	Başvuru İnceleme:
+	•	Başvuruların Listelenmesi: GET /api/applications endpoint’i (veya officer’a özel filtrelenmiş endpoint) üzerinden kendisine atanmış başvurular listelenir.
+	•	Detaylı Görüntüleme: Seçilen başvurunun detayları GET /api/applications/:id endpoint’i ile incelenir.
+	3.	Belge Doğrulama:
+	•	Belge İnceleme: İlgili başvuruya ait belgeler, GET /api/documents/:application_id endpoint’i üzerinden görüntülenir.
+	•	Doğrulama İşlemi: Belgeler uygun bulunursa onay, uygunsuzsa red işlemi yapılır. Bu işlem PUT /api/documents/:id/verify endpoint’i ile gerçekleştirilir.
+	4.	Randevu ve Durum Güncelleme:
+	•	Randevu Atama: Gerekli durumlarda, başvuru için randevu ayarlamak üzere POST /api/appointments endpoint’i kullanılır.
+	•	Durum Güncelleme: Başvuru durumu, gerekli kontrollerin ardından güncellenir (örneğin, “inceleme altında”, “onaylandı” veya “reddedildi”).
+	5.	İşlem Kayıtları:
+	•	Loglama: Officer, gerçekleştirdiği işlemleri sistem üzerinden kaydederek (loglama sistemi) denetim ve izlenebilirlik sağlar.
+	6.	Oturum Sonlandırma:
+	•	Çıkış: İşlemler tamamlandıktan sonra, officer güvenli bir şekilde oturumunu sonlandırır.
+
+⸻
+
+3. Admin Senaryosu
+
+Senaryo Özeti:
+Admin, sistemdeki tüm işlemleri yönetir; kullanıcı yönetimi, başvuru denetimi, belge doğrulaması, randevu atamaları ve sistem loglarının takibi gibi işlevleri gerçekleştirir.
+
+Adım Adım Akış:
+	1.	Giriş ve Panel Erişimi:
+	•	Giriş: Admin, POST /api/auth/login endpoint’i ile sisteme giriş yapar ve yönetici rolü doğrulanır.
+	•	Dashboard: Giriş sonrası, sistem genel durumunu gösteren yönetici paneline erişim sağlanır.
+	2.	Kullanıcı Yönetimi:
+	•	Kullanıcı Listesi: Tüm kullanıcılar GET /api/user (admin’a özel) endpoint’i ile listelenir.
+	•	Rol ve Yetki Düzenlemesi: Kullanıcıların rollerinde değişiklik, aktif/pasif duruma getirme veya silme işlemleri yönetilir.
+	3.	Başvuru ve Belge Denetimi:
+	•	Başvuru İnceleme: Tüm vize başvuruları, GET /api/applications endpoint’i üzerinden izlenir.
+	•	Belge Doğrulama: Officer’ların gerçekleştirdiği belge doğrulama işlemleri gözden geçirilir; gerektiğinde müdahale edilir.
+	•	Durum Güncelleme: Başvuruların genel durumu güncellenir veya üzerinde not eklenir.
+	4.	Randevu Yönetimi:
+	•	Randevu Atama: Sistemdeki tüm randevular POST /api/appointments endpoint’i ile atanır veya düzenlenir.
+	•	Takvim ve Bildirim: Randevu zamanlamaları, bildirim sistemleri ile entegre edilerek kullanıcılara iletilir.
+	5.	Sistem İzleme ve Log Yönetimi:
+	•	Log Görüntüleme: GET /api/admin/logs endpoint’i ile tüm sistem aktiviteleri ve hata logları izlenir.
+	•	Geri Bildirimler: Kullanıcıların gönderdiği geri bildirimler GET /api/admin/feedbacks endpoint’i üzerinden incelenir.
+	6.	Acil Müdahale ve Destek:
+	•	Hata Yönetimi: Sistem hataları veya olağan dışı durumlarda acil müdahale mekanizmaları devreye alınır.
+	•	Destek ve Güncelleme: Admin, gerektiğinde kullanıcılara destek sağlar ve sistem güncellemelerini planlar.
+	7.	Oturum Sonlandırma:
+	•	Çıkış: Tüm işlemler tamamlandıktan sonra, admin güvenli bir şekilde oturumunu kapatır.
+
+⸻
+
+Her rol için tanımlanan bu akışlar, sistemin farklı bileşenlerinin nasıl etkileşime gireceğini net bir şekilde ortaya koyar. Böylece, hem geliştirme sürecinde referans olarak kullanılabilir hem de kullanıcı deneyimi tasarımı yapılırken detaylı senaryolar üzerinden ilerlenebilir.
+
+Hangi akış üzerinde daha fazla detaylandırma veya geliştirme yapmak istersiniz?
