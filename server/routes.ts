@@ -4,6 +4,8 @@ import { storage } from "./storage"; // Hafıza tabanlı depolamayı içe aktar�
 import { initializeDrizzleStorage } from "./drizzle-storage"; // Drizzle tabanlı depolamayı içe aktarıyoruz
 import { setupAuth, generateHashForPassword } from "./auth";
 import { IStorage } from "./storage";
+import { scrypt, timingSafeEqual } from "crypto";
+import { promisify } from "util";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
@@ -102,6 +104,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
       original: req.params.password,
       hashed: hashedPassword
     });
+  });
+  
+  // Development only route to check password
+  app.get("/api/dev/check-password/:username/:password", async (req, res) => {
+    if (process.env.NODE_ENV === "production") {
+      return res.status(404).json({ message: "Not found" });
+    }
+    
+    try {
+      const user = await activeStorage.getUserByUsername(req.params.username);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Manually check password using the same algorithm from auth.ts
+      const supplied = req.params.password;
+      const stored = user.password;
+      let passwordValid = false;
+      
+      const scryptAsync = promisify(scrypt);
+      
+      // Basic handling for non-hashed passwords
+      if (!stored.includes('.')) {
+        passwordValid = supplied === stored;
+      } else {
+        // Normal scrypt password comparison
+        const [hashed, salt] = stored.split(".");
+        const hashedBuf = Buffer.from(hashed, "hex");
+        const suppliedBuf = (await scryptAsync(supplied, salt, 64)) as Buffer;
+        passwordValid = hashedBuf.length === suppliedBuf.length && 
+                        timingSafeEqual(hashedBuf, suppliedBuf);
+      }
+      
+      res.json({
+        username: user.username,
+        passwordValid,
+        storedPasswordFormat: user.password.includes('.') ? 'hashed' : 'plain',
+        passwordLength: user.password.length
+      });
+    } catch (error) {
+      console.error("Password check error:", error);
+      res.status(500).json({ message: error.message });
+    }
   });
 
   // VisaType routes
