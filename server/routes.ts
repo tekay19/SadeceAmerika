@@ -1,7 +1,9 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage";
+import { storage } from "./storage"; // Hafıza tabanlı depolamayı içe aktarıyoruz
+import { initializeDrizzleStorage } from "./drizzle-storage"; // Drizzle tabanlı depolamayı içe aktarıyoruz
 import { setupAuth, generateHashForPassword } from "./auth";
+import { IStorage } from "./storage";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
@@ -65,7 +67,28 @@ function isOfficer(req: Request, res: Response, next: NextFunction) {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Setup authentication routes
+  // Depolama seçimi: Eğer DATABASE_URL varsa PostgreSQL, yoksa MemStorage kullan
+  let activeStorage: IStorage;
+  
+  try {
+    if (process.env.DATABASE_URL) {
+      console.log('Using PostgreSQL database');
+      activeStorage = await initializeDrizzleStorage();
+      
+      // Hafıza tabanlı depolama yerine PostgreSQL depolamayı kullan
+      global.storage = activeStorage;
+    } else {
+      console.log('DATABASE_URL not found, using in-memory storage');
+      activeStorage = storage;
+    }
+  } catch (error) {
+    console.error('Failed to initialize database:', error);
+    console.log('Falling back to in-memory storage');
+    activeStorage = storage;
+    global.storage = storage;
+  }
+  
+  // Setup authentication routes with the active storage
   setupAuth(app);
   
   // Development only route to hash passwords for test users

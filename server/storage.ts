@@ -409,12 +409,41 @@ export class MemStorage implements IStorage {
       throw new Error(`User with ID ${id} not found`);
     }
 
-    // Check if user has any applications before deleting
+    // Get user applications
     const userApplications = await this.getUserApplications(id);
+    
+    // Silme işlemi için destek - kullanıcıya ait uygulamaları sil
     if (userApplications.length > 0) {
-      throw new Error(`Cannot delete user with ID ${id} as they have associated applications`);
+      // Her uygulama için döngü
+      for (const application of userApplications) {
+        // 1. Aplikasyona bağlı belgeleri sil
+        const documents = await this.getApplicationDocuments(application.id);
+        for (const document of documents) {
+          this.documents.delete(document.id);
+        }
+        
+        // 2. Aplikasyona bağlı randevuyu sil
+        const appointment = await this.getApplicationAppointment(application.id);
+        if (appointment) {
+          this.appointments.delete(appointment.id);
+        }
+        
+        // 3. Aplikasyonu sil
+        this.applications.delete(application.id);
+      }
     }
+    
+    // 4. Kullanıcının geri bildirimlerini sil
+    this.feedbacks = new Map(
+      Array.from(this.feedbacks.entries()).filter(([_, feedback]) => feedback.userId !== id)
+    );
+    
+    // 5. Kullanıcının admin kayıtlarını sil
+    this.adminLogs = new Map(
+      Array.from(this.adminLogs.entries()).filter(([_, log]) => log.userId !== id)
+    );
 
+    // Şimdi kullanıcıyı güvenle silebiliriz
     return this.users.delete(id);
   }
 

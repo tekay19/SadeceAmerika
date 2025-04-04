@@ -1,6 +1,8 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
-import { Pool } from 'pg';
+import pg from 'pg';
 import * as schema from '@shared/schema';
+
+const { Pool } = pg;
 
 // Check if DATABASE_URL is defined
 if (!process.env.DATABASE_URL) {
