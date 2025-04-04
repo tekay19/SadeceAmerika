@@ -10,6 +10,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StatusTimeline } from "@/components/application/status-timeline";
 import { DocumentList } from "@/components/application/document-list";
+import { StatusUpdate } from "@/components/application/status-update";
+import { AppointmentCreate } from "@/components/application/appointment-create";
 
 export default function ApplicationDetails() {
   const { user } = useAuth();
@@ -275,39 +277,33 @@ export default function ApplicationDetails() {
                   </TabsContent>
                 </Tabs>
                 
-                {/* Officer/Admin için belge doğrulama bölümü */}
+                {/* Officer/Admin için işlem bölümü */}
                 {(user?.role === "officer" || user?.role === "admin") && (
-                  <Card className="border-primary/20 bg-primary/5">
-                    <CardHeader>
-                      <CardTitle>Memur İşlemleri</CardTitle>
-                      <CardDescription>Başvuru değerlendirme ve işlemleri</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <Button variant="outline">
-                          <FileText className="h-4 w-4 mr-2" />
-                          Durum Güncelle
-                        </Button>
-                        
-                        <Button variant="outline">
-                          <Calendar className="h-4 w-4 mr-2" />
-                          Randevu Oluştur
-                        </Button>
-                      </div>
-                      
-                      <div className="bg-white p-4 rounded-md border border-gray-200">
-                        <h4 className="font-medium mb-2">Notlar</h4>
-                        <textarea 
-                          className="w-full p-2 text-sm border border-gray-300 rounded-md" 
-                          rows={3} 
-                          placeholder="Başvuru hakkında notlar ekleyin..."
-                        />
-                        <div className="flex justify-end mt-2">
-                          <Button size="sm">Kaydet</Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <div className="space-y-6">
+                    <Card className="border-primary/20 bg-primary/5">
+                      <CardHeader>
+                        <CardTitle>Memur İşlemleri</CardTitle>
+                        <CardDescription>Başvuru değerlendirme ve işlemleri</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-sm text-gray-500 mb-4">
+                          Bu başvuru için durum güncelleme ve randevu oluşturma işlemlerini aşağıdaki araçları kullanarak gerçekleştirebilirsiniz.
+                        </p>
+                      </CardContent>
+                    </Card>
+                    
+                    {/* Status Update Component */}
+                    <StatusUpdate 
+                      application={application} 
+                      isOfficer={user?.role === "officer" || user?.role === "admin"} 
+                    />
+                    
+                    {/* Appointment Creation Component */}
+                    <AppointmentCreate 
+                      application={application} 
+                      isOfficer={user?.role === "officer" || user?.role === "admin"} 
+                    />
+                  </div>
                 )}
               </div>
             </div>

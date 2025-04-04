@@ -97,13 +97,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/applications", isAuthenticated, async (req, res, next) => {
     try {
+      let applications;
+      const status = req.query.status as string || null;
+      
       if (req.user.role === "admin" || req.user.role === "officer") {
-        const applications = await storage.getAllApplications();
-        res.json(applications);
+        // Get all applications first
+        applications = await storage.getAllApplications();
+        
+        // Filter by status if provided
+        if (status) {
+          applications = applications.filter(app => app.status === status);
+        }
       } else {
-        const applications = await storage.getUserApplications(req.user.id);
-        res.json(applications);
+        // Regular users only see their own applications
+        applications = await storage.getUserApplications(req.user.id);
       }
+      
+      res.json(applications);
     } catch (err) {
       next(err);
     }
@@ -141,10 +151,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Forbidden" });
       }
       
+      // Get the new status if it's being changed
+      const newStatus = req.body.status ? req.body.status : application.status;
+      const statusChanged = newStatus !== application.status;
+      
+      // Update the application
       const updatedApplication = await storage.updateApplication(applicationId, {
         ...req.body,
         lastUpdated: new Date(),
       });
+      
+      // Log the action if status changed or if this is an officer/admin update
+      if ((req.user.role === "officer" || req.user.role === "admin") || statusChanged) {
+        await storage.createAdminLog({
+          userId: req.user.id,
+          action: `Application status updated to ${newStatus}`,
+          details: `Application ID: ${applicationId}, Previous Status: ${application.status}`,
+          timestamp: new Date(),
+        });
+      }
       
       res.json(updatedApplication);
     } catch (err) {
@@ -195,6 +220,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
       next(err);
     }
   });
+  
+  // Get all pending documents for officer review
+  app.get("/api/pending-documents", isOfficer, async (req, res, next) => {
+    try {
+      // Get all applications with pending status
+      const allApplications = await storage.getAllApplications();
+      const pendingApplications = allApplications.filter(app => 
+        app.status === 'documents_pending' ||
+        app.status === 'documents_reviewing' ||
+        app.status === 'submitted'
+      );
+      
+      // Get documents for each pending application
+      const pendingDocsPromises = pendingApplications.map(app => 
+        storage.getApplicationDocuments(app.id)
+      );
+      
+      // Wait for all document queries to complete
+      const pendingDocsArrays = await Promise.all(pendingDocsPromises);
+      
+      // Flatten results and filter for pending documents
+      const pendingDocuments = pendingDocsArrays
+        .flat()
+        .filter(doc => doc.status === 'pending');
+      
+      res.json(pendingDocuments);
+    } catch (err) {
+      next(err);
+    }
+  });
 
   app.put("/api/documents/:id/verify", isOfficer, async (req, res, next) => {
     try {
@@ -205,10 +260,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Document not found" });
       }
       
+      // Update document status
       const updatedDocument = await storage.updateDocument(documentId, {
         status: req.body.status,
         notes: req.body.notes || document.notes,
       });
+      
+      // After updating document, check all documents for this application
+      const applicationId = document.applicationId;
+      const allDocuments = await storage.getApplicationDocuments(applicationId);
+      
+      // Check if all documents are approved or if any are rejected
+      const allApproved = allDocuments.every(doc => doc.status === 'approved');
+      const anyRejected = allDocuments.some(doc => doc.status === 'rejected');
+      
+      // Update application status based on document verification results
+      if (anyRejected) {
+        // If any document is rejected, application needs additional documents
+        await storage.updateApplication(applicationId, {
+          status: "additional_documents_required",
+          lastUpdated: new Date(),
+        });
+      } else if (allApproved) {
+        // If all documents are approved, update application status
+        await storage.updateApplication(applicationId, {
+          status: "documents_approved",
+          lastUpdated: new Date(),
+        });
+      } else {
+        // Some documents are still pending or under review
+        await storage.updateApplication(applicationId, {
+          status: "documents_reviewing",
+          lastUpdated: new Date(),
+        });
+      }
       
       // Log the action
       await storage.createAdminLog({
@@ -227,12 +312,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Appointment routes
   app.post("/api/appointments", isOfficer, async (req, res, next) => {
     try {
+      // Verify application exists and is in a valid state for appointment
+      const applicationId = req.body.applicationId;
+      const application = await storage.getApplication(applicationId);
+      
+      if (!application) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+      
+      // Check if all documents have been approved
+      if (application.status !== "documents_approved") {
+        return res.status(400).json({ 
+          message: "Cannot schedule appointment until all documents are approved" 
+        });
+      }
+      
+      // Validate appointment date is in the future
+      const appointmentDate = new Date(req.body.date);
+      const now = new Date();
+      
+      if (appointmentDate <= now) {
+        return res.status(400).json({ 
+          message: "Appointment date must be in the future" 
+        });
+      }
+      
+      // Check if appointment already exists
+      const existingAppointment = await storage.getApplicationAppointment(applicationId);
+      if (existingAppointment) {
+        return res.status(400).json({ 
+          message: "Appointment already exists for this application" 
+        });
+      }
+      
+      // Create the appointment
       const appointment = await storage.createAppointment({
         ...req.body,
       });
       
       // Update application status
-      await storage.updateApplication(appointment.applicationId, {
+      await storage.updateApplication(applicationId, {
         status: "appointment_scheduled",
         lastUpdated: new Date(),
       });
@@ -241,7 +360,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       await storage.createAdminLog({
         userId: req.user.id,
         action: "Appointment created",
-        details: `Application ID: ${appointment.applicationId}, Date: ${appointment.date}`,
+        details: `Application ID: ${appointment.applicationId}, Date: ${appointment.date}, Location: ${appointment.location}`,
         timestamp: new Date(),
       });
       

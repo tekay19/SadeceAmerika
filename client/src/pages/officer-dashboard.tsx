@@ -43,23 +43,10 @@ export default function OfficerDashboard() {
   
   const pendingAppIds = getPendingApplicationIds();
   
-  // Fetch documents for pending applications
+  // Fetch documents for pending applications using the dedicated API endpoint
   const { data: pendingDocuments, isLoading: isLoadingDocuments } = useQuery<Document[]>({
     queryKey: ["/api/pending-documents"],
-    queryFn: async () => {
-      if (pendingAppIds.length === 0) return [];
-      
-      // Fetch documents for each pending application
-      const docsPromises = pendingAppIds.map(appId => 
-        fetch(`/api/documents/${appId}`, { credentials: 'include' })
-          .then(res => res.ok ? res.json() : [])
-      );
-      
-      const docsArrays = await Promise.all(docsPromises);
-      // Flatten array of arrays into single array of documents
-      return docsArrays.flat();
-    },
-    enabled: pendingAppIds.length > 0,
+    enabled: true, // Always enable, as the endpoint handles the empty case
   });
   
   // Filter only pending docs
