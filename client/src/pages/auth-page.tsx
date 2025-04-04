@@ -62,9 +62,15 @@ export default function AuthPage() {
     registerMutation.mutate(registerData);
   };
 
-  // Redirect if already logged in
+  // Redirect if already logged in based on role
   if (user) {
-    return <Redirect to="/" />;
+    if (user.role === 'admin') {
+      return <Redirect to="/admin" />;
+    } else if (user.role === 'officer') {
+      return <Redirect to="/officer" />;
+    } else {
+      return <Redirect to="/dashboard" />;
+    }
   }
 
   return (

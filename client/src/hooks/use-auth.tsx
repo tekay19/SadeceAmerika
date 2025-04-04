@@ -55,6 +55,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         title: "Giriş başarılı",
         description: "Hoş geldiniz!",
       });
+      
+      // Redirect based on user role
+      if (user.role === 'admin') {
+        window.location.href = "/admin";
+      } else if (user.role === 'officer') {
+        window.location.href = "/officer";
+      } else {
+        window.location.href = "/dashboard";
+      }
     },
     onError: (error: Error) => {
       toast({
@@ -76,6 +85,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         title: "Kayıt başarılı",
         description: "Hesabınız oluşturuldu ve giriş yapıldı!",
       });
+      
+      // Redirect based on user role (normally users will be normal users)
+      window.location.href = "/dashboard";
     },
     onError: (error: Error) => {
       toast({
@@ -96,6 +108,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         title: "Çıkış yapıldı",
         description: "Güvenli bir şekilde çıkış yaptınız.",
       });
+      
+      // Redirect to home page after logout
+      window.location.href = "/";
     },
     onError: (error: Error) => {
       toast({
