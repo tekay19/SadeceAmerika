@@ -19,6 +19,7 @@ export default function OfficerDashboard() {
   const { toast } = useToast();
   const [selectedDocId, setSelectedDocId] = useState<number | null>(null);
   const [docActionNotes, setDocActionNotes] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   
   // Redirect if not officer
   if (user?.role !== "officer" && user?.role !== "admin") {
@@ -28,6 +29,103 @@ export default function OfficerDashboard() {
   const { data: applications, isLoading: isLoadingApplications } = useQuery<Application[]>({
     queryKey: ["/api/applications"],
   });
+  
+  // Status badge renderer helper
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'draft':
+        return { color: 'bg-gray-100 text-gray-800', text: 'Taslak' };
+      case 'submitted':
+        return { color: 'bg-blue-100 text-blue-800', text: 'Gönderildi' };
+      case 'documents_pending':
+        return { color: 'bg-yellow-100 text-yellow-800', text: 'Belge Bekleniyor' };
+      case 'documents_reviewing':
+        return { color: 'bg-yellow-100 text-yellow-800', text: 'İnceleniyor' };
+      case 'documents_approved':
+        return { color: 'bg-green-100 text-green-800', text: 'Belgeler Onaylandı' };
+      case 'additional_documents_required':
+        return { color: 'bg-orange-100 text-orange-800', text: 'Ek Belge Gerekli' };
+      case 'appointment_scheduled':
+        return { color: 'bg-blue-100 text-blue-800', text: 'Randevu Planlandı' };
+      case 'interview_completed':
+        return { color: 'bg-indigo-100 text-indigo-800', text: 'Görüşme Tamamlandı' };
+      case 'approved':
+        return { color: 'bg-green-100 text-green-800', text: 'Onaylandı' };
+      case 'rejected':
+        return { color: 'bg-red-100 text-red-800', text: 'Reddedildi' };
+      case 'completed':
+        return { color: 'bg-green-100 text-green-800', text: 'Tamamlandı' };
+      default:
+        return { color: 'bg-gray-100 text-gray-800', text: status };
+    }
+  };
+  
+  // Application list renderer
+  const renderApplicationList = (appList: Application[]) => {
+    // Filter applications by search term if one exists
+    const filteredAppList = searchTerm.trim() ? 
+      appList.filter(app => 
+        app.applicationNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        `vize #${app.visaTypeId}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        getStatusBadge(app.status).text.toLowerCase().includes(searchTerm.toLowerCase())
+      ) : appList;
+    
+    if (isLoadingApplications) {
+      return (
+        <div className="flex justify-center py-8">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      );
+    }
+    
+    if (!filteredAppList || filteredAppList.length === 0) {
+      return (
+        <div className="text-center py-8 text-gray-500">
+          <AlertCircle className="h-12 w-12 mx-auto text-gray-300 mb-3" />
+          <p>
+            {searchTerm.trim() 
+              ? `"${searchTerm}" için eşleşen başvuru bulunamadı.` 
+              : "Bu kriterlere uygun başvuru bulunmuyor."}
+          </p>
+        </div>
+      );
+    }
+    
+    return (
+      <div className="rounded-md border">
+        <div className="grid grid-cols-6 p-3 text-sm font-medium text-gray-500 bg-gray-100">
+          <div className="col-span-2">Başvuru</div>
+          <div>Tarih</div>
+          <div>Vize Tipi</div>
+          <div>Durum</div>
+          <div className="text-right">İşlem</div>
+        </div>
+        <div className="divide-y">
+          {filteredAppList.map((app) => {
+            const statusBadge = getStatusBadge(app.status);
+            
+            return (
+              <div key={app.id} className="grid grid-cols-6 p-3 text-sm hover:bg-gray-50">
+                <div className="col-span-2 font-medium">{app.applicationNumber}</div>
+                <div>{app.submittedAt ? new Date(app.submittedAt).toLocaleDateString('tr-TR') : '-'}</div>
+                <div>{app.visaTypeId ? `Vize #${app.visaTypeId}` : '-'}</div>
+                <div>
+                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusBadge.color}`}>
+                    {statusBadge.text}
+                  </span>
+                </div>
+                <div className="text-right">
+                  <Button variant="ghost" size="sm" asChild>
+                    <a href={`/applications/${app.id}`}>Görüntüle</a>
+                  </Button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
   
   // Get pending documents that need review
   const getPendingApplicationIds = () => {
@@ -278,57 +376,56 @@ export default function OfficerDashboard() {
             <TabsContent value="applications" className="space-y-4">
               <Card>
                 <CardHeader>
-                  <CardTitle>Bekleyen Başvurular</CardTitle>
-                  <CardDescription>
-                    İşlem bekleyen başvuruları görüntüleyin ve yönetin.
-                  </CardDescription>
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+                    <div>
+                      <CardTitle>Başvuru Yönetimi</CardTitle>
+                      <CardDescription>
+                        Tüm başvuruları görüntüleyin ve durumlarına göre filtreleyin.
+                      </CardDescription>
+                    </div>
+                    <div className="relative max-w-xs">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                      <Input 
+                        placeholder="Başvuru ara..." 
+                        className="pl-10"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                      />
+                    </div>
+                  </div>
                 </CardHeader>
                 <CardContent>
-                  {isLoadingApplications ? (
-                    <div className="flex justify-center py-8">
-                      <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                    </div>
-                  ) : !pendingAppIds || pendingAppIds.length === 0 ? (
-                    <div className="text-center py-8 text-gray-500">
-                      <AlertCircle className="h-12 w-12 mx-auto text-gray-300 mb-3" />
-                      <p>İşlem bekleyen başvuru bulunmuyor.</p>
-                    </div>
-                  ) : (
-                    <div className="rounded-md border">
-                      <div className="grid grid-cols-5 p-3 text-sm font-medium text-gray-500 bg-gray-100">
-                        <div className="col-span-2">Başvuru</div>
-                        <div>Tarih</div>
-                        <div>Durum</div>
-                        <div className="text-right">İşlem</div>
-                      </div>
-                      <div className="divide-y">
-                        {applications
-                          ?.filter(app => pendingAppIds.includes(app.id))
-                          .map((app) => (
-                            <div key={app.id} className="grid grid-cols-5 p-3 text-sm">
-                              <div className="col-span-2 font-medium">{app.applicationNumber}</div>
-                              <div>{app.submittedAt ? new Date(app.submittedAt).toLocaleDateString('tr-TR') : '-'}</div>
-                              <div>
-                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                  app.status === 'documents_pending' ? 'bg-yellow-100 text-yellow-800' :
-                                  app.status === 'documents_reviewing' ? 'bg-yellow-100 text-yellow-800' :
-                                  'bg-gray-100 text-gray-800'
-                                }`}>
-                                  {app.status === 'documents_pending' ? 'Belge Bekleniyor' :
-                                  app.status === 'documents_reviewing' ? 'İnceleniyor' :
-                                  app.status}
-                                </span>
-                              </div>
-                              <div className="text-right">
-                                <Button variant="ghost" size="sm" asChild>
-                                  <a href={`/applications/${app.id}`}>Görüntüle</a>
-                                </Button>
-                              </div>
-                            </div>
-                          ))}
-                      </div>
-                    </div>
-                  )}
+                  {/* Status filter tabs */}
+                  <Tabs defaultValue="all" className="mb-6">
+                    <TabsList className="grid grid-cols-4 mb-4">
+                      <TabsTrigger value="all">Tüm Başvurular</TabsTrigger>
+                      <TabsTrigger value="pending">Bekleyen</TabsTrigger>
+                      <TabsTrigger value="approved">Onaylanan</TabsTrigger>
+                      <TabsTrigger value="rejected">Reddedilen</TabsTrigger>
+                    </TabsList>
+                    
+                    <TabsContent value="all">
+                      {renderApplicationList(applications || [])}
+                    </TabsContent>
+                    
+                    <TabsContent value="pending">
+                      {renderApplicationList(applications?.filter(app => 
+                        ['documents_pending', 'documents_reviewing', 'additional_documents_required', 'documents_approved', 'submitted'].includes(app.status)
+                      ) || [])}
+                    </TabsContent>
+                    
+                    <TabsContent value="approved">
+                      {renderApplicationList(applications?.filter(app => 
+                        ['appointment_scheduled', 'interview_completed', 'approved', 'completed'].includes(app.status)
+                      ) || [])}
+                    </TabsContent>
+                    
+                    <TabsContent value="rejected">
+                      {renderApplicationList(applications?.filter(app => 
+                        app.status === 'rejected'
+                      ) || [])}
+                    </TabsContent>
+                  </Tabs>
                 </CardContent>
               </Card>
             </TabsContent>

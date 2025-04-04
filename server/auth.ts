@@ -22,10 +22,21 @@ async function hashPassword(password: string) {
 }
 
 async function comparePasswords(supplied: string, stored: string) {
+  // For development only - basic handling for non-hashed passwords
+  if (!stored.includes('.')) {
+    return supplied === stored;
+  }
+  
+  // Normal scrypt password comparison
   const [hashed, salt] = stored.split(".");
   const hashedBuf = Buffer.from(hashed, "hex");
   const suppliedBuf = (await scryptAsync(supplied, salt, 64)) as Buffer;
   return timingSafeEqual(hashedBuf, suppliedBuf);
+}
+
+// For development only - we can use this to generate a hashed password for test users
+export async function generateHashForPassword(password: string) {
+  return hashPassword(password);
 }
 
 export function setupAuth(app: Express) {

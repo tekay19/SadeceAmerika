@@ -93,6 +93,9 @@ export class MemStorage implements IStorage {
     
     // Initialize some visa types
     this.initializeVisaTypes();
+    
+    // Initialize test users
+    this.initializeTestUsers();
   }
 
   private initializeVisaTypes() {
@@ -107,6 +110,80 @@ export class MemStorage implements IStorage {
     types.forEach(type => {
       const id = this.visaTypeCurrentId++;
       this.visaTypes.set(id, { ...type, id });
+    });
+  }
+  
+  private initializeTestUsers() {
+    // For development purposes using plain text password for easier testing
+    const plainPassword = "password1";
+    
+    // Create a regular user
+    const user1 = {
+      id: this.userCurrentId++,
+      username: "user1",
+      password: plainPassword,
+      firstName: "Normal",
+      lastName: "User",
+      email: "user1@example.com",
+      phone: "+90 555 123 4567",
+      role: "user" as const
+    };
+    this.users.set(user1.id, user1);
+    
+    // Create an officer
+    const officer1 = {
+      id: this.userCurrentId++,
+      username: "officer1",
+      password: plainPassword,
+      firstName: "Visa",
+      lastName: "Officer",
+      email: "officer1@example.com",
+      phone: "+90 555 987 6543",
+      role: "officer" as const
+    };
+    this.users.set(officer1.id, officer1);
+    
+    // Create an admin
+    const admin1 = {
+      id: this.userCurrentId++,
+      username: "admin1",
+      password: plainPassword,
+      firstName: "Admin",
+      lastName: "User",
+      email: "admin1@example.com",
+      phone: "+90 555 000 0000",
+      role: "admin" as const
+    };
+    this.users.set(admin1.id, admin1);
+    
+    // Create a sample application for the regular user
+    const application1 = {
+      id: this.applicationCurrentId++,
+      userId: user1.id,
+      visaTypeId: 3, // F1 Student visa
+      applicationNumber: "US-VISA-2023-10001",
+      status: "documents_pending" as const,
+      purpose: "Study abroad for university degree",
+      travelDate: "2023-09-01", // Date as string to match schema
+      submittedAt: new Date("2023-06-15"),
+      lastUpdated: new Date("2023-06-15")
+    };
+    this.applications.set(application1.id, application1);
+    
+    // Create documents for the application
+    const docTypes = ["passport", "photo", "employment_letter", "bank_statement"];
+    docTypes.forEach(type => {
+      const doc = {
+        id: this.documentCurrentId++,
+        applicationId: application1.id,
+        type,
+        fileName: `${type}_example.pdf`,
+        filePath: `/uploads/${type}_example.pdf`,
+        uploadedAt: new Date("2023-06-15"),
+        status: "pending" as const,
+        notes: null
+      };
+      this.documents.set(doc.id, doc);
     });
   }
 
@@ -129,7 +206,13 @@ export class MemStorage implements IStorage {
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.userCurrentId++;
-    const user: User = { ...insertUser, id };
+    // Set default values for required fields that might be undefined
+    const user: User = { 
+      ...insertUser, 
+      id,
+      role: insertUser.role || 'user',
+      phone: insertUser.phone || null 
+    };
     this.users.set(id, user);
     return user;
   }
@@ -146,7 +229,15 @@ export class MemStorage implements IStorage {
   // Application methods
   async createApplication(insertApplication: InsertApplication): Promise<Application> {
     const id = this.applicationCurrentId++;
-    const application: Application = { ...insertApplication, id };
+    const application: Application = { 
+      ...insertApplication, 
+      id,
+      status: insertApplication.status || 'draft',
+      purpose: insertApplication.purpose || null,
+      travelDate: insertApplication.travelDate || null,
+      submittedAt: insertApplication.submittedAt || null,
+      lastUpdated: insertApplication.lastUpdated || null
+    };
     this.applications.set(id, application);
     return application;
   }
@@ -179,7 +270,12 @@ export class MemStorage implements IStorage {
   // Document methods
   async createDocument(insertDocument: InsertDocument): Promise<Document> {
     const id = this.documentCurrentId++;
-    const document: Document = { ...insertDocument, id };
+    const document: Document = { 
+      ...insertDocument, 
+      id,
+      status: insertDocument.status || 'pending',
+      notes: insertDocument.notes || null
+    };
     this.documents.set(id, document);
     return document;
   }
@@ -208,7 +304,11 @@ export class MemStorage implements IStorage {
   // Appointment methods
   async createAppointment(insertAppointment: InsertAppointment): Promise<Appointment> {
     const id = this.appointmentCurrentId++;
-    const appointment: Appointment = { ...insertAppointment, id };
+    const appointment: Appointment = { 
+      ...insertAppointment, 
+      id,
+      notes: insertAppointment.notes || null
+    };
     this.appointments.set(id, appointment);
     return appointment;
   }
@@ -222,7 +322,11 @@ export class MemStorage implements IStorage {
   // Feedback methods
   async createFeedback(insertFeedback: InsertFeedback): Promise<Feedback> {
     const id = this.feedbackCurrentId++;
-    const feedback: Feedback = { ...insertFeedback, id };
+    const feedback: Feedback = { 
+      ...insertFeedback, 
+      id,
+      message: insertFeedback.message || ""
+    };
     this.feedbacks.set(id, feedback);
     return feedback;
   }
@@ -234,7 +338,11 @@ export class MemStorage implements IStorage {
   // Admin log methods
   async createAdminLog(insertAdminLog: InsertAdminLog): Promise<AdminLog> {
     const id = this.adminLogCurrentId++;
-    const adminLog: AdminLog = { ...insertAdminLog, id };
+    const adminLog: AdminLog = { 
+      ...insertAdminLog, 
+      id,
+      details: insertAdminLog.details || null
+    };
     this.adminLogs.set(id, adminLog);
     return adminLog;
   }

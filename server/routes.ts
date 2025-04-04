@@ -1,7 +1,7 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { setupAuth } from "./auth";
+import { setupAuth, generateHashForPassword } from "./auth";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
@@ -67,6 +67,19 @@ function isOfficer(req: Request, res: Response, next: NextFunction) {
 export async function registerRoutes(app: Express): Promise<Server> {
   // Setup authentication routes
   setupAuth(app);
+  
+  // Development only route to hash passwords for test users
+  app.get("/api/dev/hash-password/:password", async (req, res) => {
+    if (process.env.NODE_ENV === "production") {
+      return res.status(404).json({ message: "Not found" });
+    }
+    
+    const hashedPassword = await generateHashForPassword(req.params.password);
+    res.json({ 
+      original: req.params.password,
+      hashed: hashedPassword
+    });
+  });
 
   // VisaType routes
   app.get("/api/visa-types", async (req, res, next) => {
