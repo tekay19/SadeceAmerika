@@ -66,38 +66,38 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* ABD Ofislerimiz - WhatsApp Resimleri */}
+        {/* İstanbul Ofislerimiz - WhatsApp Resimleri */}
         <section className="py-16 bg-gray-50">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4">ABD ve Türkiye Ofislerimiz</h2>
+              <h2 className="text-3xl font-bold mb-4">İstanbul Ofislerimiz</h2>
               <p className="text-lg text-gray-600">
-                Amerika ve Türkiye'deki ofislerimiz ile iki ülke arasında güçlü bir köprü oluşturuyoruz. Aşağıda ofislerimizin ve çalışma alanlarımızın görsellerini görebilirsiniz.
+                İstanbul'daki merkez ofisimiz ve şubelerimiz ile size en kaliteli hizmeti sunuyoruz. Aşağıda ofislerimizin ve çalışma alanlarımızın görsellerini görebilirsiniz.
               </p>
             </div>
             
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div className="overflow-hidden rounded-lg shadow-sm">
-                <img src={whatsAppImage2} alt="Amerikan ofisi" className="w-full h-64 object-cover object-center hover:scale-105 transition-transform" />
+                <img src={whatsAppImage2} alt="İstanbul ofisi" className="w-full h-64 object-cover object-center hover:scale-105 transition-transform" />
                 <div className="p-4 bg-white">
-                  <h3 className="font-semibold text-lg">Dallas, Texas Merkez Ofisimiz</h3>
-                  <p className="text-gray-600">Mese Consultancy Genel Merkezi</p>
+                  <h3 className="font-semibold text-lg">İstanbul, Levent Ofisimiz</h3>
+                  <p className="text-gray-600">Sadece Amerika Genel Merkezi</p>
                 </div>
               </div>
               
               <div className="overflow-hidden rounded-lg shadow-sm">
-                <img src={whatsAppImage3} alt="Amerikan ofisi toplantı alanı" className="w-full h-64 object-cover object-center hover:scale-105 transition-transform" />
+                <img src={whatsAppImage3} alt="İstanbul ofisi toplantı alanı" className="w-full h-64 object-cover object-center hover:scale-105 transition-transform" />
                 <div className="p-4 bg-white">
                   <h3 className="font-semibold text-lg">Toplantı ve Danışmanlık Alanı</h3>
-                  <p className="text-gray-600">Müşterilerimize özel danışmanlık hizmeti sunuyoruz</p>
+                  <p className="text-gray-600">İstanbul şubemizde müşterilerimize özel danışmanlık hizmeti</p>
                 </div>
               </div>
               
               <div className="overflow-hidden rounded-lg shadow-sm">
-                <img src={whatsAppImage4} alt="Ankara ofisi" className="w-full h-64 object-cover object-center hover:scale-105 transition-transform" />
+                <img src={whatsAppImage4} alt="İstanbul ofisi bekleme alanı" className="w-full h-64 object-cover object-center hover:scale-105 transition-transform" />
                 <div className="p-4 bg-white">
-                  <h3 className="font-semibold text-lg">Ankara Ofisimiz</h3>
-                  <p className="text-gray-600">Sadece Amerika Türkiye Merkezi</p>
+                  <h3 className="font-semibold text-lg">İstanbul Bekleme Salonu</h3>
+                  <p className="text-gray-600">Sadece Amerika İstanbul Ofisi</p>
                 </div>
               </div>
             </div>
@@ -227,23 +227,23 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Dallas Office Showcase */}
+        {/* İstanbul Office Showcase */}
         <section className="py-16">
           <div className="container mx-auto px-4">
             <div className="flex flex-col lg:flex-row items-center gap-12">
               <div className="lg:w-1/2">
                 <div className="flex items-center mb-4">
                   <Globe className="text-blue-600 mr-2" size={24} />
-                  <h2 className="text-2xl font-bold">Texas'tan Ankara'ya</h2>
+                  <h2 className="text-2xl font-bold">İstanbul'dan Amerika'ya</h2>
                 </div>
                 <p className="text-gray-600 mb-4">
-                  Mese Consultancy'nin Dallas ofisi ile Sadece Amerika'nın Ankara ofisi arasında güçlü bir iş birliği içerisinde çalışıyoruz. Bu sayede hem Amerika'daki işlemlerinizi hem de Türkiye'deki hazırlıklarınızı tek elden yönetebiliyoruz.
+                  İstanbul ofisimiz ile Amerika'daki ortaklarımız arasında güçlü bir iş birliği içerisinde çalışıyoruz. Bu sayede hem Amerika'daki işlemlerinizi hem de Türkiye'deki hazırlıklarınızı tek elden yönetebiliyoruz.
                 </p>
                 <p className="text-gray-600 mb-4">
-                  Amerika'daki ofisimiz, özellikle göçmenlik hukuku alanında uzmanlaşmış avukatlarımızın çalıştığı ve vize başvurularınızın Amerika tarafındaki tüm işlemlerinin yürütüldüğü merkezimizdir.
+                  İstanbul Levent'teki merkez ofisimiz, göçmenlik hukuku alanında uzmanlaşmış danışmanlarımızın çalıştığı ve vize başvurularınızın tüm ön hazırlık işlemlerinin titizlikle yürütüldüğü yerdir.
                 </p>
                 <p className="text-gray-600">
-                  Türkiye'de gerçekleştirilen ön görüşmeler ve hazırlık çalışmalarının ardından, dosyanız Amerika'daki uzmanlarımız tarafından incelenerek vize başvuru süreciniz en doğru şekilde yönlendirilir.
+                  İstanbul'da gerçekleştirilen ön görüşmeler ve hazırlık çalışmalarının ardından, dosyanız Amerika'daki ortaklarımız tarafından incelenerek vize başvuru süreciniz en doğru şekilde yönlendirilir.
                 </p>
               </div>
               <div className="lg:w-1/2">
@@ -251,7 +251,7 @@ export default function AboutPage() {
                   <div className="bg-blue-100 absolute -top-4 -left-4 w-full h-full rounded-lg"></div>
                   <img 
                     src={whatsAppImage5} 
-                    alt="Dallas office"
+                    alt="İstanbul ofisi"
                     className="rounded-lg relative z-10 w-full h-auto object-cover"
                   />
                 </div>
