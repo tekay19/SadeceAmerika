@@ -10,23 +10,31 @@ import {
   Users
 } from "lucide-react";
 
-// WhatsApp Görselleri
-import whatsAppImage1 from "../../assets/whatsapp1.jpeg";
-import whatsAppImage2 from "../../assets/whatsapp2.jpeg";
-import whatsAppImage3 from "../../assets/whatsapp3.jpeg";
-import whatsAppImage4 from "../../assets/whatsapp4.jpeg";
-import whatsAppImage5 from "../../assets/whatsapp5.jpeg";
+// Görseller
+import visa1Img from "../../assets/images/visa1.jpeg";
+import visa2Img from "../../assets/images/visa2.jpeg";
+import visa3Img from "../../assets/images/visa3.jpeg";
+import visa4Img from "../../assets/images/visa4.jpeg";
+import visa5Img from "../../assets/images/visa5.jpeg";
+import usaFlagImg from "../../assets/images/usa_flag.jpg";
+import logoImg from "../../assets/images/logo.jpg";
 
 export default function AboutPage() {
   return (
     <PublicLayout>
       <PageTransition>
         {/* Hero */}
-        <section className="py-16 bg-gray-50">
-          <div className="container mx-auto px-4">
+        <section className="py-16 bg-gradient-to-r from-blue-600 to-indigo-700 text-white relative overflow-hidden">
+          <div className="absolute inset-0 opacity-15">
+            <img src={usaFlagImg} alt="ABD Bayrağı" className="w-full h-full object-cover" />
+          </div>
+          <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-3xl mx-auto text-center">
-              <h1 className="text-4xl font-bold text-gray-900 mb-6">Hakkımızda</h1>
-              <p className="text-xl text-gray-600">
+              <div className="inline-block bg-white/20 p-2 rounded-full backdrop-blur-sm mb-6">
+                <img src={logoImg} alt="Sadece Amerika Logo" className="h-16 w-auto" />
+              </div>
+              <h1 className="text-4xl font-bold mb-6">Hakkımızda</h1>
+              <p className="text-xl opacity-90">
                 Sadece Amerika, Amerika merkezli "Mese Consultancy"nin Türkiye uzantısı olarak 2025 yılında Ankara'da kurulmuştur.
               </p>
             </div>
@@ -41,7 +49,7 @@ export default function AboutPage() {
                 <div className="relative">
                   <div className="bg-blue-100 absolute -top-4 -left-4 w-full h-full rounded-lg"></div>
                   <img 
-                    src={whatsAppImage1} 
+                    src={visa1Img} 
                     alt="Sadece Amerika ofisi"
                     className="rounded-lg relative z-10 w-full h-auto object-cover"
                   />
@@ -78,7 +86,7 @@ export default function AboutPage() {
             
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div className="overflow-hidden rounded-lg shadow-sm">
-                <img src={whatsAppImage2} alt="İstanbul ofisi" className="w-full h-64 object-cover object-center hover:scale-105 transition-transform" />
+                <img src={visa2Img} alt="İstanbul ofisi" className="w-full h-64 object-cover object-center hover:scale-105 transition-transform" />
                 <div className="p-4 bg-white">
                   <h3 className="font-semibold text-lg">İstanbul, Levent Ofisimiz</h3>
                   <p className="text-gray-600">Sadece Amerika Genel Merkezi</p>
@@ -86,7 +94,7 @@ export default function AboutPage() {
               </div>
               
               <div className="overflow-hidden rounded-lg shadow-sm">
-                <img src={whatsAppImage3} alt="İstanbul ofisi toplantı alanı" className="w-full h-64 object-cover object-center hover:scale-105 transition-transform" />
+                <img src={visa3Img} alt="İstanbul ofisi toplantı alanı" className="w-full h-64 object-cover object-center hover:scale-105 transition-transform" />
                 <div className="p-4 bg-white">
                   <h3 className="font-semibold text-lg">Toplantı ve Danışmanlık Alanı</h3>
                   <p className="text-gray-600">İstanbul şubemizde müşterilerimize özel danışmanlık hizmeti</p>
@@ -94,7 +102,7 @@ export default function AboutPage() {
               </div>
               
               <div className="overflow-hidden rounded-lg shadow-sm">
-                <img src={whatsAppImage4} alt="İstanbul ofisi bekleme alanı" className="w-full h-64 object-cover object-center hover:scale-105 transition-transform" />
+                <img src={visa4Img} alt="İstanbul ofisi bekleme alanı" className="w-full h-64 object-cover object-center hover:scale-105 transition-transform" />
                 <div className="p-4 bg-white">
                   <h3 className="font-semibold text-lg">İstanbul Bekleme Salonu</h3>
                   <p className="text-gray-600">Sadece Amerika İstanbul Ofisi</p>
@@ -250,7 +258,7 @@ export default function AboutPage() {
                 <div className="relative">
                   <div className="bg-blue-100 absolute -top-4 -left-4 w-full h-full rounded-lg"></div>
                   <img 
-                    src={whatsAppImage5} 
+                    src={visa5Img} 
                     alt="İstanbul ofisi"
                     className="rounded-lg relative z-10 w-full h-auto object-cover"
                   />
@@ -261,8 +269,14 @@ export default function AboutPage() {
         </section>
 
         {/* CTA */}
-        <section className="py-16 bg-blue-700 text-white">
-          <div className="container mx-auto px-4 text-center">
+        <section className="py-16 bg-blue-700 text-white relative overflow-hidden">
+          <div className="absolute inset-0 opacity-15">
+            <img src={visa4Img} alt="Amerika vizesi" className="w-full h-full object-cover object-center" />
+          </div>
+          <div className="container mx-auto px-4 text-center relative z-10">
+            <div className="flex justify-center mb-6">
+              <img src={usaFlagImg} alt="ABD Bayrağı" className="h-10 w-auto rounded shadow-md" />
+            </div>
             <h2 className="text-3xl font-bold mb-6">Amerika Vizeniz İçin Hazır mısınız?</h2>
             <p className="text-xl mb-8 max-w-3xl mx-auto">
               Sadece Amerika olarak, Türkiye'den Amerika'ya uzanan yolda, güvenilir çözüm ortağınız olmayı hedefliyoruz.

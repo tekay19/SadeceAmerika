@@ -14,14 +14,29 @@ import {
   Landmark
 } from "lucide-react";
 
+// Import visa application images
+import usaFlagImg from "../../assets/images/usa_flag.jpg";
+import visa1Img from "../../assets/images/visa1.jpeg";
+import visa2Img from "../../assets/images/visa2.jpeg";
+import visa3Img from "../../assets/images/visa3.jpeg";
+import visa4Img from "../../assets/images/visa4.jpeg";
+import visa5Img from "../../assets/images/visa5.jpeg";
+import logoImg from "../../assets/images/logo.jpg";
+
 export default function HomePage() {
   return (
     <PublicLayout>
       <PageTransition>
         {/* Hero Section */}
-        <section className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
-          <div className="container mx-auto px-4 py-20 md:py-28">
+        <section className="relative bg-gradient-to-r from-blue-600 to-indigo-700 text-white overflow-hidden">
+          <div className="absolute inset-0 opacity-20">
+            <img src={visa4Img} alt="ABD Vizesi" className="w-full h-full object-cover" />
+          </div>
+          <div className="container mx-auto px-4 py-20 md:py-28 relative z-10">
             <div className="max-w-3xl mx-auto text-center">
+              <div className="flex justify-center mb-6">
+                <img src={usaFlagImg} alt="ABD Bayrağı" className="h-12 w-auto rounded shadow-lg" />
+              </div>
               <h1 className="text-4xl md:text-5xl font-bold mb-6">
                 ABD Vize Başvurunuzu Kolaylaştırıyoruz
               </h1>
@@ -49,12 +64,28 @@ export default function HomePage() {
         {/* About Summary */}
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto text-center mb-12">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">Mese Consultancy'nin Türkiye Uzantısı</h2>
-              <p className="text-lg text-gray-600">
-                Sadece Amerika, Amerika merkezli "Mese Consultancy"nin Türkiye uzantısı olarak 2025 yılında Ankara'da kurulmuştur. 
-                Her başvuruyu bireysel olarak ele alıyor; güvenilir, şeffaf ve danışan odaklı yaklaşımımızla, hedeflerinize ulaşmanız için güçlü bir rehberlik sunuyoruz.
-              </p>
+            <div className="grid md:grid-cols-2 gap-8 items-center max-w-5xl mx-auto">
+              <div className="relative rounded-xl overflow-hidden shadow-lg h-80">
+                <img src={visa1Img} alt="Sadece Amerika Ofis" className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
+                  <div className="p-6">
+                    <div className="bg-white/90 p-3 rounded-lg inline-block mb-2">
+                      <img src={logoImg} alt="Sadece Amerika Logo" className="h-6 w-auto" />
+                    </div>
+                    <h3 className="text-white text-xl font-bold">Ankara Merkez Ofisimiz</h3>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <h2 className="text-3xl font-bold text-gray-900 mb-4">Mese Consultancy'nin Türkiye Uzantısı</h2>
+                <p className="text-lg text-gray-600 mb-6">
+                  Sadece Amerika, Amerika merkezli "Mese Consultancy"nin Türkiye uzantısı olarak 2025 yılında Ankara'da kurulmuştur. 
+                </p>
+                <p className="text-lg text-gray-600">
+                  Her başvuruyu bireysel olarak ele alıyor; güvenilir, şeffaf ve danışan odaklı yaklaşımımızla, hedeflerinize ulaşmanız için güçlü bir rehberlik sunuyoruz.
+                </p>
+              </div>
             </div>
           </div>
         </section>
@@ -146,7 +177,13 @@ export default function HomePage() {
             <div className="grid lg:grid-cols-2 gap-8">
               {/* Green Card Integration Services */}
               <div className="bg-white rounded-lg shadow-sm overflow-hidden transform transition duration-300 hover:shadow-md hover:-translate-y-1">
-                <div className="h-3 bg-green-600"></div>
+                <div className="h-48 relative overflow-hidden">
+                  <img src={visa2Img} alt="Green Card Entegrasyon" className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
+                  <div className="absolute bottom-0 left-0 p-4">
+                    <span className="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-semibold">Yeni Hizmet</span>
+                  </div>
+                </div>
                 <div className="p-6">
                   <div className="flex items-start mb-4">
                     <div className="bg-green-100 text-green-700 w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 mr-4">
@@ -197,7 +234,13 @@ export default function HomePage() {
 
               {/* Housing and Auto Services */}
               <div className="bg-white rounded-lg shadow-sm overflow-hidden transform transition duration-300 hover:shadow-md hover:-translate-y-1">
-                <div className="h-3 bg-blue-600"></div>
+                <div className="h-48 relative overflow-hidden">
+                  <img src={visa3Img} alt="Konaklama ve Araç Kiralama" className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
+                  <div className="absolute bottom-0 left-0 p-4">
+                    <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-semibold">Popüler</span>
+                  </div>
+                </div>
                 <div className="p-6">
                   <div className="flex items-start mb-4">
                     <div className="bg-blue-100 text-blue-700 w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 mr-4">
@@ -296,8 +339,11 @@ export default function HomePage() {
         </section>
 
         {/* CTA Section */}
-        <section className="py-16 bg-blue-700 text-white">
-          <div className="container mx-auto px-4">
+        <section className="py-16 bg-blue-700 text-white relative overflow-hidden">
+          <div className="absolute inset-0 opacity-20">
+            <img src={visa5Img} alt="ABD Vize Başvurusu" className="w-full h-full object-cover" />
+          </div>
+          <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-3xl mx-auto text-center">
               <h2 className="text-3xl font-bold mb-6">Amerika'daki Geleceğiniz İçin İlk Adım</h2>
               <p className="text-xl mb-8">
