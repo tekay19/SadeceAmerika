@@ -13,6 +13,7 @@ import Appointments from "@/pages/appointments";
 import ApplicationForm from "@/pages/application-form";
 import ApplicationDetails from "@/pages/application-details";
 import AdminDashboard from "@/pages/admin-dashboard";
+import AdminSettings from "./pages/admin-settings";
 import OfficerDashboard from "@/pages/officer-dashboard";
 
 function Router() {
@@ -26,6 +27,7 @@ function Router() {
       <ProtectedRoute path="/documents" component={Documents} />
       <ProtectedRoute path="/appointments" component={Appointments} />
       <ProtectedRoute path="/admin" component={AdminDashboard} />
+      <ProtectedRoute path="/admin/settings" component={AdminSettings} />
       <ProtectedRoute path="/officer" component={OfficerDashboard} />
       <Route component={NotFound} />
     </Switch>

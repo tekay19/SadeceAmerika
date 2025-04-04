@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, date, timestamp, pgEnum } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, date, timestamp, pgEnum, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -25,6 +25,14 @@ export const documentStatusEnum = pgEnum('document_status', [
   'approved',
   'rejected',
   'missing'
+]);
+
+// Settings category enum
+export const settingsCategoryEnum = pgEnum('settings_category', [
+  'general',
+  'email',
+  'security',
+  'logging'
 ]);
 
 // Users table
@@ -98,6 +106,17 @@ export const adminLogs = pgTable("admin_logs", {
   timestamp: timestamp("timestamp").notNull()
 });
 
+// Settings table
+export const settings = pgTable("settings", {
+  id: serial("id").primaryKey(),
+  category: settingsCategoryEnum("category").notNull(),
+  key: text("key").notNull(),
+  value: text("value").notNull(),
+  description: text("description"),
+  lastUpdated: timestamp("last_updated").notNull().defaultNow(),
+  updatedBy: integer("updated_by").references(() => users.id)
+});
+
 // Schema for user insert
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
@@ -155,6 +174,16 @@ export const insertAdminLogSchema = createInsertSchema(adminLogs).pick({
   timestamp: true,
 });
 
+// Schema for settings insert
+export const insertSettingSchema = createInsertSchema(settings).pick({
+  category: true,
+  key: true,
+  value: true,
+  description: true,
+  lastUpdated: true,
+  updatedBy: true,
+});
+
 // Types
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -173,5 +202,8 @@ export type Feedback = typeof feedback.$inferSelect;
 
 export type InsertAdminLog = z.infer<typeof insertAdminLogSchema>;
 export type AdminLog = typeof adminLogs.$inferSelect;
+
+export type InsertSetting = z.infer<typeof insertSettingSchema>;
+export type Setting = typeof settings.$inferSelect;
 
 export type VisaType = typeof visaTypes.$inferSelect;

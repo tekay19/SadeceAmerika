@@ -5,6 +5,7 @@ import {
   appointments, Appointment, InsertAppointment,
   feedback, Feedback, InsertFeedback,
   adminLogs, AdminLog, InsertAdminLog,
+  settings, Setting, InsertSetting,
   visaTypes, VisaType
 } from "@shared/schema";
 import session from "express-session";
@@ -48,6 +49,14 @@ export interface IStorage {
   createAdminLog(log: InsertAdminLog): Promise<AdminLog>;
   getAllAdminLogs(): Promise<AdminLog[]>;
   
+  // Settings methods
+  getSetting(id: number): Promise<Setting | undefined>;
+  getSettingByKey(category: string, key: string): Promise<Setting | undefined>;
+  getSettingsByCategory(category: string): Promise<Setting[]>;
+  getAllSettings(): Promise<Setting[]>;
+  createSetting(setting: InsertSetting): Promise<Setting>;
+  updateSetting(id: number, updates: Partial<Setting>): Promise<Setting>;
+  
   // Session store
   sessionStore: session.SessionStore;
 }
@@ -60,6 +69,7 @@ export class MemStorage implements IStorage {
   private appointments: Map<number, Appointment>;
   private feedbacks: Map<number, Feedback>;
   private adminLogs: Map<number, AdminLog>;
+  private settings: Map<number, Setting>;
   sessionStore: session.SessionStore;
   
   private userCurrentId: number;
@@ -69,6 +79,7 @@ export class MemStorage implements IStorage {
   private appointmentCurrentId: number;
   private feedbackCurrentId: number;
   private adminLogCurrentId: number;
+  private settingCurrentId: number;
 
   constructor() {
     this.users = new Map();
@@ -78,6 +89,7 @@ export class MemStorage implements IStorage {
     this.appointments = new Map();
     this.feedbacks = new Map();
     this.adminLogs = new Map();
+    this.settings = new Map();
     
     this.userCurrentId = 1;
     this.visaTypeCurrentId = 1;
@@ -86,6 +98,7 @@ export class MemStorage implements IStorage {
     this.appointmentCurrentId = 1;
     this.feedbackCurrentId = 1;
     this.adminLogCurrentId = 1;
+    this.settingCurrentId = 1;
     
     this.sessionStore = new MemoryStore({
       checkPeriod: 86400000 // 24 hours
@@ -96,6 +109,131 @@ export class MemStorage implements IStorage {
     
     // Initialize test users
     this.initializeTestUsers();
+    
+    // Initialize default settings
+    this.initializeDefaultSettings();
+  }
+  
+  private initializeDefaultSettings() {
+    // Initialize default general settings
+    const generalSettings = [
+      { 
+        category: 'general' as const, 
+        key: 'appName', 
+        value: 'Visa System',
+        description: 'Application Name', 
+        lastUpdated: new Date(),
+        updatedBy: 3 // admin1
+      },
+      { 
+        category: 'general' as const, 
+        key: 'version', 
+        value: '1.0.0',
+        description: 'Application Version', 
+        lastUpdated: new Date(),
+        updatedBy: 3 // admin1
+      },
+      { 
+        category: 'general' as const, 
+        key: 'mode', 
+        value: 'production',
+        description: 'Application Mode (production/development)', 
+        lastUpdated: new Date(),
+        updatedBy: 3 // admin1
+      }
+    ];
+    
+    // Initialize default email settings
+    const emailSettings = [
+      { 
+        category: 'email' as const, 
+        key: 'smtpHost', 
+        value: 'smtp.gmail.com',
+        description: 'SMTP Server Host', 
+        lastUpdated: new Date(),
+        updatedBy: 3 // admin1
+      },
+      { 
+        category: 'email' as const, 
+        key: 'smtpPort', 
+        value: '587',
+        description: 'SMTP Server Port', 
+        lastUpdated: new Date(),
+        updatedBy: 3 // admin1
+      },
+      { 
+        category: 'email' as const, 
+        key: 'emailUser', 
+        value: 'noreply@visa.com',
+        description: 'Sender Email Address', 
+        lastUpdated: new Date(),
+        updatedBy: 3 // admin1
+      },
+      { 
+        category: 'email' as const, 
+        key: 'emailPass', 
+        value: 'secureemailpassword',
+        description: 'Email Password (encrypted)', 
+        lastUpdated: new Date(),
+        updatedBy: 3 // admin1
+      }
+    ];
+    
+    // Initialize default security settings
+    const securitySettings = [
+      { 
+        category: 'security' as const, 
+        key: 'jwtSecret', 
+        value: 'supersecuretoken',
+        description: 'JWT Secret Token', 
+        lastUpdated: new Date(),
+        updatedBy: 3 // admin1
+      },
+      { 
+        category: 'security' as const, 
+        key: 'jwtExpiresIn', 
+        value: '15m',
+        description: 'JWT Token Expiration Time', 
+        lastUpdated: new Date(),
+        updatedBy: 3 // admin1
+      },
+      { 
+        category: 'security' as const, 
+        key: 'rateLimit', 
+        value: '100',
+        description: 'API Rate Limit per IP', 
+        lastUpdated: new Date(),
+        updatedBy: 3 // admin1
+      }
+    ];
+    
+    // Initialize default logging settings
+    const loggingSettings = [
+      { 
+        category: 'logging' as const, 
+        key: 'level', 
+        value: 'info',
+        description: 'Log Level (error, info, debug)', 
+        lastUpdated: new Date(),
+        updatedBy: 3 // admin1
+      },
+      { 
+        category: 'logging' as const, 
+        key: 'format', 
+        value: 'combined',
+        description: 'Log Format', 
+        lastUpdated: new Date(),
+        updatedBy: 3 // admin1
+      }
+    ];
+    
+    // Combine all settings and add them to the settings map
+    const allSettings = [...generalSettings, ...emailSettings, ...securitySettings, ...loggingSettings];
+    
+    allSettings.forEach(setting => {
+      const id = this.settingCurrentId++;
+      this.settings.set(id, { ...setting, id });
+    });
   }
 
   private initializeVisaTypes() {
@@ -349,6 +487,55 @@ export class MemStorage implements IStorage {
 
   async getAllAdminLogs(): Promise<AdminLog[]> {
     return Array.from(this.adminLogs.values());
+  }
+  
+  // Settings methods
+  async getSetting(id: number): Promise<Setting | undefined> {
+    return this.settings.get(id);
+  }
+  
+  async getSettingByKey(category: string, key: string): Promise<Setting | undefined> {
+    return Array.from(this.settings.values()).find(
+      (setting) => setting.category === category && setting.key === key,
+    );
+  }
+  
+  async getSettingsByCategory(category: string): Promise<Setting[]> {
+    return Array.from(this.settings.values()).filter(
+      (setting) => setting.category === category,
+    );
+  }
+  
+  async getAllSettings(): Promise<Setting[]> {
+    return Array.from(this.settings.values());
+  }
+  
+  async createSetting(insertSetting: InsertSetting): Promise<Setting> {
+    const id = this.settingCurrentId++;
+    const setting: Setting = { 
+      ...insertSetting, 
+      id,
+      description: insertSetting.description || null,
+      lastUpdated: insertSetting.lastUpdated || new Date(),
+      updatedBy: insertSetting.updatedBy || null
+    };
+    this.settings.set(id, setting);
+    return setting;
+  }
+  
+  async updateSetting(id: number, updates: Partial<Setting>): Promise<Setting> {
+    const setting = this.settings.get(id);
+    if (!setting) {
+      throw new Error(`Setting with ID ${id} not found`);
+    }
+    
+    const updatedSetting = { 
+      ...setting, 
+      ...updates,
+      lastUpdated: new Date() // Always update the lastUpdated timestamp
+    };
+    this.settings.set(id, updatedSetting);
+    return updatedSetting;
   }
 }
 

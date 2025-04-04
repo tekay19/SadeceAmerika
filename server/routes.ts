@@ -417,6 +417,147 @@ export async function registerRoutes(app: Express): Promise<Server> {
       next(err);
     }
   });
+  
+  // Admin settings routes
+  app.get("/api/admin/settings", isAdmin, async (req, res, next) => {
+    try {
+      const allSettings = await storage.getAllSettings();
+      
+      // Group settings by category
+      const groupedSettings = allSettings.reduce((acc, setting) => {
+        if (!acc[setting.category]) {
+          acc[setting.category] = {};
+        }
+        acc[setting.category][setting.key] = setting.value;
+        return acc;
+      }, {} as Record<string, Record<string, string>>);
+      
+      res.json(groupedSettings);
+    } catch (err) {
+      next(err);
+    }
+  });
+  
+  app.get("/api/admin/settings/:category", isAdmin, async (req, res, next) => {
+    try {
+      const category = req.params.category;
+      const settings = await storage.getSettingsByCategory(category);
+      
+      if (settings.length === 0) {
+        return res.status(404).json({ message: `No settings found for category: ${category}` });
+      }
+      
+      // Convert to key-value object
+      const categorySettings = settings.reduce((acc, setting) => {
+        acc[setting.key] = setting.value;
+        return acc;
+      }, {} as Record<string, string>);
+      
+      res.json(categorySettings);
+    } catch (err) {
+      next(err);
+    }
+  });
+  
+  app.put("/api/admin/settings", isAdmin, async (req, res, next) => {
+    try {
+      const settingsData = req.body;
+      const updatedSettings = [];
+      
+      // For each category and its settings
+      for (const [category, settings] of Object.entries(settingsData)) {
+        // For each key-value pair in the category
+        for (const [key, value] of Object.entries(settings as Record<string, string>)) {
+          // Find the existing setting
+          const existingSetting = await storage.getSettingByKey(category, key);
+          
+          if (existingSetting) {
+            // Update existing setting
+            const updated = await storage.updateSetting(existingSetting.id, {
+              value: value,
+              updatedBy: req.user.id
+            });
+            updatedSettings.push(updated);
+          } else {
+            // Create new setting if it doesn't exist
+            const newSetting = await storage.createSetting({
+              category: category as any, // Cast to the enum type
+              key,
+              value,
+              description: `Setting for ${category}.${key}`,
+              lastUpdated: new Date(),
+              updatedBy: req.user.id
+            });
+            updatedSettings.push(newSetting);
+          }
+        }
+      }
+      
+      // Log the action
+      await storage.createAdminLog({
+        userId: req.user.id,
+        action: "System settings updated",
+        details: JSON.stringify(settingsData),
+        timestamp: new Date(),
+      });
+      
+      res.json({ 
+        message: "Settings updated successfully", 
+        count: updatedSettings.length 
+      });
+    } catch (err) {
+      next(err);
+    }
+  });
+  
+  app.put("/api/admin/settings/:category", isAdmin, async (req, res, next) => {
+    try {
+      const category = req.params.category;
+      const settingsData = req.body;
+      const updatedSettings = [];
+      
+      // For each key-value pair in the category
+      for (const [key, value] of Object.entries(settingsData)) {
+        // Find the existing setting
+        const existingSetting = await storage.getSettingByKey(category, key);
+        
+        if (existingSetting) {
+          // Update existing setting
+          const updated = await storage.updateSetting(existingSetting.id, {
+            value: value as string,
+            updatedBy: req.user.id
+          });
+          updatedSettings.push(updated);
+        } else {
+          // Create new setting if it doesn't exist
+          const newSetting = await storage.createSetting({
+            category: category as any, // Cast to the enum type
+            key,
+            value: value as string,
+            description: `Setting for ${category}.${key}`,
+            lastUpdated: new Date(),
+            updatedBy: req.user.id
+          });
+          updatedSettings.push(newSetting);
+        }
+      }
+      
+      // Log the action
+      await storage.createAdminLog({
+        userId: req.user.id,
+        action: `${category} settings updated`,
+        details: JSON.stringify(settingsData),
+        timestamp: new Date(),
+      });
+      
+      res.json({ 
+        message: `${category} settings updated successfully`, 
+        count: updatedSettings.length 
+      });
+    } catch (err) {
+      next(err);
+    }
+  });
 
   // Feedback routes
   app.post("/api/feedback", isAuthenticated, async (req, res, next) => {
