@@ -6,10 +6,11 @@ import {
   Building, 
   Globe, 
   GraduationCap, 
-  Heart, 
+  Users, 
   MessagesSquare, 
   Plane, 
-  UsersRound 
+  Landmark,
+  Building2
 } from "lucide-react";
 
 export default function ServicesPage() {
@@ -21,8 +22,8 @@ export default function ServicesPage() {
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-4xl font-bold text-gray-900 mb-6">Vize Hizmetlerimiz</h1>
             <p className="text-xl text-gray-600">
-              SadeceAmerika olarak, ABD vize başvuru süreçlerinizde size destek oluyoruz. 
-              Alanında uzman danışmanlarımız, başvurunuzun her aşamasında yanınızda.
+              Sadece Amerika olarak, ABD vize başvuru süreçlerinizde size destek oluyoruz. 
+              Amerika merkezli Mese Consultancy'nin Türkiye uzantısı olarak, göçmenlik hukuku alanındaki tecrübemizle vize başvurunuzu başarıyla tamamlamanıza yardımcı oluyoruz.
             </p>
           </div>
         </div>
@@ -34,60 +35,29 @@ export default function ServicesPage() {
           <h2 className="text-3xl font-bold text-center mb-16">Vize Kategorileri</h2>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Tourist Visa */}
+            {/* B1/B2 Visa */}
             <div className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
               <div className="h-2 bg-blue-600"></div>
               <div className="p-6">
                 <div className="bg-blue-100 text-blue-700 w-14 h-14 rounded-full flex items-center justify-center mb-4">
                   <Plane size={28} />
                 </div>
-                <h3 className="text-xl font-bold mb-3">Turist Vizesi (B-2)</h3>
+                <h3 className="text-xl font-bold mb-3">B1/B2 Ziyaretçi Vizesi</h3>
                 <p className="text-gray-600 mb-4">
-                  Amerika'yı turistik amaçla ziyaret etmek, aile ve arkadaş ziyareti yapmak veya tedavi görmek isteyenler için.
+                  Amerika Birleşik Devletleri'ni turistik (B2) veya iş amaçlı (B1) ziyaret etmek isteyen bireyler için en yaygın kullanılan vize türüdür.
                 </p>
                 <ul className="space-y-2 mb-6 text-gray-600">
                   <li className="flex items-start">
                     <span className="text-green-500 mr-2">✓</span>
-                    <span>Vize görüşmesine hazırlık</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-green-500 mr-2">✓</span>
-                    <span>DS-160 formu doldurma desteği</span>
+                    <span>Formların doğru doldurulması</span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-green-500 mr-2">✓</span>
                     <span>Gerekli belgelerin hazırlanması</span>
                   </li>
-                </ul>
-                <Link href="/auth?mode=register">
-                  <Button variant="outline" className="w-full">Başvuru Yap</Button>
-                </Link>
-              </div>
-            </div>
-
-            {/* Business Visa */}
-            <div className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
-              <div className="h-2 bg-purple-600"></div>
-              <div className="p-6">
-                <div className="bg-purple-100 text-purple-700 w-14 h-14 rounded-full flex items-center justify-center mb-4">
-                  <Briefcase size={28} />
-                </div>
-                <h3 className="text-xl font-bold mb-3">İş Vizesi (B-1)</h3>
-                <p className="text-gray-600 mb-4">
-                  İş toplantıları, konferanslar, şirket ziyaretleri ve ticari görüşmeler için Amerika'ya seyahat etmek isteyenler için.
-                </p>
-                <ul className="space-y-2 mb-6 text-gray-600">
                   <li className="flex items-start">
                     <span className="text-green-500 mr-2">✓</span>
-                    <span>Davet mektubu yönetimi</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-green-500 mr-2">✓</span>
-                    <span>İş bağlantılarının belgelendirilmesi</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-green-500 mr-2">✓</span>
-                    <span>Vize mülakatı pratikleri</span>
+                    <span>Mülakat öncesi hazırlık ve strateji</span>
                   </li>
                 </ul>
                 <Link href="/auth?mode=register">
@@ -96,29 +66,29 @@ export default function ServicesPage() {
               </div>
             </div>
 
-            {/* Student Visa */}
+            {/* F1 Student Visa */}
             <div className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
               <div className="h-2 bg-green-600"></div>
               <div className="p-6">
                 <div className="bg-green-100 text-green-700 w-14 h-14 rounded-full flex items-center justify-center mb-4">
                   <GraduationCap size={28} />
                 </div>
-                <h3 className="text-xl font-bold mb-3">Öğrenci Vizesi (F-1)</h3>
+                <h3 className="text-xl font-bold mb-3">F1 Öğrenci Vizesi</h3>
                 <p className="text-gray-600 mb-4">
-                  Amerika'da eğitim almak, dil okulu, lisans, yüksek lisans veya doktora programlarına katılmak isteyenler için.
+                  Amerika'da üniversite, kolej veya dil okullarında tam zamanlı öğrenim görme hakkı tanıyan temel vize türüdür.
                 </p>
                 <ul className="space-y-2 mb-6 text-gray-600">
                   <li className="flex items-start">
                     <span className="text-green-500 mr-2">✓</span>
-                    <span>I-20 formu takibi</span>
+                    <span>6 farklı eyalette anlaşmalı okullar</span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-green-500 mr-2">✓</span>
-                    <span>Finansal belgelerin hazırlanması</span>
+                    <span>Okul kaydı ve I-20 belgesi temini</span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-green-500 mr-2">✓</span>
-                    <span>SEVIS ücreti ödeme desteği</span>
+                    <span>Vize mülakatı hazırlığı</span>
                   </li>
                 </ul>
                 <Link href="/auth?mode=register">
@@ -127,29 +97,60 @@ export default function ServicesPage() {
               </div>
             </div>
 
-            {/* Exchange Visitor */}
+            {/* E-1/E-2 Visa */}
+            <div className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+              <div className="h-2 bg-purple-600"></div>
+              <div className="p-6">
+                <div className="bg-purple-100 text-purple-700 w-14 h-14 rounded-full flex items-center justify-center mb-4">
+                  <Landmark size={28} />
+                </div>
+                <h3 className="text-xl font-bold mb-3">E-1/E-2 Yatırımcı Vizesi</h3>
+                <p className="text-gray-600 mb-4">
+                  Amerika'da ticaret yapmak veya yatırım yoluyla iş kurmak isteyen bireyler için büyük fırsatlar sunan vize türleri.
+                </p>
+                <ul className="space-y-2 mb-6 text-gray-600">
+                  <li className="flex items-start">
+                    <span className="text-green-500 mr-2">✓</span>
+                    <span>Amerika'da şirket kuruluş işlemleri</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-green-500 mr-2">✓</span>
+                    <span>Profesyonel iş planı hazırlama</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-green-500 mr-2">✓</span>
+                    <span>Yatırım belgelerinin hazırlanması</span>
+                  </li>
+                </ul>
+                <Link href="/auth?mode=register">
+                  <Button variant="outline" className="w-full">Başvuru Yap</Button>
+                </Link>
+              </div>
+            </div>
+
+            {/* L-1 Visa */}
             <div className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
               <div className="h-2 bg-yellow-600"></div>
               <div className="p-6">
                 <div className="bg-yellow-100 text-yellow-700 w-14 h-14 rounded-full flex items-center justify-center mb-4">
-                  <UsersRound size={28} />
+                  <Building2 size={28} />
                 </div>
-                <h3 className="text-xl font-bold mb-3">Değişim Ziyaretçisi (J-1)</h3>
+                <h3 className="text-xl font-bold mb-3">L-1 Şirket İçi Transfer Vizesi</h3>
                 <p className="text-gray-600 mb-4">
-                  Kültürel değişim programları, staj, akademik programlar ve iş değişim programları için Amerika'ya seyahat edenler için.
+                  Türkiye'de faaliyet gösteren bir şirketin yöneticisi, uzman personeli ya da sahibi olarak Amerika'da şube açmak isteyen girişimciler için.
                 </p>
                 <ul className="space-y-2 mb-6 text-gray-600">
                   <li className="flex items-start">
                     <span className="text-green-500 mr-2">✓</span>
-                    <span>DS-2019 formu takibi</span>
+                    <span>Amerika'da yeni şirket kuruluşu</span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-green-500 mr-2">✓</span>
-                    <span>Program sponsoruyla iletişim</span>
+                    <span>Detaylı iş planı hazırlanması</span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-green-500 mr-2">✓</span>
-                    <span>2 yıl ikametgah şartı danışmanlığı</span>
+                    <span>Şirketler arası bağlantı belgelendirmesi</span>
                   </li>
                 </ul>
                 <Link href="/auth?mode=register">
@@ -158,29 +159,29 @@ export default function ServicesPage() {
               </div>
             </div>
 
-            {/* Work Visa */}
+            {/* H-1B Visa */}
             <div className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
               <div className="h-2 bg-red-600"></div>
               <div className="p-6">
                 <div className="bg-red-100 text-red-700 w-14 h-14 rounded-full flex items-center justify-center mb-4">
                   <Building size={28} />
                 </div>
-                <h3 className="text-xl font-bold mb-3">Çalışma Vizesi (H-1B)</h3>
+                <h3 className="text-xl font-bold mb-3">H-1B Çalışma Vizesi</h3>
                 <p className="text-gray-600 mb-4">
-                  Amerika'da işverenleri tarafından sponsorluk edilen, özel uzmanlık gerektiren işlerde çalışmak isteyenler için.
+                  Amerika'da bir işveren sponsorluğunda çalışmak isteyen, uzmanlık gerektiren bir alanda eğitim veya deneyime sahip profesyoneller için.
                 </p>
                 <ul className="space-y-2 mb-6 text-gray-600">
                   <li className="flex items-start">
                     <span className="text-green-500 mr-2">✓</span>
-                    <span>İşveren dokümanları danışmanlığı</span>
+                    <span>H-1B USCIS kayıt işlemleri</span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-green-500 mr-2">✓</span>
-                    <span>LCA başvuru takibi</span>
+                    <span>LCA başvurusu ve takibi</span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-green-500 mr-2">✓</span>
-                    <span>Eğitim ve deneyim belgelendirme</span>
+                    <span>İşveren-çalışan evraklarının hazırlanması</span>
                   </li>
                 </ul>
                 <Link href="/auth?mode=register">
@@ -189,29 +190,29 @@ export default function ServicesPage() {
               </div>
             </div>
 
-            {/* Investor Visa */}
+            {/* Business Setup */}
             <div className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
               <div className="h-2 bg-teal-600"></div>
               <div className="p-6">
                 <div className="bg-teal-100 text-teal-700 w-14 h-14 rounded-full flex items-center justify-center mb-4">
-                  <Globe size={28} />
+                  <Briefcase size={28} />
                 </div>
-                <h3 className="text-xl font-bold mb-3">Yatırımcı Vizesi (E-2)</h3>
+                <h3 className="text-xl font-bold mb-3">Amerika'da Şirket Kurulumu</h3>
                 <p className="text-gray-600 mb-4">
-                  Amerika'da önemli miktarda yatırım yapan ve işletme yöneten yatırımcılar için.
+                  Amerika'da iş kurmak, şirket devralmak veya mevcut işinizi Amerika'ya taşımak isteyen girişimciler için tam kapsamlı hizmetler.
                 </p>
                 <ul className="space-y-2 mb-6 text-gray-600">
                   <li className="flex items-start">
                     <span className="text-green-500 mr-2">✓</span>
-                    <span>İş planı hazırlama desteği</span>
+                    <span>Şirket kuruluşu (LLC, Corporation vb.)</span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-green-500 mr-2">✓</span>
-                    <span>Finansal yatırım belgelendirme</span>
+                    <span>Amerika'da ofis adresi sağlanması</span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-green-500 mr-2">✓</span>
-                    <span>Yatırım kaynağı meşruiyeti gösterimi</span>
+                    <span>İşletme lisansları ve belgeler temini</span>
                   </li>
                 </ul>
                 <Link href="/auth?mode=register">
@@ -267,12 +268,53 @@ export default function ServicesPage() {
         </div>
       </section>
       
+      {/* Detailed Services */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl font-bold text-center mb-12">Hizmetlerimizin Detayları</h2>
+            
+            <div className="space-y-12">
+              <div className="bg-blue-50 p-8 rounded-lg">
+                <h3 className="text-2xl font-bold mb-4">B1/B2 Ziyaretçi Vizesi Danışmanlığı</h3>
+                <p className="text-gray-700 mb-6">
+                  Amerika Birleşik Devletleri'ni turistik (B2) veya iş amaçlı (B1) ziyaret etmek isteyen bireyler için B1/B2 vizesi en yaygın kullanılan vize türüdür. Ancak, bu vizeye başvuru süreci dikkat ve doğru yönlendirme gerektirir.
+                </p>
+                <p className="text-gray-700">
+                  Sadece Amerika olarak, danışanlarımıza B1/B2 vize başvuru sürecinde uçtan uca destek sunuyoruz. Formların doğru doldurulmasından, gerekli belgelerin hazırlanmasına; mülakat öncesi hazırlıktan, başvuru stratejisinin oluşturulmasına kadar her adımda uzman kadromuzla yanınızdayız.
+                </p>
+              </div>
+              
+              <div className="bg-green-50 p-8 rounded-lg">
+                <h3 className="text-2xl font-bold mb-4">F1 Öğrenci Vizesi Danışmanlığı</h3>
+                <p className="text-gray-700 mb-6">
+                  Amerika'da eğitim almak isteyen öğrenciler için F1 vizesi, üniversite, kolej veya dil okullarında tam zamanlı öğrenim görme hakkı tanıyan temel vize türüdür. Ancak F1 vizesi başvuru süreci, okul kaydından vize mülakatına kadar dikkatli planlanması gereken resmi bir süreçtir.
+                </p>
+                <p className="text-gray-700">
+                  Sadece Amerika olarak, F1 vizesi başvurusu yapacak olan danışanlarımıza kapsamlı danışmanlık hizmeti sunuyoruz. Amerika'nın 6 farklı eyaletinde anlaşmalı olduğumuz 10'dan fazla prestijli dil okulu aracılığıyla ya da öğrencinin kabul aldığı herhangi bir üniversite veya kolej üzerinden okul kaydını gerçekleştiriyor, "International Student Card" belgesinin alınmasından vize randevusuna kadar tüm süreci adım adım birlikte yönetiyoruz.
+                </p>
+              </div>
+              
+              <div className="bg-purple-50 p-8 rounded-lg">
+                <h3 className="text-2xl font-bold mb-4">E-1/E-2 Yatırımcı Vizesi Danışmanlığı</h3>
+                <p className="text-gray-700 mb-6">
+                  Amerika'da ticaret yapmak veya yatırım yoluyla iş kurmak isteyen bireyler için E-1 ve E-2 vize türleri, ABD ile Türkiye arasında imzalanan ticaret anlaşmaları kapsamında büyük fırsatlar sunar. Bu vize türleriyle ABD'de aktif bir şekilde iş yürütebilir, uzun vadeli ticari varlık oluşturabilirsiniz.
+                </p>
+                <p className="text-gray-700">
+                  Sadece Amerika olarak, E-1 (Ticaret Vizesi) ve E-2 (Yatırımcı Vizesi) başvurularında baştan sona kapsamlı danışmanlık hizmeti sunuyoruz. Başvuru sürecinde hazırlanması gereken tüm resmi ve stratejik belgeler tarafımızdan özenle organize edilir.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
       {/* CTA */}
       <section className="py-16 bg-blue-700 text-white">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-6">Size Nasıl Yardımcı Olabiliriz?</h2>
           <p className="text-xl mb-8 max-w-3xl mx-auto">
-            Vize başvurunuzla ilgili sorularınız mı var? Uzman ekibimiz size yardımcı olmak için hazır.
+            Amerika'daki yeni hayatınıza güçlü bir başlangıç yapmak için uzman ekibimiz yanınızda.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Link href="/contact">
