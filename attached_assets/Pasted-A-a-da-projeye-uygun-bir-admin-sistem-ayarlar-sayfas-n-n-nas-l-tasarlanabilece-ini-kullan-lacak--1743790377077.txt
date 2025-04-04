@@ -1,0 +1,301 @@
+Aşağıda, projeye uygun bir admin sistem ayarları sayfasının nasıl tasarlanabileceğini, kullanılacak API endpoint’lerini ve örnek frontend sayfa yapısını detaylandırıyorum.
+
+⸻
+
+1. Sistem Ayarları Sayfası: Genel Yapı ve İçerik
+
+Amaç:
+Adminin sistemin çalışma yapılandırmalarını yönetebileceği, konfigürasyonları güncelleyebileceği merkezi bir kontrol paneli oluşturmak.
+
+Ana Bölümler:
+	•	Üst Menü / Navbar:
+Genel admin işlemleri (profil, çıkış, dashboard erişimi) ve hızlı navigasyon.
+	•	Yan Menü / Sidebar:
+Farklı ayar kategorilerine (Genel Ayarlar, Email Ayarları, Güvenlik Ayarları, API Ayarları, Loglama Ayarları) geçiş sağlayan liste.
+	•	Ana İçerik Alanı:
+Seçilen kategoriye göre ayarların listelendiği ve düzenlenebileceği bölüm. Örneğin:
+	•	Genel Ayarlar: Uygulama adı, versiyon, çalışma modu (development/production).
+	•	Email Ayarları: SMTP sunucu bilgileri, gönderici e-posta, şifre vb.
+	•	Güvenlik Ayarları: JWT secret, token süresi, rate limiting parametreleri.
+	•	Loglama Ayarları: Log seviyeleri (info, error, debug) ve formatı.
+	•	API Ayarları: Gerekirse API anahtarları, erişim limitleri vb.
+	•	Kaydet/Güncelle Butonu:
+Ayarlar güncellendikten sonra, değişikliklerin backend’e gönderilmesini sağlar.
+	•	Bildirim Alanı:
+Başarılı güncelleme veya hata mesajlarının kullanıcıya gösterilmesi.
+
+⸻
+
+2. Kullanılacak API Endpoint’leri
+
+a. Tüm Ayarları Getirme
+
+Endpoint: GET /api/admin/settings
+İşlev: Tüm ayar kategorilerinin mevcut değerlerini getirir.
+Örnek Yanıt:
+
+{
+  "general": {
+    "appName": "Visa System",
+    "version": "1.0.0",
+    "mode": "production"
+  },
+  "email": {
+    "smtpHost": "smtp.gmail.com",
+    "smtpPort": 587,
+    "emailUser": "noreply@visa.com",
+    "emailPass": "secureemailpassword"
+  },
+  "security": {
+    "jwtSecret": "supersecuretoken",
+    "jwtExpiresIn": "15m",
+    "rateLimit": 100
+  },
+  "logging": {
+    "level": "info",
+    "format": "combined"
+  }
+}
+
+b. Ayarları Güncelleme
+
+Endpoint: PUT /api/admin/settings
+İşlev: Admin tarafından düzenlenen ayarları günceller.
+Örnek İstek Gövdesi:
+
+{
+  "general": {
+    "appName": "Visa System",
+    "version": "1.0.1",
+    "mode": "production"
+  },
+  "email": {
+    "smtpHost": "smtp.gmail.com",
+    "smtpPort": 587,
+    "emailUser": "noreply@visa.com",
+    "emailPass": "newsecureemailpassword"
+  },
+  "security": {
+    "jwtSecret": "newsupersecuretoken",
+    "jwtExpiresIn": "30m",
+    "rateLimit": 150
+  },
+  "logging": {
+    "level": "debug",
+    "format": "short"
+  }
+}
+
+	•	Ek Endpoint’ler:
+Belirli bir kategoriye yönelik işlemler için:
+	•	GET /api/admin/settings/:category – Örneğin, sadece “email” ayarlarını getirir.
+	•	PUT /api/admin/settings/:category – Belirli bir kategori ayarlarını günceller.
+
+⸻
+
+3. Frontend: Admin Sistem Ayarları Sayfası (React) Örneği
+
+Aşağıdaki örnekte, admin ayarlarını getiren ve güncelleyen temel bir React bileşeni yer almaktadır:
+
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
+const AdminSettings = () => {
+  const [settings, setSettings] = useState({
+    general: {},
+    email: {},
+    security: {},
+    logging: {}
+  });
+  const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+
+  // Sayfa yüklendiğinde mevcut ayarları çek
+  useEffect(() => {
+    axios.get('/api/admin/settings')
+      .then(response => {
+        setSettings(response.data);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError('Ayarlar alınırken bir hata oluştu.');
+        setLoading(false);
+      });
+  }, []);
+
+  // Belirli alanın değerini güncelleyen fonksiyon
+  const handleInputChange = (category, field, value) => {
+    setSettings(prevSettings => ({
+      ...prevSettings,
+      [category]: {
+        ...prevSettings[category],
+        [field]: value
+      }
+    }));
+  };
+
+  // Ayarları güncelleme isteği
+  const handleSave = () => {
+    axios.put('/api/admin/settings', settings)
+      .then(response => {
+        setMessage('Ayarlar başarıyla güncellendi.');
+        setError('');
+      })
+      .catch(err => {
+        setError('Ayarlar güncellenirken bir hata oluştu.');
+        setMessage('');
+      });
+  };
+
+  if (loading) return <div>Yükleniyor...</div>;
+
+  return (
+    <div className="admin-settings">
+      <h2>Sistem Ayarları</h2>
+      {message && <div className="success">{message}</div>}
+      {error && <div className="error">{error}</div>}
+
+      {/* Genel Ayarlar */}
+      <section>
+        <h3>Genel Ayarlar</h3>
+        <div>
+          <label>Uygulama Adı:</label>
+          <input
+            type="text"
+            value={settings.general.appName || ''}
+            onChange={(e) => handleInputChange('general', 'appName', e.target.value)}
+          />
+        </div>
+        <div>
+          <label>Versiyon:</label>
+          <input
+            type="text"
+            value={settings.general.version || ''}
+            onChange={(e) => handleInputChange('general', 'version', e.target.value)}
+          />
+        </div>
+        <div>
+          <label>Çalışma Modu:</label>
+          <select
+            value={settings.general.mode || 'production'}
+            onChange={(e) => handleInputChange('general', 'mode', e.target.value)}
+          >
+            <option value="development">Geliştirme</option>
+            <option value="production">Prodüksiyon</option>
+          </select>
+        </div>
+      </section>
+
+      {/* Email Ayarları */}
+      <section>
+        <h3>Email Ayarları</h3>
+        <div>
+          <label>SMTP Host:</label>
+          <input
+            type="text"
+            value={settings.email.smtpHost || ''}
+            onChange={(e) => handleInputChange('email', 'smtpHost', e.target.value)}
+          />
+        </div>
+        <div>
+          <label>SMTP Port:</label>
+          <input
+            type="number"
+            value={settings.email.smtpPort || ''}
+            onChange={(e) => handleInputChange('email', 'smtpPort', e.target.value)}
+          />
+        </div>
+        <div>
+          <label>Email Kullanıcı:</label>
+          <input
+            type="text"
+            value={settings.email.emailUser || ''}
+            onChange={(e) => handleInputChange('email', 'emailUser', e.target.value)}
+          />
+        </div>
+        <div>
+          <label>Email Şifre:</label>
+          <input
+            type="password"
+            value={settings.email.emailPass || ''}
+            onChange={(e) => handleInputChange('email', 'emailPass', e.target.value)}
+          />
+        </div>
+      </section>
+
+      {/* Güvenlik Ayarları */}
+      <section>
+        <h3>Güvenlik Ayarları</h3>
+        <div>
+          <label>JWT Secret:</label>
+          <input
+            type="text"
+            value={settings.security.jwtSecret || ''}
+            onChange={(e) => handleInputChange('security', 'jwtSecret', e.target.value)}
+          />
+        </div>
+        <div>
+          <label>JWT Süresi:</label>
+          <input
+            type="text"
+            value={settings.security.jwtExpiresIn || ''}
+            onChange={(e) => handleInputChange('security', 'jwtExpiresIn', e.target.value)}
+          />
+        </div>
+        <div>
+          <label>Rate Limiting:</label>
+          <input
+            type="number"
+            value={settings.security.rateLimit || ''}
+            onChange={(e) => handleInputChange('security', 'rateLimit', e.target.value)}
+          />
+        </div>
+      </section>
+
+      {/* Loglama Ayarları */}
+      <section>
+        <h3>Loglama Ayarları</h3>
+        <div>
+          <label>Log Seviyesi:</label>
+          <select
+            value={settings.logging.level || 'info'}
+            onChange={(e) => handleInputChange('logging', 'level', e.target.value)}
+          >
+            <option value="error">Hata</option>
+            <option value="info">Bilgi</option>
+            <option value="debug">Debug</option>
+          </select>
+        </div>
+        <div>
+          <label>Log Formatı:</label>
+          <input
+            type="text"
+            value={settings.logging.format || ''}
+            onChange={(e) => handleInputChange('logging', 'format', e.target.value)}
+          />
+        </div>
+      </section>
+
+      <button onClick={handleSave}>Ayarları Kaydet</button>
+    </div>
+  );
+};
+
+export default AdminSettings;
+
+
+
+⸻
+
+4. Özet
+	•	Backend:
+	•	GET /api/admin/settings: Mevcut ayarları getirir.
+	•	PUT /api/admin/settings: Tüm ayarları günceller.
+	•	(İsteğe bağlı olarak kategori bazlı GET/PUT endpoint’leri de eklenebilir.)
+	•	Frontend:
+	•	AdminSettings bileşeni, sidebar üzerinden farklı ayar kategorilerine geçiş yapmaya olanak tanır.
+	•	Her ayar kategorisi için ilgili form elemanları (input, select) kullanılarak güncelleme yapılır.
+	•	Güncelleme işlemi sonrası kullanıcıya başarı veya hata mesajı gösterilir.
+
+Bu yapı, sistem ayarlarını merkezi bir panel üzerinden yönetmeyi sağlar ve adminin uygulamanın çeşitli konfigürasyon parametrelerini dinamik olarak güncelleyebilmesine olanak tanır.
