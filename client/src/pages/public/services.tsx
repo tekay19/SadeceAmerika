@@ -1,6 +1,7 @@
 import { PublicLayout } from "@/components/layout/public-layout";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
+import { motion } from "framer-motion";
 import { 
   Briefcase, 
   Building, 
@@ -16,6 +17,12 @@ import {
 export default function ServicesPage() {
   return (
     <PublicLayout>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+      >
       {/* Hero */}
       <section className="bg-gray-50 py-16">
         <div className="container mx-auto px-4">
@@ -326,6 +333,96 @@ export default function ServicesPage() {
           </div>
         </div>
       </section>
+
+      {/* Investment Services - from Provided Text */}
+      <section className="py-16 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl font-bold text-center mb-12">Türkiye'den ABD'ye Yatırım</h2>
+            
+            <div className="bg-white p-8 rounded-lg shadow-sm mb-10">
+              <h3 className="text-2xl font-bold mb-4">Yatırımcı Vizeleri ve Göçmenlik Süreçleri</h3>
+              <div className="space-y-6">
+                <div>
+                  <h4 className="text-xl font-semibold mb-2">E-2 Vizesi (Yatırımcı Vizesi)</h4>
+                  <p className="text-gray-700">
+                    ABD ile Türkiye arasında yatırım anlaşması kapsamında, önemli ölçüde sermaye yatırımı yapan yatırımcılar için uygundur. 
+                    Başvuru sürecinde yatırımın niteliği, büyüklüğü ve işletmenin sürdürülebilirliği değerlendirilir.
+                  </p>
+                </div>
+                <div>
+                  <h4 className="text-xl font-semibold mb-2">EB-5 Göçmenlik Vizesi</h4>
+                  <p className="text-gray-700">
+                    Belirli bir yatırım tutarının (doğrudan veya bölgesel merkez aracılığıyla) ABD'de istihdam yaratması koşuluyla, 
+                    kalıcı oturum hakkı tanır. Bu süreçte yatırımın yaratacağı iş olanakları detaylı bir şekilde belgelenmelidir.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white p-8 rounded-lg shadow-sm mb-10">
+              <h3 className="text-2xl font-bold mb-4">İş Kurma ve Hukuki Süreçler</h3>
+              <div className="space-y-6">
+                <div>
+                  <h4 className="text-xl font-semibold mb-2">Şirket Kuruluş Süreci</h4>
+                  <p className="text-gray-700 mb-3">
+                    ABD'de Limited Liability Company (LLC), Corporation (C-Corp veya S-Corp) gibi farklı şirket yapıları arasından 
+                    yatırımcının iş hedeflerine uygun olanı seçilmelidir.
+                  </p>
+                  <ul className="space-y-2 mb-4 text-gray-600">
+                    <li className="flex items-start">
+                      <span className="text-green-500 mr-2">✓</span>
+                      <span>İlgili eyalette şirket tescil işlemleri</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-green-500 mr-2">✓</span>
+                      <span>Vergi numarası (EIN) alınması</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-green-500 mr-2">✓</span>
+                      <span>Yerel düzenlemelere uyum sağlanması</span>
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="text-xl font-semibold mb-2">Hukuki ve Vergisel Düzenlemeler</h4>
+                  <p className="text-gray-700">
+                    İş ortaklıkları, tedarik zinciri ve müşteri ilişkileri için hazırlanacak sözleşmeler, yerel ve federal mevzuata uygun olmalıdır.
+                    Markaların, patentlerin ve diğer fikri mülkiyet haklarının korunması uzun vadeli başarı için kritik rol oynar.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white p-8 rounded-lg shadow-sm">
+              <h3 className="text-2xl font-bold mb-4">Uzun Vadeli Yatırım Stratejileri</h3>
+              <div className="space-y-6">
+                <p className="text-gray-700">
+                  ABD pazarına giriş yaparken, kısa vadeli hedeflerin yanı sıra uzun vadeli büyüme stratejileri de belirlenmelidir. 
+                  Pazar araştırmaları, rakip analizleri ve sektör trendleri, bu stratejilerin temelini oluşturur.
+                </p>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <h4 className="text-lg font-semibold mb-2">Stratejik İş Ortaklıkları</h4>
+                    <p className="text-gray-700">
+                      Yerel iş dünyasıyla güçlü bağlantılar kurmak, pazarın dinamiklerini daha iyi anlamanıza yardımcı olur. 
+                      İş ortaklıkları, hem tedarik zinciri hem de müşteri portföyü açısından önemli avantajlar sağlayabilir.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-semibold mb-2">Risk Yönetimi</h4>
+                    <p className="text-gray-700">
+                      Yatırım sürecinde finansal, operasyonel ve yasal risklerin belirlenmesi ve yönetilmesi, 
+                      olası aksaklıkların minimize edilmesi açısından hayati önem taşır.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      </motion.div>
     </PublicLayout>
   );
 }
