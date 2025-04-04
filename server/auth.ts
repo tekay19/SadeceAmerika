@@ -4,8 +4,13 @@ import { Express } from "express";
 import session from "express-session";
 import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
-import { storage } from "./storage";
+import { IStorage } from "./storage";
 import { User } from "@shared/schema";
+
+// Use global storage initialized in routes.ts
+declare global {
+  var storage: IStorage;
+}
 
 declare global {
   namespace Express {
@@ -24,14 +29,21 @@ async function hashPassword(password: string) {
 async function comparePasswords(supplied: string, stored: string) {
   // For development only - basic handling for non-hashed passwords
   if (!stored.includes('.')) {
+    console.log("Using direct string comparison for non-hashed password");
     return supplied === stored;
   }
   
-  // Normal scrypt password comparison
-  const [hashed, salt] = stored.split(".");
-  const hashedBuf = Buffer.from(hashed, "hex");
-  const suppliedBuf = (await scryptAsync(supplied, salt, 64)) as Buffer;
-  return timingSafeEqual(hashedBuf, suppliedBuf);
+  try {
+    // Normal scrypt password comparison
+    const [hashed, salt] = stored.split(".");
+    const hashedBuf = Buffer.from(hashed, "hex");
+    const suppliedBuf = (await scryptAsync(supplied, salt, 64)) as Buffer;
+    return timingSafeEqual(hashedBuf, suppliedBuf);
+  } catch (error) {
+    console.error("Password comparison error:", error);
+    // Fallback to direct comparison if we encounter an error with the hashing
+    return supplied === stored;
+  }
 }
 
 // For development only - we can use this to generate a hashed password for test users

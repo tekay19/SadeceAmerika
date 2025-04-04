@@ -82,6 +82,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } else {
       console.log('DATABASE_URL not found, using in-memory storage');
       activeStorage = storage;
+      global.storage = storage;
     }
   } catch (error) {
     console.error('Failed to initialize database:', error);
@@ -89,6 +90,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     activeStorage = storage;
     global.storage = storage;
   }
+  
+  // Make sure to verify which storage is actually being used
+  console.log('Active storage type:', activeStorage.constructor.name);
+  console.log('Global storage type:', global.storage.constructor.name);
   
   // Setup authentication routes with the active storage
   setupAuth(app);
