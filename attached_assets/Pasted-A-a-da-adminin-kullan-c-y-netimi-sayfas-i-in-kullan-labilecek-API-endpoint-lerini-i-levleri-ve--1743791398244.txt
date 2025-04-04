@@ -1,0 +1,312 @@
+Aşağıda, adminin kullanıcı yönetimi sayfası için kullanılabilecek API endpoint’lerini, işlevleri ve örnek kullanım senaryolarını bulabilirsiniz.
+
+⸻
+
+1. Genel İşlevler
+
+Admin kullanıcı yönetimi sayfasında şu temel işlemleri yapabilir:
+	•	Kullanıcı Listesi Görüntüleme: Tüm kullanıcıların listelenmesi, filtreleme (rol, aktif/pasif durumu) ve sıralama.
+	•	Kullanıcı Detaylarını Görüntüleme: Belirli bir kullanıcıya ait detaylı bilgilerin alınması.
+	•	Kullanıcı Güncelleme: Kullanıcı bilgileri, rol değişikliği, aktif/pasif durumu gibi bilgilerin güncellenmesi.
+	•	Kullanıcı Silme: Gerektiğinde kullanıcı hesabının silinmesi.
+	•	Yeni Kullanıcı Oluşturma (Opsiyonel): Eğer sistemde manuel kullanıcı eklemesi yapılacaksa, yeni kullanıcı oluşturma işlemi.
+
+⸻
+
+2. Önerilen API Endpoint’leri
+
+a. Tüm Kullanıcıların Listelenmesi
+	•	Endpoint: GET /api/users
+	•	İşlev: Tüm kullanıcıların listesini getirir.
+	•	Örnek Yanıt:
+
+[
+  {
+    "id": 1,
+    "firstName": "Ahmet",
+    "lastName": "Yılmaz",
+    "email": "ahmet@example.com",
+    "role": "user",
+    "isActive": true,
+    "createdAt": "2025-01-15T10:00:00Z"
+  },
+  {
+    "id": 2,
+    "firstName": "Ayşe",
+    "lastName": "Demir",
+    "email": "ayse@example.com",
+    "role": "officer",
+    "isActive": true,
+    "createdAt": "2025-02-10T12:30:00Z"
+  },
+  // Diğer kullanıcılar...
+]
+
+
+
+b. Belirli Bir Kullanıcının Detaylarını Getirme
+	•	Endpoint: GET /api/users/:id
+	•	İşlev: Belirtilen id’ye sahip kullanıcının tüm detaylarını getirir.
+	•	Örnek Yanıt:
+
+{
+  "id": 1,
+  "firstName": "Ahmet",
+  "lastName": "Yılmaz",
+  "email": "ahmet@example.com",
+  "phone": "+905321234567",
+  "role": "user",
+  "isActive": true,
+  "createdAt": "2025-01-15T10:00:00Z",
+  "updatedAt": "2025-03-01T14:30:00Z"
+}
+
+
+
+c. Kullanıcı Güncelleme
+	•	Endpoint: PUT /api/users/:id
+	•	İşlev: Kullanıcı bilgilerini günceller. Bu işlem; rol değişikliği, hesap durumu (aktif/pasif) ve iletişim bilgileri gibi alanları içerebilir.
+	•	İstek Gövdesi Örneği:
+
+{
+  "firstName": "Ahmet",
+  "lastName": "Yılmaz",
+  "email": "ahmet@example.com",
+  "phone": "+905321234567",
+  "role": "officer",
+  "isActive": true
+}
+
+
+	•	Örnek Yanıt:
+
+{
+  "message": "Kullanıcı bilgileri başarıyla güncellendi.",
+  "user": {
+    "id": 1,
+    "firstName": "Ahmet",
+    "lastName": "Yılmaz",
+    "email": "ahmet@example.com",
+    "phone": "+905321234567",
+    "role": "officer",
+    "isActive": true,
+    "updatedAt": "2025-03-10T11:00:00Z"
+  }
+}
+
+
+
+d. Kullanıcı Silme
+	•	Endpoint: DELETE /api/users/:id
+	•	İşlev: Belirtilen kullanıcıyı siler.
+	•	Örnek Yanıt:
+
+{
+  "message": "Kullanıcı başarıyla silindi."
+}
+
+
+
+e. (Opsiyonel) Yeni Kullanıcı Oluşturma
+	•	Endpoint: POST /api/users
+	•	İşlev: Yeni bir kullanıcı oluşturur. (Bazı sistemlerde admin manuel kullanıcı ekleyebilir.)
+	•	İstek Gövdesi Örneği:
+
+{
+  "firstName": "Elif",
+  "lastName": "Kaya",
+  "email": "elif@example.com",
+  "phone": "+905331112223",
+  "role": "user",
+  "password": "GüçlüŞifre123!"
+}
+
+
+	•	Örnek Yanıt:
+
+{
+  "message": "Yeni kullanıcı başarıyla oluşturuldu.",
+  "user": {
+    "id": 3,
+    "firstName": "Elif",
+    "lastName": "Kaya",
+    "email": "elif@example.com",
+    "role": "user",
+    "isActive": true,
+    "createdAt": "2025-03-15T10:30:00Z"
+  }
+}
+
+
+
+⸻
+
+3. Frontend Kullanıcı Yönetimi Sayfası Yapısı
+
+a. Genel Tasarım
+	•	Kullanıcı Listesi:
+Tablolar veya kart şeklinde tüm kullanıcıların listesi görüntülenir. Her satırda kullanıcı adı, e-posta, rol ve aktiflik durumu gibi temel bilgiler yer alır.
+	•	Listeye filtreleme, arama ve sıralama eklenebilir.
+	•	Kullanıcı Detay Modalı veya Sayfası:
+Bir kullanıcıya tıklanıldığında detaylı bilgilerin (telefon, adres, son güncelleme vb.) bulunduğu modal veya ayrı bir sayfa açılır.
+	•	Düzenleme Formu:
+Kullanıcı bilgilerini güncellemek için form alanları (input, select) kullanılır. Rol değişikliği, aktif/pasif seçeneği ve diğer bilgiler düzenlenebilir.
+	•	Silme İşlemi:
+Kullanıcının silinmesi için bir buton bulunur; tıklama öncesi onay modalı ile kullanıcıya uyarı verilir.
+
+b. Örnek React Bileşeni
+
+Aşağıda, temel kullanıcı yönetimi listesinin nasıl oluşturulabileceğine dair örnek bir React bileşeni yer alıyor:
+
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
+const UserManagement = () => {
+  const [users, setUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
+
+  // Kullanıcı listesini çek
+  useEffect(() => {
+    axios.get('/api/users')
+      .then(response => {
+        setUsers(response.data);
+      })
+      .catch(err => {
+        setError('Kullanıcılar alınırken bir hata oluştu.');
+      });
+  }, []);
+
+  // Kullanıcı güncelleme işlemi
+  const handleUpdate = (userId, updatedData) => {
+    axios.put(`/api/users/${userId}`, updatedData)
+      .then(response => {
+        setMessage(response.data.message);
+        // Listeyi güncelle
+        setUsers(users.map(u => u.id === userId ? response.data.user : u));
+      })
+      .catch(err => {
+        setError('Kullanıcı güncellenirken bir hata oluştu.');
+      });
+  };
+
+  // Kullanıcı silme işlemi
+  const handleDelete = (userId) => {
+    axios.delete(`/api/users/${userId}`)
+      .then(response => {
+        setMessage(response.data.message);
+        setUsers(users.filter(u => u.id !== userId));
+      })
+      .catch(err => {
+        setError('Kullanıcı silinirken bir hata oluştu.');
+      });
+  };
+
+  return (
+    <div className="user-management">
+      <h2>Kullanıcı Yönetimi</h2>
+      {error && <div className="error">{error}</div>}
+      {message && <div className="success">{message}</div>}
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Ad Soyad</th>
+            <th>Email</th>
+            <th>Rol</th>
+            <th>Durum</th>
+            <th>İşlemler</th>
+          </tr>
+        </thead>
+        <tbody>
+          {users.map(user => (
+            <tr key={user.id}>
+              <td>{user.id}</td>
+              <td>{user.firstName} {user.lastName}</td>
+              <td>{user.email}</td>
+              <td>{user.role}</td>
+              <td>{user.isActive ? 'Aktif' : 'Pasif'}</td>
+              <td>
+                {/* Detay ve düzenleme için modal açma işlemi yapılabilir */}
+                <button onClick={() => setSelectedUser(user)}>Düzenle</button>
+                <button onClick={() => handleDelete(user.id)}>Sil</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      
+      {/* Seçilen kullanıcıyı düzenlemek için örnek modal */}
+      {selectedUser && (
+        <div className="modal">
+          <h3>Kullanıcı Düzenle</h3>
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            const formData = {
+              firstName: e.target.firstName.value,
+              lastName: e.target.lastName.value,
+              email: e.target.email.value,
+              phone: e.target.phone.value,
+              role: e.target.role.value,
+              isActive: e.target.isActive.checked
+            };
+            handleUpdate(selectedUser.id, formData);
+            setSelectedUser(null);
+          }}>
+            <label>
+              Ad:
+              <input name="firstName" defaultValue={selectedUser.firstName} />
+            </label>
+            <label>
+              Soyad:
+              <input name="lastName" defaultValue={selectedUser.lastName} />
+            </label>
+            <label>
+              Email:
+              <input name="email" defaultValue={selectedUser.email} />
+            </label>
+            <label>
+              Telefon:
+              <input name="phone" defaultValue={selectedUser.phone || ''} />
+            </label>
+            <label>
+              Rol:
+              <select name="role" defaultValue={selectedUser.role}>
+                <option value="user">Kullanıcı</option>
+                <option value="officer">Memur</option>
+                <option value="admin">Admin</option>
+              </select>
+            </label>
+            <label>
+              Aktif:
+              <input name="isActive" type="checkbox" defaultChecked={selectedUser.isActive} />
+            </label>
+            <button type="submit">Güncelle</button>
+            <button type="button" onClick={() => setSelectedUser(null)}>İptal</button>
+          </form>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default UserManagement;
+
+
+
+⸻
+
+4. Özet
+	•	Backend API Endpoint’leri:
+	•	GET /api/users: Tüm kullanıcıları listeler.
+	•	GET /api/users/:id: Belirli bir kullanıcının detaylarını getirir.
+	•	PUT /api/users/:id: Kullanıcı bilgilerini günceller.
+	•	DELETE /api/users/:id: Kullanıcıyı siler.
+	•	(Opsiyonel) POST /api/users: Yeni kullanıcı oluşturur.
+	•	Frontend Yapısı:
+	•	Listeleme, filtreleme ve sıralama özellikleriyle kullanıcı tablosu.
+	•	Kullanıcı detaylarını görüntülemek ve güncellemek için modal veya ayrı sayfa.
+	•	Güncelleme ve silme işlemleri için butonlar ve ilgili API çağrıları.
+
+Bu yapı sayesinde admin, kullanıcı yönetimini kolayca sağlayarak sistemdeki tüm kullanıcıların bilgilerini düzenleyebilir, rollerini değiştirebilir ve gerektiğinde hesapları silebilir.
