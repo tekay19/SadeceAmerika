@@ -559,6 +559,145 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // User management routes
+  app.get("/api/users", isAdmin, async (req, res, next) => {
+    try {
+      const users = await storage.getAllUsers();
+      res.json(users);
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  app.get("/api/users/:id", isAdmin, async (req, res, next) => {
+    try {
+      const id = parseInt(req.params.id);
+      const user = await storage.getUser(id);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      res.json(user);
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  app.put("/api/users/:id", isAdmin, async (req, res, next) => {
+    try {
+      const id = parseInt(req.params.id);
+      const user = await storage.getUser(id);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Prevent changing own role if you are an admin
+      if (id === req.user.id && req.body.role && req.body.role !== 'admin') {
+        return res.status(403).json({ message: "You cannot change your own admin status" });
+      }
+      
+      // If password is being updated, hash it
+      let updates = { ...req.body };
+      if (updates.password) {
+        updates.password = await generateHashForPassword(updates.password);
+      }
+      
+      const updatedUser = await storage.updateUser(id, updates);
+      
+      // Log the action
+      await storage.createAdminLog({
+        userId: req.user.id,
+        action: "User updated",
+        details: `User ID: ${id}, Updated fields: ${Object.keys(req.body).join(', ')}`,
+        timestamp: new Date(),
+      });
+      
+      res.json({ 
+        message: "User updated successfully", 
+        user: updatedUser 
+      });
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  app.delete("/api/users/:id", isAdmin, async (req, res, next) => {
+    try {
+      const id = parseInt(req.params.id);
+      const user = await storage.getUser(id);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Prevent deleting yourself
+      if (id === req.user.id) {
+        return res.status(403).json({ message: "You cannot delete your own account" });
+      }
+      
+      await storage.deleteUser(id);
+      
+      // Log the action
+      await storage.createAdminLog({
+        userId: req.user.id,
+        action: "User deleted",
+        details: `User ID: ${id}, Username: ${user.username}`,
+        timestamp: new Date(),
+      });
+      
+      res.json({ message: "User deleted successfully" });
+    } catch (err) {
+      // Check if the error is related to associated applications
+      if (err.message && err.message.includes('associated applications')) {
+        return res.status(400).json({ message: err.message });
+      }
+      next(err);
+    }
+  });
+
+  // Create new user (admin)
+  app.post("/api/users", isAdmin, async (req, res, next) => {
+    try {
+      // Check if username already exists
+      const existingUser = await storage.getUserByUsername(req.body.username);
+      if (existingUser) {
+        return res.status(400).json({ message: "Username already exists" });
+      }
+
+      // Check if email already exists
+      const existingEmail = await storage.getUserByEmail(req.body.email);
+      if (existingEmail) {
+        return res.status(400).json({ message: "Email already in use" });
+      }
+
+      // Hash the password
+      const hashedPassword = await generateHashForPassword(req.body.password);
+
+      // Create the user
+      const user = await storage.createUser({
+        ...req.body,
+        password: hashedPassword,
+      });
+
+      // Log the action
+      await storage.createAdminLog({
+        userId: req.user.id,
+        action: "User created",
+        details: `User ID: ${user.id}, Username: ${user.username}, Role: ${user.role}`,
+        timestamp: new Date(),
+      });
+
+      res.status(201).json({
+        message: "User created successfully",
+        user
+      });
+    } catch (err) {
+      next(err);
+    }
+  });
+
   // Feedback routes
   app.post("/api/feedback", isAuthenticated, async (req, res, next) => {
     try {

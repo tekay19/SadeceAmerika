@@ -19,6 +19,9 @@ export interface IStorage {
   getUserByUsername(username: string): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  getAllUsers(): Promise<User[]>;
+  updateUser(id: number, updates: Partial<User>): Promise<User>;
+  deleteUser(id: number): Promise<boolean>;
   
   // Visa type methods
   getAllVisaTypes(): Promise<VisaType[]>;
@@ -353,6 +356,35 @@ export class MemStorage implements IStorage {
     };
     this.users.set(id, user);
     return user;
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    return Array.from(this.users.values());
+  }
+
+  async updateUser(id: number, updates: Partial<User>): Promise<User> {
+    const user = this.users.get(id);
+    if (!user) {
+      throw new Error(`User with ID ${id} not found`);
+    }
+    
+    const updatedUser = { ...user, ...updates };
+    this.users.set(id, updatedUser);
+    return updatedUser;
+  }
+
+  async deleteUser(id: number): Promise<boolean> {
+    if (!this.users.has(id)) {
+      throw new Error(`User with ID ${id} not found`);
+    }
+
+    // Check if user has any applications before deleting
+    const userApplications = await this.getUserApplications(id);
+    if (userApplications.length > 0) {
+      throw new Error(`Cannot delete user with ID ${id} as they have associated applications`);
+    }
+
+    return this.users.delete(id);
   }
 
   // Visa type methods
