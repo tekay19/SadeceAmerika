@@ -6,8 +6,6 @@ import {
   Upload, 
   Calendar, 
   User, 
-  HelpCircle, 
-  MessageSquare, 
   LogOut, 
   Users, 
   FileCheck,
@@ -44,11 +42,6 @@ export function Sidebar() {
       { name: "Sistem Ayarları", href: "/admin/settings", icon: Settings },
     ],
   };
-  
-  const supportItems = [
-    { name: "Yardım", href: "/help", icon: HelpCircle },
-    { name: "Geri Bildirim", href: "/feedback", icon: MessageSquare },
-  ];
   
   // Select navigation based on user role
   const navItems = user?.role === "admin" 
@@ -88,29 +81,6 @@ export function Sidebar() {
         <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Menü</p>
         <ul className="space-y-1">
           {navItems.map((item) => {
-            const isActive = location === item.href;
-            return (
-              <li key={item.name}>
-                <div
-                  onClick={() => window.location.href = item.href}
-                  className={cn(
-                    "flex items-center px-3 py-2 text-sm font-medium rounded-md cursor-pointer",
-                    isActive 
-                      ? "text-primary bg-primary/10"
-                      : "text-gray-700 hover:bg-gray-100"
-                  )}
-                >
-                  <item.icon className="w-5 h-5 mr-2" />
-                  <span>{item.name}</span>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-        
-        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mt-6 mb-3">Destek</p>
-        <ul className="space-y-1">
-          {supportItems.map((item) => {
             const isActive = location === item.href;
             return (
               <li key={item.name}>
