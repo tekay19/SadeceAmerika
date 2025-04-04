@@ -1,0 +1,306 @@
+Aşağıda, sistemde yer alacak her rol için (Kullanıcı, Officer ve Admin) ayrıntılı kullanıcı akışı senaryoları yer alıyor:
+
+⸻
+
+1. Kullanıcı (Visa Applicant) Senaryosu
+
+Senaryo Özeti:
+Kullanıcı sisteme kayıt olur, giriş yaptıktan sonra vize başvurusunu oluşturur, gerekli belgeleri yükler, randevu bilgilerini görüntüler ve başvuru durumunu takip eder. Ayrıca, deneyimle ilgili geri bildirim gönderme imkanı bulunur.
+
+Adım Adım Akış:
+	1.	Kayıt ve Giriş:
+	•	Kayıt: Kullanıcı, POST /api/auth/register endpoint’ini kullanarak kayıt formunu doldurur. (Gerekirse e-posta doğrulaması eklenebilir.)
+	•	Giriş: Kayıt sonrası, POST /api/auth/login ile sisteme giriş yapar ve JWT token alır.
+	2.	Profil Yönetimi:
+	•	Profil Görüntüleme: GET /api/user/profile endpoint’i ile kullanıcı kendi profil bilgilerini görüntüler.
+	•	Profil Güncelleme: İhtiyaç duyulması halinde PUT /api/user/profile ile kişisel bilgilerini günceller.
+	3.	Vize Başvurusu Oluşturma:
+	•	Yeni Başvuru: Kullanıcı, POST /api/applications endpoint’i üzerinden yeni bir vize başvurusu oluşturur.
+	•	Başvuru Bilgileri: Form üzerinden kişisel bilgiler, seyahat planı ve diğer gerekli veriler girilir.
+	4.	Belge Yükleme:
+	•	Belge Gönderimi: Başvuruya ek olarak, POST /api/documents/upload endpoint’i kullanılarak istenen belgeler (pasaport, fotoğraf, destekleyici dökümanlar) yüklenir.
+	•	Durum Takibi: Yüklenen belgeler, sistemdeki doğrulama sürecine alınır.
+	5.	Randevu ve Başvuru Takibi:
+	•	Randevu Görüntüleme: Başvuru onaylandıktan sonra GET /api/appointments/:application_id endpoint’i üzerinden randevu detayları görüntülenir.
+	•	Başvuru Durumu: Kullanıcı, kendi başvurularını GET /api/user/applications ile takip eder.
+	6.	Geri Bildirim:
+	•	Geri Bildirim Gönderme: Deneyim veya sistemle ilgili görüşlerini POST /api/feedback endpoint’i üzerinden iletir.
+
+⸻
+
+2. Officer (Vize İşlemleri Sorumlusu) Senaryosu
+
+Senaryo Özeti:
+Officer, sisteme giriş yaparak kendisine atanan veya genel başvuruları görüntüler, başvuruların detaylarını inceler, yüklenen belgeleri doğrular ve gerekli durum güncellemelerini yapar.
+
+Adım Adım Akış:
+	1.	Giriş ve Yetkilendirme:
+	•	Giriş: Officer, POST /api/auth/login endpoint’i ile sisteme giriş yapar ve rolü doğrulanan token alır.
+	•	Yetki Kontrolü: Role middleware, kullanıcının officer rolüne sahip olduğunu teyit eder.
+	2.	Başvuru İnceleme:
+	•	Başvuruların Listelenmesi: GET /api/applications endpoint’i (veya officer’a özel filtrelenmiş endpoint) üzerinden kendisine atanmış başvurular listelenir.
+	•	Detaylı Görüntüleme: Seçilen başvurunun detayları GET /api/applications/:id endpoint’i ile incelenir.
+	3.	Belge Doğrulama:
+	•	Belge İnceleme: İlgili başvuruya ait belgeler, GET /api/documents/:application_id endpoint’i üzerinden görüntülenir.
+	•	Doğrulama İşlemi: Belgeler uygun bulunursa onay, uygunsuzsa red işlemi yapılır. Bu işlem PUT /api/documents/:id/verify endpoint’i ile gerçekleştirilir.
+	4.	Randevu ve Durum Güncelleme:
+	•	Randevu Atama: Gerekli durumlarda, başvuru için randevu ayarlamak üzere POST /api/appointments endpoint’i kullanılır.
+	•	Durum Güncelleme: Başvuru durumu, gerekli kontrollerin ardından güncellenir (örneğin, “inceleme altında”, “onaylandı” veya “reddedildi”).
+	5.	İşlem Kayıtları:
+	•	Loglama: Officer, gerçekleştirdiği işlemleri sistem üzerinden kaydederek (loglama sistemi) denetim ve izlenebilirlik sağlar.
+	6.	Oturum Sonlandırma:
+	•	Çıkış: İşlemler tamamlandıktan sonra, officer güvenli bir şekilde oturumunu sonlandırır.
+
+⸻
+
+3. Admin Senaryosu
+
+Senaryo Özeti:
+Admin, sistemdeki tüm işlemleri yönetir; kullanıcı yönetimi, başvuru denetimi, belge doğrulaması, randevu atamaları ve sistem loglarının takibi gibi işlevleri gerçekleştirir.
+
+Adım Adım Akış:
+	1.	Giriş ve Panel Erişimi:
+	•	Giriş: Admin, POST /api/auth/login endpoint’i ile sisteme giriş yapar ve yönetici rolü doğrulanır.
+	•	Dashboard: Giriş sonrası, sistem genel durumunu gösteren yönetici paneline erişim sağlanır.
+	2.	Kullanıcı Yönetimi:
+	•	Kullanıcı Listesi: Tüm kullanıcılar GET /api/user (admin’a özel) endpoint’i ile listelenir.
+	•	Rol ve Yetki Düzenlemesi: Kullanıcıların rollerinde değişiklik, aktif/pasif duruma getirme veya silme işlemleri yönetilir.
+	3.	Başvuru ve Belge Denetimi:
+	•	Başvuru İnceleme: Tüm vize başvuruları, GET /api/applications endpoint’i üzerinden izlenir.
+	•	Belge Doğrulama: Officer’ların gerçekleştirdiği belge doğrulama işlemleri gözden geçirilir; gerektiğinde müdahale edilir.
+	•	Durum Güncelleme: Başvuruların genel durumu güncellenir veya üzerinde not eklenir.
+	4.	Randevu Yönetimi:
+	•	Randevu Atama: Sistemdeki tüm randevular POST /api/appointments endpoint’i ile atanır veya düzenlenir.
+	•	Takvim ve Bildirim: Randevu zamanlamaları, bildirim sistemleri ile entegre edilerek kullanıcılara iletilir.
+	5.	Sistem İzleme ve Log Yönetimi:
+	•	Log Görüntüleme: GET /api/admin/logs endpoint’i ile tüm sistem aktiviteleri ve hata logları izlenir.
+	•	Geri Bildirimler: Kullanıcıların gönderdiği geri bildirimler GET /api/admin/feedbacks endpoint’i üzerinden incelenir.
+	6.	Acil Müdahale ve Destek:
+	•	Hata Yönetimi: Sistem hataları veya olağan dışı durumlarda acil müdahale mekanizmaları devreye alınır.
+	•	Destek ve Güncelleme: Admin, gerektiğinde kullanıcılara destek sağlar ve sistem güncellemelerini planlar.
+	7.	Oturum Sonlandırma:
+	•	Çıkış: Tüm işlemler tamamlandıktan sonra, admin güvenli bir şekilde oturumunu kapatır.
+
+⸻
+
+Her rol için tanımlanan bu akışlar, sistemin farklı bileşenlerinin nasıl etkileşime gireceğini net bir şekilde ortaya koyar. Böylece, hem geliştirme sürecinde referans olarak kullanılabilir hem de kullanıcı deneyimi tasarımı yapılırken detaylı senaryolar üzerinden ilerlenebilir.
+
+Hangi akış üzerinde daha fazla detaylandırma veya geliştirme yapmak istersiniz?Aşağıda, Türkiye’den ABD’ye vize başvurusu sisteminiz için sıfırdan, kapsamlı, ölçeklenebilir ve profesyonel düzeyde hazırlanmış bir backend geliştirme planı yer alıyor:
+
+⸻
+
+🧱 BÖLÜM 1: GENEL MİMARİ
+
+Teknoloji Yığını:
+
+Katman	Teknoloji ve Araçlar
+Runtime	Node.js (ES Modules veya CommonJS)
+Web Framework	Express.js
+Veritabanı	MySQL – Sequelize ORM (veya ihtiyaç durumunda Raw SQL)
+Kimlik Doğrulama	JWT (jsonwebtoken)
+Dosya Yükleme	Multer
+E-posta	Nodemailer
+Ortam Değişkeni	dotenv
+Loglama	Winston ve Morgan
+Test	Jest + Supertest
+Rate Limiting	express-rate-limit
+Güvenlik	Helmet, CORS, express-validator
+
+Ek İyileştirmeler:
+	•	Docker & CI/CD: Uygulamayı Docker konteynerlerine alarak, Dockerfile ve docker-compose ile ortamların standartlaştırılması; GitHub Actions veya GitLab CI ile otomatik test ve dağıtım pipeline’ı oluşturulması.
+	•	API Dokümantasyonu: Swagger veya Postman Collection ile API endpoint’lerinin dökümantasyonu.
+	•	Caching & Load Balancing: Redis ile veritabanı sorgularını cache’leme, yük dengeleme stratejileri ile yüksek trafikte performansın korunması.
+	•	Gelişmiş Hata İzleme: Sentry gibi araçlarla prodüksiyonda oluşan hataların anlık raporlanması.
+
+⸻
+
+📂 BÖLÜM 2: DOSYA YAPISI
+
+Önerilen proje dosya yapısı şu şekilde düzenlenebilir:
+
+visa-backend/
+│
+├── server.js                  # Ana giriş noktası
+├── .env                       # Ortam değişkenleri
+├── config/                    # Konfigürasyon ve DB ayarları
+│   └── db.js
+│
+├── models/                    # Sequelize modelleri
+│   ├── User.js
+│   ├── VisaType.js
+│   ├── VisaApplication.js
+│   ├── Document.js
+│   ├── Appointment.js
+│   ├── AdminLog.js
+│   └── Feedback.js
+│
+├── controllers/               # İş mantığı ve endpoint işleyicileri
+│   ├── authController.js
+│   ├── userController.js
+│   ├── applicationController.js
+│   ├── documentController.js
+│   ├── appointmentController.js
+│   ├── adminController.js
+│   └── feedbackController.js
+│
+├── routes/                    # API route dosyaları
+│   ├── authRoutes.js
+│   ├── userRoutes.js
+│   ├── applicationRoutes.js
+│   ├── documentRoutes.js
+│   ├── appointmentRoutes.js
+│   ├── adminRoutes.js
+│   └── feedbackRoutes.js
+│
+├── middlewares/               # JWT, role, input validatör ve hata yönetimi
+│   ├── authMiddleware.js
+│   ├── roleMiddleware.js
+│   ├── validateRequest.js
+│   └── errorHandler.js
+│
+├── services/                  # E-posta, token, dosya ve loglama servisleri
+│   ├── mailService.js
+│   ├── tokenService.js
+│   ├── fileService.js
+│   └── logger.js
+│
+├── utils/                     # Yardımcı fonksiyonlar
+│   ├── generateId.js
+│   └── formatDate.js
+│
+├── uploads/                   # Yüklenen belgelerin saklanacağı dizin
+└── tests/                     # Jest ve Supertest ile test dosyaları
+    ├── auth.test.js
+    ├── user.test.js
+    ├── application.test.js
+    ├── document.test.js
+    └── appointment.test.js
+
+
+
+⸻
+
+🔐 BÖLÜM 3: GÜVENLİK KATMANLARI
+
+Temel Güvenlik Önlemleri:
+	•	JWT Authentication: Giriş yapan kullanıcıya özel token üretilip, her istekte doğrulama yapılır.
+	•	Role-Based Access Control: roleMiddleware kullanılarak admin, oficer ve kullanıcı rolleri ayrımı.
+	•	HTTP Güvenliği: Helmet ile ek güvenlik header’ları eklenir.
+	•	CORS Yapılandırması: Sadece belirli origin’lere izin verilerek istek kontrolü sağlanır.
+	•	Rate Limiting: express-rate-limit ile IP başına istek sınırlandırması yapılır.
+	•	Input Doğrulama: express-validator ile gelen verilerin sanitasyonu ve doğrulanması.
+	•	HTTPS ve Güvenli İletişim: Prodüksiyon ortamında HTTPS zorunlu hale getirilebilir.
+	•	Ek Güvenlik: Gelişmiş saldırı tespiti (bot, IP blacklist/whitelist) ve güvenlik duvarı (WAF) entegrasyonları değerlendirilebilir.
+
+⸻
+
+📄 BÖLÜM 4: ENDPOINT LİSTESİ
+
+🔐 /api/auth
+	•	POST /register: Kullanıcı kaydı
+	•	POST /login: Giriş işlemi
+	•	POST /forgot-password: Şifre sıfırlama maili gönderimi
+	•	POST /reset-password: Şifre yenileme
+
+👤 /api/user
+	•	GET /profile: Kullanıcı profil bilgisi
+	•	PUT /profile: Profil güncelleme
+	•	GET /applications: Kullanıcının başvurularını listeleme
+
+📝 /api/applications
+	•	POST / Yeni vize başvurusu oluşturma
+	•	GET / (Admin) Tüm başvuruları listeleme
+	•	GET /:id Belirli bir başvurunun detaylı bilgisini getirme
+	•	PUT /:id (Admin) Başvuruda güncelleme yapma
+
+📎 /api/documents
+	•	POST /upload: Belge yükleme (Multer ile)
+	•	GET /:application_id: İlgili başvuruya ait belgelerin listelenmesi
+	•	PUT /:id/verify: (Admin) Belge onaylama veya reddetme
+
+📅 /api/appointments
+	•	POST / (Admin) Randevu atama
+	•	GET /:application_id: Randevu detaylarını getirme
+
+🛠️ /api/admin
+	•	GET /logs: Admin hareketlerinin loglanması
+	•	GET /feedbacks: Kullanıcı geri bildirimlerinin görüntülenmesi
+
+💬 /api/feedback
+	•	POST / Yeni geri bildirim gönderme
+
+⸻
+
+🧪 BÖLÜM 5: TEST STRATEJİSİ
+	•	Test Araçları: Jest ve Supertest
+	•	Test Kapsamı:
+	•	Her endpoint için başarılı ve başarısız durumların test edilmesi (token’sız erişim, yanlış rol, eksik/yanlış input gibi edge-case’ler).
+	•	Birim (unit) testler ve entegrasyon testleri.
+	•	Otomasyon: CI/CD pipeline üzerinde testlerin otomatik çalıştırılması.
+
+⸻
+
+⚙️ BÖLÜM 6: PERFORMANS & GELİŞTİRİLEBİLİRLİK
+
+Performans İyileştirme:
+	•	Async Error Handling: Tüm asenkron işlemlerde try/catch blokları ile hata kontrolü.
+	•	Merkezi Hata Yönetimi: errorHandler.js ile tüm hataların tek merkezden ele alınması.
+	•	Veritabanı Optimizasyonu: İndeksleme, sorgu optimizasyonu ve Redis ile cache kullanımı.
+	•	Loglama: Winston ve Morgan ile detaylı log kayıtları; isteğe bağlı ELK stack entegrasyonu.
+
+Geliştirilebilirlik:
+	•	Modüler Yapı: Controller, servis, middleware ve model katmanlarının net ayrımı.
+	•	Dockerization: Ortam bağımlılıklarının minimize edilmesi için Docker kullanımı.
+	•	API Dokümantasyonu: Swagger ile endpoint’lerin açıkça dokümante edilmesi.
+	•	Mikroservis Geçişi: Ölçek artışı durumunda modüllerin bağımsız servisler haline getirilmesi.
+
+⸻
+
+🔁 BÖLÜM 7: ENV DEĞİŞKENLERİ (.env Örneği)
+
+PORT=5000
+DB_HOST=localhost
+DB_NAME=visa_system
+DB_USER=root
+DB_PASS=123456
+JWT_SECRET=supersecuretoken
+JWT_EXPIRES_IN=15m
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USER=noreply@visa.com
+EMAIL_PASS=secureemailpassword
+
+Gerekirse loglama, rate limiting ve diğer özel ayarlar için ek ortam değişkenleri eklenebilir.
+
+⸻
+
+🧩 BÖLÜM 8: GELİŞTİRME PLANI
+
+Aşama 1: Temel Altyapının Kurulması
+	•	Proje dosya yapısının oluşturulması.
+	•	Node.js, Express, MySQL bağlantısı ve temel middleware konfigürasyonlarının yapılması.
+	•	Auth sistemi (register, login, JWT üretimi) ve temel user CRUD işlemlerinin geliştirilmesi.
+
+Aşama 2: Ana İşlevselliklerin Eklenmesi
+	•	VisaType ve VisaApplication modelleri oluşturularak CRUD işlemlerinin eklenmesi.
+	•	Multer entegrasyonu ile dosya yükleme ve belge yönetimi.
+	•	Şifre sıfırlama için Nodemailer entegrasyonu.
+
+Aşama 3: Yönetici ve Ek Modüllerin Geliştirilmesi
+	•	Admin loglama, role tabanlı erişim kontrolü ve admin panel endpoint’lerinin eklenmesi.
+	•	Randevu yönetimi (Appointment) modülünün geliştirilmesi.
+
+Aşama 4: Güvenlik, Performans ve Loglama İyileştirmeleri
+	•	Helmet, CORS, rate limiting ve express-validator gibi güvenlik önlemlerinin entegre edilmesi.
+	•	Merkezi hata yönetimi ve loglama mekanizmasının kurulması.
+	•	Redis ile cache, yük dengeleme ve Docker ile konteynerizasyon.
+
+Aşama 5: Test ve Dağıtım Süreci
+	•	Jest + Supertest ile kapsamlı testlerin yazılması.
+	•	CI/CD pipeline kurulumu (örneğin GitHub Actions) ve otomatik dağıtım sürecinin yapılandırılması.
+	•	Swagger veya benzeri araçlarla API dokümantasyonunun tamamlanması.
+
+⸻
+
+Bu plan, vize başvuru sisteminizin backend kısmını sağlam temellere oturtacak, güvenli, ölçeklenebilir ve profesyonel bir yapı sunacaktır.
+Şimdi bu yapıya göre ilerlemeye hazır mısınız? Proje dosyasını oluşturup temel altyapıyı mı hazırlayalım, yoksa belirli modülleri (örneğin auth ve user) detaylandırarak kodlamaya mı başlayalım?
