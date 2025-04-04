@@ -6,7 +6,7 @@ import {
   feedback, Feedback, InsertFeedback,
   adminLogs, AdminLog, InsertAdminLog,
   settings, Setting, InsertSetting,
-  visaTypes, VisaType
+  visaTypes, VisaType, InsertVisaType
 } from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
@@ -26,6 +26,7 @@ export interface IStorage {
   // Visa type methods
   getAllVisaTypes(): Promise<VisaType[]>;
   getVisaType(id: number): Promise<VisaType | undefined>;
+  createVisaType(visaType: InsertVisaType): Promise<VisaType>;
   
   // Application methods
   createApplication(application: InsertApplication): Promise<Application>;
@@ -61,7 +62,7 @@ export interface IStorage {
   updateSetting(id: number, updates: Partial<Setting>): Promise<Setting>;
   
   // Session store
-  sessionStore: session.SessionStore;
+  sessionStore: any; // Using any type to avoid SessionStore error
 }
 
 export class MemStorage implements IStorage {
@@ -73,7 +74,7 @@ export class MemStorage implements IStorage {
   private feedbacks: Map<number, Feedback>;
   private adminLogs: Map<number, AdminLog>;
   private settings: Map<number, Setting>;
-  sessionStore: session.SessionStore;
+  sessionStore: any; // Using any type to avoid SessionStore error
   
   private userCurrentId: number;
   private visaTypeCurrentId: number;
@@ -124,25 +125,19 @@ export class MemStorage implements IStorage {
         category: 'general' as const, 
         key: 'appName', 
         value: 'Visa System',
-        description: 'Application Name', 
-        lastUpdated: new Date(),
-        updatedBy: 3 // admin1
+        description: 'Application Name'
       },
       { 
         category: 'general' as const, 
         key: 'version', 
         value: '1.0.0',
-        description: 'Application Version', 
-        lastUpdated: new Date(),
-        updatedBy: 3 // admin1
+        description: 'Application Version'
       },
       { 
         category: 'general' as const, 
         key: 'mode', 
         value: 'production',
-        description: 'Application Mode (production/development)', 
-        lastUpdated: new Date(),
-        updatedBy: 3 // admin1
+        description: 'Application Mode (production/development)'
       }
     ];
     
@@ -152,33 +147,25 @@ export class MemStorage implements IStorage {
         category: 'email' as const, 
         key: 'smtpHost', 
         value: 'smtp.gmail.com',
-        description: 'SMTP Server Host', 
-        lastUpdated: new Date(),
-        updatedBy: 3 // admin1
+        description: 'SMTP Server Host'
       },
       { 
         category: 'email' as const, 
         key: 'smtpPort', 
         value: '587',
-        description: 'SMTP Server Port', 
-        lastUpdated: new Date(),
-        updatedBy: 3 // admin1
+        description: 'SMTP Server Port'
       },
       { 
         category: 'email' as const, 
         key: 'emailUser', 
         value: 'noreply@visa.com',
-        description: 'Sender Email Address', 
-        lastUpdated: new Date(),
-        updatedBy: 3 // admin1
+        description: 'Sender Email Address'
       },
       { 
         category: 'email' as const, 
         key: 'emailPass', 
         value: 'secureemailpassword',
-        description: 'Email Password (encrypted)', 
-        lastUpdated: new Date(),
-        updatedBy: 3 // admin1
+        description: 'Email Password (encrypted)'
       }
     ];
     
@@ -188,25 +175,19 @@ export class MemStorage implements IStorage {
         category: 'security' as const, 
         key: 'jwtSecret', 
         value: 'supersecuretoken',
-        description: 'JWT Secret Token', 
-        lastUpdated: new Date(),
-        updatedBy: 3 // admin1
+        description: 'JWT Secret Token'
       },
       { 
         category: 'security' as const, 
         key: 'jwtExpiresIn', 
         value: '15m',
-        description: 'JWT Token Expiration Time', 
-        lastUpdated: new Date(),
-        updatedBy: 3 // admin1
+        description: 'JWT Token Expiration Time'
       },
       { 
         category: 'security' as const, 
         key: 'rateLimit', 
         value: '100',
-        description: 'API Rate Limit per IP', 
-        lastUpdated: new Date(),
-        updatedBy: 3 // admin1
+        description: 'API Rate Limit per IP'
       }
     ];
     
@@ -216,17 +197,13 @@ export class MemStorage implements IStorage {
         category: 'logging' as const, 
         key: 'level', 
         value: 'info',
-        description: 'Log Level (error, info, debug)', 
-        lastUpdated: new Date(),
-        updatedBy: 3 // admin1
+        description: 'Log Level (error, info, debug)'
       },
       { 
         category: 'logging' as const, 
         key: 'format', 
         value: 'combined',
-        description: 'Log Format', 
-        lastUpdated: new Date(),
-        updatedBy: 3 // admin1
+        description: 'Log Format'
       }
     ];
     
@@ -241,11 +218,36 @@ export class MemStorage implements IStorage {
 
   private initializeVisaTypes() {
     const types = [
-      { code: "B1", name: "Business", description: "For business-related activities" },
-      { code: "B2", name: "Tourism", description: "For tourism or visiting friends/relatives" },
-      { code: "F1", name: "Student", description: "For academic studies" },
-      { code: "H1B", name: "Work", description: "For employment in specialty occupations" },
-      { code: "J1", name: "Exchange Visitor", description: "For approved exchange visitor programs" }
+      { 
+        name: "Business Visa", 
+        description: "For business-related activities and meetings", 
+        requirements: "Valid passport, business invitation letter, proof of funds",
+        processingTime: "5-10 business days" 
+      },
+      { 
+        name: "Tourist Visa", 
+        description: "For tourism or visiting friends/relatives", 
+        requirements: "Valid passport, hotel reservation, return ticket, proof of funds",
+        processingTime: "7-14 business days" 
+      },
+      { 
+        name: "Student Visa", 
+        description: "For academic studies and educational programs", 
+        requirements: "Valid passport, acceptance letter from institution, proof of financial support",
+        processingTime: "10-20 business days" 
+      },
+      { 
+        name: "Work Visa", 
+        description: "For employment in specialty occupations", 
+        requirements: "Valid passport, employment contract, educational credentials, employer sponsorship",
+        processingTime: "20-30 business days" 
+      },
+      { 
+        name: "Exchange Visitor Visa", 
+        description: "For approved exchange visitor programs", 
+        requirements: "Valid passport, program acceptance, DS-2019 form, proof of finances",
+        processingTime: "15-25 business days" 
+      }
     ];
     
     types.forEach(type => {
@@ -257,6 +259,7 @@ export class MemStorage implements IStorage {
   private initializeTestUsers() {
     // For development purposes using plain text password for easier testing
     const plainPassword = "password1";
+    const now = new Date();
     
     // Create a regular user
     const user1 = {
@@ -267,7 +270,9 @@ export class MemStorage implements IStorage {
       lastName: "User",
       email: "user1@example.com",
       phone: "+90 555 123 4567",
-      role: "user" as const
+      role: "user" as const,
+      createdAt: now,
+      updatedAt: now
     };
     this.users.set(user1.id, user1);
     
@@ -280,7 +285,9 @@ export class MemStorage implements IStorage {
       lastName: "Officer",
       email: "officer1@example.com",
       phone: "+90 555 987 6543",
-      role: "officer" as const
+      role: "officer" as const,
+      createdAt: now,
+      updatedAt: now
     };
     this.users.set(officer1.id, officer1);
     
@@ -293,7 +300,9 @@ export class MemStorage implements IStorage {
       lastName: "User",
       email: "admin1@example.com",
       phone: "+90 555 000 0000",
-      role: "admin" as const
+      role: "admin" as const,
+      createdAt: now,
+      updatedAt: now
     };
     this.users.set(admin1.id, admin1);
     
@@ -301,31 +310,50 @@ export class MemStorage implements IStorage {
     const application1 = {
       id: this.applicationCurrentId++,
       userId: user1.id,
-      visaTypeId: 3, // F1 Student visa
-      applicationNumber: "US-VISA-2023-10001",
-      status: "documents_pending" as const,
-      purpose: "Study abroad for university degree",
-      travelDate: "2023-09-01", // Date as string to match schema
-      submittedAt: new Date("2023-06-15"),
-      lastUpdated: new Date("2023-06-15")
+      visaTypeId: 3, // Student visa
+      applicationDate: now,
+      status: "pending" as const,
+      notes: "Application for studying abroad for university degree",
+      assignedOfficerId: officer1.id
     };
     this.applications.set(application1.id, application1);
     
     // Create documents for the application
-    const docTypes = ["passport", "photo", "employment_letter", "bank_statement"];
-    docTypes.forEach(type => {
+    const docTypes = ["Passport", "Photo", "Employment Letter", "Bank Statement"];
+    docTypes.forEach(docName => {
       const doc = {
         id: this.documentCurrentId++,
         applicationId: application1.id,
-        type,
-        fileName: `${type}_example.pdf`,
-        filePath: `/uploads/${type}_example.pdf`,
-        uploadedAt: new Date("2023-06-15"),
+        name: docName,
+        filePath: `/uploads/${docName.toLowerCase().replace(/\s+/g, '_')}.pdf`,
+        uploadDate: now,
         status: "pending" as const,
         notes: null
       };
       this.documents.set(doc.id, doc);
     });
+    
+    // Create an appointment for the application
+    const appointment1 = {
+      id: this.appointmentCurrentId++,
+      applicationId: application1.id,
+      date: new Date("2023-08-15"),
+      time: "10:00 AM",
+      location: "US Consulate, Istanbul",
+      purpose: "Document verification and interview",
+      status: "scheduled" as const
+    };
+    this.appointments.set(appointment1.id, appointment1);
+    
+    // Create a feedback from the user
+    const feedback1 = {
+      id: this.feedbackCurrentId++,
+      userId: user1.id,
+      content: "The visa application process was very straightforward. Thank you!",
+      rating: 5,
+      createdAt: now
+    };
+    this.feedbacks.set(feedback1.id, feedback1);
   }
 
   // User methods
@@ -347,12 +375,15 @@ export class MemStorage implements IStorage {
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.userCurrentId++;
+    const now = new Date();
     // Set default values for required fields that might be undefined
     const user: User = { 
       ...insertUser, 
       id,
       role: insertUser.role || 'user',
-      phone: insertUser.phone || null 
+      phone: insertUser.phone || null,
+      createdAt: now,
+      updatedAt: now
     };
     this.users.set(id, user);
     return user;
@@ -395,6 +426,16 @@ export class MemStorage implements IStorage {
   async getVisaType(id: number): Promise<VisaType | undefined> {
     return this.visaTypes.get(id);
   }
+  
+  async createVisaType(insertVisaType: InsertVisaType): Promise<VisaType> {
+    const id = this.visaTypeCurrentId++;
+    const visaType: VisaType = {
+      ...insertVisaType,
+      id
+    };
+    this.visaTypes.set(id, visaType);
+    return visaType;
+  }
 
   // Application methods
   async createApplication(insertApplication: InsertApplication): Promise<Application> {
@@ -402,11 +443,10 @@ export class MemStorage implements IStorage {
     const application: Application = { 
       ...insertApplication, 
       id,
-      status: insertApplication.status || 'draft',
-      purpose: insertApplication.purpose || null,
-      travelDate: insertApplication.travelDate || null,
-      submittedAt: insertApplication.submittedAt || null,
-      lastUpdated: insertApplication.lastUpdated || null
+      status: insertApplication.status || 'pending',
+      applicationDate: insertApplication.applicationDate || new Date(),
+      notes: insertApplication.notes || null,
+      assignedOfficerId: insertApplication.assignedOfficerId || null
     };
     this.applications.set(id, application);
     return application;
@@ -444,7 +484,8 @@ export class MemStorage implements IStorage {
       ...insertDocument, 
       id,
       status: insertDocument.status || 'pending',
-      notes: insertDocument.notes || null
+      notes: insertDocument.notes || null,
+      uploadDate: insertDocument.uploadDate || new Date()
     };
     this.documents.set(id, document);
     return document;
@@ -477,7 +518,7 @@ export class MemStorage implements IStorage {
     const appointment: Appointment = { 
       ...insertAppointment, 
       id,
-      notes: insertAppointment.notes || null
+      status: insertAppointment.status || 'scheduled'
     };
     this.appointments.set(id, appointment);
     return appointment;
@@ -495,7 +536,8 @@ export class MemStorage implements IStorage {
     const feedback: Feedback = { 
       ...insertFeedback, 
       id,
-      message: insertFeedback.message || ""
+      content: insertFeedback.content || "",
+      createdAt: insertFeedback.createdAt || new Date()
     };
     this.feedbacks.set(id, feedback);
     return feedback;
@@ -511,7 +553,8 @@ export class MemStorage implements IStorage {
     const adminLog: AdminLog = { 
       ...insertAdminLog, 
       id,
-      details: insertAdminLog.details || null
+      details: insertAdminLog.details || null,
+      timestamp: insertAdminLog.timestamp || new Date()
     };
     this.adminLogs.set(id, adminLog);
     return adminLog;
@@ -547,9 +590,7 @@ export class MemStorage implements IStorage {
     const setting: Setting = { 
       ...insertSetting, 
       id,
-      description: insertSetting.description || null,
-      lastUpdated: insertSetting.lastUpdated || new Date(),
-      updatedBy: insertSetting.updatedBy || null
+      description: insertSetting.description || null
     };
     this.settings.set(id, setting);
     return setting;
@@ -563,8 +604,7 @@ export class MemStorage implements IStorage {
     
     const updatedSetting = { 
       ...setting, 
-      ...updates,
-      lastUpdated: new Date() // Always update the lastUpdated timestamp
+      ...updates
     };
     this.settings.set(id, updatedSetting);
     return updatedSetting;
