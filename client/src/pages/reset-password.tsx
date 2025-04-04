@@ -28,7 +28,7 @@ export default function ResetPassword() {
   // Şifre sıfırlama mutasyonu
   const resetPasswordMutation = useMutation({
     mutationFn: async (credentials: { token: string; newPassword: string }) => {
-      const response = await apiRequest("/api/auth/reset-password", "POST", credentials);
+      const response = await apiRequest("POST", "/api/auth/reset-password", credentials);
       return response;
     },
     onSuccess: () => {

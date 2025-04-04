@@ -19,7 +19,7 @@ export default function ForgotPassword() {
   // Şifre sıfırlama e-postası gönderme mutasyonu
   const forgotPasswordMutation = useMutation({
     mutationFn: async (data: { email: string }) => {
-      const response = await apiRequest("/api/auth/forgot-password", "POST", data);
+      const response = await apiRequest("POST", "/api/auth/forgot-password", data);
       return response;
     },
     onSuccess: () => {
