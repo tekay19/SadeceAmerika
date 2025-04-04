@@ -35,28 +35,28 @@ export function Footer() {
               <h3 className="font-medium text-gray-800 mb-2">Linkler</h3>
               <ul className="text-sm text-gray-600 space-y-1">
                 <li>
-                  <Link href="/">
-                    <span className="hover:text-primary cursor-pointer">Anasayfa</span>
+                  <Link href="/" className="hover:text-primary cursor-pointer">
+                    Anasayfa
                   </Link>
                 </li>
                 <li>
-                  <Link href="/services">
-                    <span className="hover:text-primary cursor-pointer">Hizmetlerimiz</span>
+                  <Link href="/services" className="hover:text-primary cursor-pointer">
+                    Hizmetlerimiz
                   </Link>
                 </li>
                 <li>
-                  <Link href="/about">
-                    <span className="hover:text-primary cursor-pointer">Hakkımızda</span>
+                  <Link href="/about" className="hover:text-primary cursor-pointer">
+                    Hakkımızda
                   </Link>
                 </li>
                 <li>
-                  <Link href="/contact">
-                    <span className="hover:text-primary cursor-pointer">İletişim</span>
+                  <Link href="/contact" className="hover:text-primary cursor-pointer">
+                    İletişim
                   </Link>
                 </li>
                 <li>
-                  <Link href="/privacy-policy">
-                    <span className="hover:text-primary cursor-pointer">Gizlilik Sözleşmesi</span>
+                  <Link href="/privacy-policy" className="hover:text-primary cursor-pointer">
+                    Gizlilik Sözleşmesi
                   </Link>
                 </li>
                 <li>

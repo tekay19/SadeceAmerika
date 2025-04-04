@@ -16,31 +16,29 @@ export function PublicNavbar() {
         <div className="flex items-center justify-between py-4">
           {/* Logo and Brand */}
           <div className="flex items-center">
-            <Link href="/">
-              <a className="flex items-center">
-                <img 
-                  src="https://images.unsplash.com/photo-1508722830436-0faffb8ba5f6?ixlib=rb-1.2.1&auto=format&fit=crop&w=32&h=32&q=80" 
-                  alt="SadeceAmerika logo" 
-                  className="w-8 h-8 mr-2" 
-                />
-                <span className="text-lg font-semibold text-gray-800">SadeceAmerika</span>
-              </a>
+            <Link href="/" className="flex items-center">
+              <img 
+                src="https://images.unsplash.com/photo-1508722830436-0faffb8ba5f6?ixlib=rb-1.2.1&auto=format&fit=crop&w=32&h=32&q=80" 
+                alt="SadeceAmerika logo" 
+                className="w-8 h-8 mr-2" 
+              />
+              <span className="text-lg font-semibold text-gray-800">SadeceAmerika</span>
             </Link>
           </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/">
-              <a className="text-gray-700 hover:text-primary font-medium">Anasayfa</a>
+            <Link href="/" className="text-gray-700 hover:text-primary font-medium">
+              Anasayfa
             </Link>
-            <Link href="/services">
-              <a className="text-gray-700 hover:text-primary font-medium">Hizmetlerimiz</a>
+            <Link href="/services" className="text-gray-700 hover:text-primary font-medium">
+              Hizmetlerimiz
             </Link>
-            <Link href="/about">
-              <a className="text-gray-700 hover:text-primary font-medium">Hakkımızda</a>
+            <Link href="/about" className="text-gray-700 hover:text-primary font-medium">
+              Hakkımızda
             </Link>
-            <Link href="/contact">
-              <a className="text-gray-700 hover:text-primary font-medium">İletişim</a>
+            <Link href="/contact" className="text-gray-700 hover:text-primary font-medium">
+              İletişim
             </Link>
           </nav>
 
@@ -74,37 +72,33 @@ export function PublicNavbar() {
         <div className="md:hidden bg-white border-t border-gray-200 py-2">
           <div className="container mx-auto px-4">
             <nav className="flex flex-col space-y-3 py-3">
-              <Link href="/">
-                <a 
-                  className="text-gray-700 hover:text-primary py-2 font-medium"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Anasayfa
-                </a>
+              <Link 
+                href="/" 
+                className="text-gray-700 hover:text-primary py-2 font-medium"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Anasayfa
               </Link>
-              <Link href="/services">
-                <a 
-                  className="text-gray-700 hover:text-primary py-2 font-medium"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Hizmetlerimiz
-                </a>
+              <Link 
+                href="/services" 
+                className="text-gray-700 hover:text-primary py-2 font-medium"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Hizmetlerimiz
               </Link>
-              <Link href="/about">
-                <a 
-                  className="text-gray-700 hover:text-primary py-2 font-medium"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Hakkımızda
-                </a>
+              <Link 
+                href="/about" 
+                className="text-gray-700 hover:text-primary py-2 font-medium"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Hakkımızda
               </Link>
-              <Link href="/contact">
-                <a 
-                  className="text-gray-700 hover:text-primary py-2 font-medium"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  İletişim
-                </a>
+              <Link 
+                href="/contact" 
+                className="text-gray-700 hover:text-primary py-2 font-medium"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                İletişim
               </Link>
               <div className="flex flex-col space-y-2 pt-2 border-t border-gray-100">
                 <Link href="/auth">
