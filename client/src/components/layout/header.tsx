@@ -68,6 +68,26 @@ export function Header() {
     logoutMutation.mutate();
   };
   
+  // Custom NavItem component to avoid nesting <a> tags
+  const NavItem = ({ item, isActive, onClick }) => (
+    <li key={item.name}>
+      <Link href={item.href}>
+        <div 
+          className={cn(
+            "flex items-center px-3 py-2 text-sm font-medium rounded-md cursor-pointer",
+            isActive 
+              ? "text-primary bg-primary/10"
+              : "text-gray-700 hover:bg-gray-100"
+          )}
+          onClick={onClick}
+        >
+          <item.icon className="w-5 h-5 mr-2" />
+          <span>{item.name}</span>
+        </div>
+      </Link>
+    </li>
+  );
+  
   return (
     <>
       <header className="bg-white border-b border-gray-200 shadow-sm">
@@ -128,44 +148,24 @@ export function Header() {
             {navItems.map((item) => {
               const isActive = location === item.href;
               return (
-                <li key={item.name}>
-                  <Link href={item.href}>
-                    <a 
-                      className={cn(
-                        "flex items-center px-3 py-2 text-sm font-medium rounded-md",
-                        isActive 
-                          ? "text-primary bg-primary/10"
-                          : "text-gray-700 hover:bg-gray-100"
-                      )}
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      <item.icon className="w-5 h-5 mr-2" />
-                      <span>{item.name}</span>
-                    </a>
-                  </Link>
-                </li>
+                <NavItem 
+                  key={item.name}
+                  item={item}
+                  isActive={isActive}
+                  onClick={() => setMobileMenuOpen(false)}
+                />
               );
             })}
             
             {supportItems.map((item) => {
               const isActive = location === item.href;
               return (
-                <li key={item.name}>
-                  <Link href={item.href}>
-                    <a 
-                      className={cn(
-                        "flex items-center px-3 py-2 text-sm font-medium rounded-md",
-                        isActive 
-                          ? "text-primary bg-primary/10"
-                          : "text-gray-700 hover:bg-gray-100"
-                      )}
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      <item.icon className="w-5 h-5 mr-2" />
-                      <span>{item.name}</span>
-                    </a>
-                  </Link>
-                </li>
+                <NavItem 
+                  key={item.name}
+                  item={item}
+                  isActive={isActive}
+                  onClick={() => setMobileMenuOpen(false)}
+                />
               );
             })}
             
