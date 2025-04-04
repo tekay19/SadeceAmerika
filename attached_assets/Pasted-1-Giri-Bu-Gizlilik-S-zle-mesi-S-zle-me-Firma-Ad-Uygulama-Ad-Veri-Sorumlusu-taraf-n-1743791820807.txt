@@ -1,0 +1,69 @@
+1. Giriş
+
+Bu Gizlilik Sözleşmesi (“Sözleşme”), [Firma Adı / Uygulama Adı] (“Veri Sorumlusu”) tarafından, kişisel verilerinizin 6698 sayılı Kişisel Verilerin Korunması Kanunu (“KVKK”) ve ilgili mevzuata uygun olarak nasıl toplandığını, işlendiğini, saklandığını ve korunduğunu açıklamak amacıyla hazırlanmıştır. Amacımız, verilerinizin gizliliğini ve güvenliğini korurken, hizmetlerimizi en iyi şekilde sunmaktır.
+
+2. Tanımlar
+	•	Kişisel Veri: Kimliği belirli veya belirlenebilir gerçek kişiye ilişkin her türlü bilgi.
+	•	İşleme: Kişisel veriler üzerinde gerçekleştirilen otomatik veya manuel her türlü işlem.
+	•	Veri Sorumlusu: Kişisel verilerin işlenme amaçlarını ve vasıtalarını belirleyen gerçek veya tüzel kişi.
+	•	Veri Sahibinin Hakları: KVKK kapsamında veri sahiplerinin, verileri ile ilgili sahip olduğu bilgi edinme, düzeltme, silme, aktarma, itiraz etme gibi haklar.
+
+3. İşlenen Kişisel Veriler
+
+Sitemiz/uygulamamız kapsamında, aşağıda belirtilen kişisel verileriniz toplanabilir:
+	•	Kimlik Bilgileri: İsim, soyisim, e-posta, telefon numarası, adres gibi temel iletişim bilgileri.
+	•	Kimlik Doğrulama Bilgileri: Şifre, kullanıcı adı, kimlik doğrulama token’ları.
+	•	Başvuru ve İşlem Bilgileri: Vize başvurusu, işlem geçmişi, randevu bilgileri, yüklenen belgeler gibi işle ilgili veriler.
+	•	Geri Bildirim ve Destek Bilgileri: Hizmetlerimize ilişkin görüş, öneri veya şikayetleriniz.
+
+4. Kişisel Verilerin İşlenme Amaçları
+
+Toplanan kişisel veriler, aşağıdaki amaçlarla işlenmektedir:
+	•	Hizmet Sunumu: Vize başvuru süreçlerinin yürütülmesi, kullanıcı destek ve hizmetlerin sağlanması.
+	•	Kimlik Doğrulama ve Güvenlik: Giriş, kimlik doğrulama, yetkilendirme işlemleri ve güvenliğin sağlanması.
+	•	İletişim: Hizmetlerle ilgili bilgilendirme, duyuru, destek ve geri bildirim işlemleri.
+	•	İyileştirme ve Analiz: Kullanıcı deneyiminin geliştirilmesi, hizmet kalitesinin artırılması için analiz ve raporlama işlemleri.
+	•	Yasal Yükümlülükler: KVKK ve ilgili mevzuat kapsamında yasal yükümlülüklerin yerine getirilmesi.
+
+5. Hukuki Sebepler
+
+Kişisel verileriniz, aşağıda belirtilen hukuki sebeplere dayanarak işlenmektedir:
+	•	Açık Rıza: Kullanıcı tarafından, verilerinin işlenmesine açık rıza verilmiş olması.
+	•	Sözleşmenin İfası: Hizmetlerin sağlanması, sözleşme ve hizmet koşullarının yerine getirilmesi.
+	•	Yasal Yükümlülük: İlgili mevzuat kapsamında, yasal zorunlulukların yerine getirilmesi.
+	•	Meşru Menfaat: Veri sorumlusunun meşru menfaatleri doğrultusunda, ancak veri sahibinin temel hak ve özgürlüklerine zarar vermeyecek ölçüde işlenmesi.
+
+6. Verilerin Saklanma Süresi
+
+Toplanan kişisel veriler, işleme amaçlarının gerçekleşmesi için gerekli olan süre boyunca saklanır. Yasal zorunluluklar ve meşru menfaatler doğrultusunda, saklama süresi belirlenir; işlem amacı ortadan kalktığında, veriler kanuni düzenlemeler çerçevesinde silinir veya anonim hale getirilir.
+
+7. Veri Sahibinin Hakları
+
+KVKK kapsamında, veri sahipleri aşağıdaki haklara sahiptir:
+	•	Bilgi Edinme: İşlenen verileriniz hakkında bilgi talep etme.
+	•	Düzeltme: Yanlış veya eksik verilerin düzeltilmesini isteme.
+	•	Silme: Gereksiz veya hukuka aykırı verilerin silinmesini talep etme.
+	•	İtiraz: İşlenen verilerinizin işlenmesine itiraz etme.
+	•	Veri Taşınabilirliği: Verilerinizi yapılandırılmış, yaygın olarak kullanılan ve makine tarafından okunabilir formatta alma.
+	•	İşlemenin Sınırlanması: Belirli koşullarda verilerin işlenmesinin sınırlandırılmasını isteme.
+
+Haklarınızı kullanmak veya sorularınız için aşağıdaki iletişim kanalları aracılığıyla bizimle iletişime geçebilirsiniz:
+
+İletişim:
+[İlgili e-posta adresi]
+[Telefon numarası]
+[Adres]
+
+8. Güvenlik Önlemleri
+
+Verilerinizin güvenliğini sağlamak amacıyla, teknik ve idari önlemler uygulanmaktadır. Bu önlemler arasında şifreleme, erişim kontrolü, güvenlik duvarları ve düzenli denetimler yer almaktadır.
+
+9. Değişiklikler
+
+İşbu Gizlilik Sözleşmesi, zaman zaman güncellenebilir. Güncellemeler, sitemiz/uygulamamız üzerinden yayınlanacak ve geçerlilik tarihleri belirtilecektir. Güncellenen metin, yayınlandığı tarihten itibaren geçerli olacaktır.
+
+10. Yürürlük
+
+Bu Gizlilik Sözleşmesi, [Yürürlük Tarihi] tarihinden itibaren geçerli olup, KVKK ve ilgili mevzuat çerçevesinde kişisel verilerinizin işlenmesi için esas teşkil eder.
+
+⸻

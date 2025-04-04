@@ -1,0 +1,143 @@
+KVKK’ya uygun gizlilik sözleşmesi metnini projeye eklemenin en yaygın iki yolu vardır: Frontend tarafında statik bir sayfa olarak sunmak veya backend üzerinden API endpoint’i ile dinamik olarak sunmaktır. İşte adım adım nasıl ekleyeceğinize dair detaylı açıklama:
+
+⸻
+
+1. Frontend Tarafında Statik Sayfa Olarak Ekleme
+
+Adım 1: Yeni Sayfa Bileşeni Oluşturun
+
+Projenizin src/pages/ klasörüne örneğin PrivacyPolicy.tsx adlı bir dosya ekleyin ve içerisine aşağıdaki gibi temel yapılandırmayı yapın:
+
+import React from 'react';
+
+const PrivacyPolicy = () => {
+  return (
+    <div className="privacy-policy">
+      <h1>Gizlilik Sözleşmesi / Aydınlatma Metni</h1>
+      <section>
+        <h2>1. Giriş</h2>
+        <p>
+          Bu Gizlilik Sözleşmesi, [Firma Adı/Uygulama Adı] tarafından KVKK kapsamında kişisel verilerinizin nasıl toplandığını, işlendiğini, saklandığını ve korunduğunu açıklar.
+        </p>
+      </section>
+      <section>
+        <h2>2. İşlenen Kişisel Veriler</h2>
+        <p>
+          Toplanan veriler; kimlik bilgileri, iletişim bilgileri, başvuru ve işlem bilgileri, geri bildirim vb. bilgileri içerebilir.
+        </p>
+      </section>
+      {/* Diğer bölümleri ekleyin */}
+      <section>
+        <h2>10. Yürürlük</h2>
+        <p>
+          Bu metin, [Yürürlük Tarihi] tarihinden itibaren geçerli olup, KVKK çerçevesinde kişisel verilerinizin işlenmesi için esas teşkil eder.
+        </p>
+      </section>
+    </div>
+  );
+};
+
+export default PrivacyPolicy;
+
+Adım 2: Router’a Sayfa Rotası Ekleyin
+
+Ana uygulamanızın rotalarını yönettiğiniz dosyada (örneğin App.tsx) bu sayfaya bir rota ekleyin. Örnek olarak:
+
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+// Diğer sayfalar...
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        {/* Diğer rotalar */}
+        <Route path="/gizlilik-sozlesmesi" element={<PrivacyPolicy />} />
+        <Route path="*" element={<div>Sayfa bulunamadı</div>} />
+      </Routes>
+    </Router>
+  );
+}
+
+export default App;
+
+Adım 3: Navigasyona Link Ekleyin
+
+Uygulamanızın footer veya navbar bölümünde kullanıcıların kolayca erişebilmesi için gizlilik sözleşmesi sayfasına yönlendiren bir link ekleyin:
+
+import { Link } from 'react-router-dom';
+
+const Footer = () => (
+  <footer>
+    <p>
+      © 2025 [Firma Adı] - <Link to="/gizlilik-sozlesmesi">Gizlilik Sözleşmesi</Link>
+    </p>
+  </footer>
+);
+
+export default Footer;
+
+
+
+⸻
+
+2. Backend Tarafında API Endpoint Olarak Sunma (Opsiyonel)
+
+Eğer gizlilik metnini backend üzerinden sunmak isterseniz, statik bir dosya veya JSON formatında döndüren bir API endpoint oluşturabilirsiniz.
+
+Adım 1: Statik Dosya Yöntemi
+
+Örneğin, gizlilik metnini public/privacy-policy.html olarak ekleyin. Böylece kullanıcılar doğrudan bu dosyaya tarayıcı üzerinden erişebilir.
+
+Adım 2: API Endpoint Oluşturma
+
+Express.js kullanıyorsanız, aşağıdaki gibi bir route dosyası oluşturabilirsiniz:
+
+// routes/privacyPolicy.js
+const express = require('express');
+const router = express.Router();
+
+const privacyPolicyText = `
+<h1>Gizlilik Sözleşmesi / Aydınlatma Metni</h1>
+<section>
+  <h2>1. Giriş</h2>
+  <p>
+    Bu Gizlilik Sözleşmesi, [Firma Adı/Uygulama Adı] tarafından KVKK kapsamında kişisel verilerinizin nasıl toplandığını, işlendiğini, saklandığını ve korunduğunu açıklar.
+  </p>
+</section>
+<!-- Diğer bölümler -->
+`;
+
+router.get('/', (req, res) => {
+  res.json({ content: privacyPolicyText });
+});
+
+module.exports = router;
+
+Ardından, ana sunucu dosyanıza (örneğin server.js veya app.js) bu route’u ekleyin:
+
+const express = require('express');
+const app = express();
+const privacyPolicyRouter = require('./routes/privacyPolicy');
+
+app.use('/api/privacy-policy', privacyPolicyRouter);
+
+app.listen(5000, () => console.log('Server running on port 5000'));
+
+Frontend tarafında bu endpoint’i çağırarak metni dinamik olarak gösterebilirsiniz.
+
+⸻
+
+Özet
+	•	Frontend Statik Sayfa Yöntemi:
+	•	Yeni bir React sayfa bileşeni oluşturun (PrivacyPolicy.tsx).
+	•	Bu bileşeni rotalarınıza ekleyin.
+	•	Navigasyona (footer veya navbar) link ekleyin.
+	•	Backend API Endpoint Yöntemi (Opsiyonel):
+	•	Gizlilik metnini statik HTML dosyası olarak veya JSON formatında sunan bir endpoint oluşturun.
+	•	İsteğe bağlı olarak, frontend bu endpoint’i çağırıp veriyi görüntüleyebilir.
+
+Bu adımları uygulayarak KVKK’ya uygun gizlilik sözleşmesi metninizi projeye entegre edebilirsiniz. Her iki yöntem de projenizin gereksinimlerine ve kullanım senaryolarına göre tercih edilebilir.

@@ -18,6 +18,7 @@ import AdminUsers from "./pages/admin-users";
 import OfficerDashboard from "@/pages/officer-dashboard";
 import ForgotPassword from "./pages/forgot-password";
 import ResetPassword from "./pages/reset-password";
+import PrivacyPolicy from "./pages/privacy-policy";
 
 function Router() {
   return (
@@ -25,6 +26,7 @@ function Router() {
       <Route path="/auth" component={AuthPage} />
       <Route path="/forgot-password" component={ForgotPassword} />
       <Route path="/reset-password" component={ResetPassword} />
+      <Route path="/privacy-policy" component={PrivacyPolicy} />
       <ProtectedRoute path="/" component={Dashboard} />
       <ProtectedRoute path="/applications" component={Applications} />
       <ProtectedRoute path="/applications/new" component={ApplicationForm} />
