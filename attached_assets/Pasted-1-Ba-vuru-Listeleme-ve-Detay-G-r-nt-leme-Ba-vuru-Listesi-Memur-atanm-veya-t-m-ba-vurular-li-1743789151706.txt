@@ -1,0 +1,45 @@
+1. Başvuru Listeleme ve Detay Görüntüleme
+	•	Başvuru Listesi:
+Memur, atanmış veya tüm başvuruları listeleyebilmek için:
+	•	GET /api/applications
+Bu endpoint, memurun filtreleme yaparak “inceleme altında”, “onaylandı” veya “reddedildi” durumundaki başvuruları çekmesini sağlar.
+	•	Başvuru Detayları:
+Listeden bir başvuru seçtiğinde, detayları görüntülemek için:
+	•	GET /api/applications/:id
+Böylece memur, başvuruya ait kullanıcı bilgileri, başvuru detayları ve yüklenmiş belgeleri tek tek inceleyebilir.
+
+⸻
+
+2. Belge Doğrulama İşlemleri
+	•	Belge Listesi:
+Seçilen başvuruya ait belgeleri görmek için:
+	•	GET /api/documents/:application_id
+Bu sayede memur, tüm ilgili belgeleri detaylı olarak görüntüleyebilir.
+	•	Belge Onay/Red İşlemi:
+Belge doğrulama sürecinde, memur her belgeyi inceler ve onay ya da red işlemini uygulayabilir:
+	•	PUT /api/documents/:id/verify
+Bu endpoint, belgeye ait durumu (örneğin onaylandı veya reddedildi) günceller. Reddedilen belgeler için gerekirse red nedenini de sisteme ekleyebilir.
+
+⸻
+
+3. Başvuru Durumu Güncelleme
+	•	Başvuru Durumunun Güncellenmesi:
+Belge doğrulama veya diğer inceleme adımlarının ardından, memur başvurunun genel durumunu güncelleyebilir:
+	•	PUT /api/applications/:id
+Bu işlem, başvurunun durumunu (“inceleme altında”, “onaylandı”, “reddedildi” gibi) güncellemek için kullanılır.
+
+⸻
+
+4. Randevu Atama
+	•	Randevu Oluşturma:
+Onaylanan başvurular için randevu atama işlemi yapılmalıdır:
+	•	POST /api/appointments
+Bu API, randevu tarihi, saat ve lokasyon gibi bilgilerin girilerek ilgili başvuruya randevu atanmasını sağlar. Ayrıca, randevu atamasında tarih ve saat geçerliliği (örneğin, geçmiş tarih kontrolü) sağlanmalıdır.
+
+⸻
+
+5. İşlem Loglama ve Bildirim
+	•	Loglama:
+Memur tarafından yapılan her işlem (belge doğrulama, başvuru güncelleme, randevu atama) merkezi log sistemine kaydedilmelidir. Bu, denetim ve geri izleme açısından önemlidir.
+	•	Bildirim:
+Başvuru durumundaki güncellemeler veya randevu ataması sonrası, ilgili kullanıcıya e-posta veya uygulama içi bildirim gönderilmesi de sağlanabilir.

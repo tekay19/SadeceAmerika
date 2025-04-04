@@ -78,57 +78,58 @@ export default function Applications() {
               <ul className="divide-y divide-gray-200">
                 {applications.map(application => (
                   <li key={application.id}>
-                    <Link href={`/applications/${application.id}`}>
-                      <a className="block hover:bg-gray-50">
-                        <div className="px-4 py-4 sm:px-6">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center">
-                              <div className="flex-shrink-0 h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                                <FileText className="h-5 w-5 text-primary" />
-                              </div>
-                              <div className="ml-4">
-                                <p className="text-sm font-medium text-gray-900">
-                                  Başvuru #{application.applicationNumber}
-                                </p>
-                                <p className="text-sm text-gray-500">
-                                  {application.submittedAt 
-                                    ? `Gönderilme: ${new Date(application.submittedAt).toLocaleDateString('tr-TR')}`
-                                    : 'Taslak'}
-                                </p>
-                              </div>
+                    <div 
+                      className="block hover:bg-gray-50 cursor-pointer"
+                      onClick={() => window.location.href = `/applications/${application.id}`}
+                    >
+                      <div className="px-4 py-4 sm:px-6">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center">
+                            <div className="flex-shrink-0 h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                              <FileText className="h-5 w-5 text-primary" />
                             </div>
-                            <div className="flex flex-col items-end">
-                              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                application.status === 'approved' ? 'bg-green-100 text-green-800' :
-                                application.status === 'rejected' ? 'bg-red-100 text-red-800' :
-                                application.status === 'documents_reviewing' ? 'bg-yellow-100 text-yellow-800' :
-                                application.status === 'appointment_scheduled' ? 'bg-blue-100 text-blue-800' :
-                                'bg-gray-100 text-gray-800'
-                              }`}>
-                                {application.status === 'draft' ? 'Taslak' :
-                                 application.status === 'submitted' ? 'Gönderildi' :
-                                 application.status === 'documents_pending' ? 'Belge Bekleniyor' :
-                                 application.status === 'documents_reviewing' ? 'İnceleniyor' :
-                                 application.status === 'documents_approved' ? 'Belgeler Onaylandı' :
-                                 application.status === 'appointment_scheduled' ? 'Randevu Planlandı' :
-                                 application.status === 'interview_completed' ? 'Görüşme Tamamlandı' :
-                                 application.status === 'approved' ? 'Onaylandı' :
-                                 application.status === 'rejected' ? 'Reddedildi' :
-                                 application.status === 'additional_documents_required' ? 'Ek Belge Gerekli' :
-                                 'Bilinmeyen Durum'}
-                              </span>
-                              <p className="text-xs text-gray-500 mt-1">
-                                {application.visaTypeId === 1 ? 'B1 (İş)' : 
-                                 application.visaTypeId === 2 ? 'B2 (Turist)' : 
-                                 application.visaTypeId === 3 ? 'F1 (Öğrenci)' :
-                                 application.visaTypeId === 4 ? 'H1B (Çalışma)' :
-                                 application.visaTypeId === 5 ? 'J1 (Değişim)' : 'Diğer'}
+                            <div className="ml-4">
+                              <p className="text-sm font-medium text-gray-900">
+                                Başvuru #{application.applicationNumber}
+                              </p>
+                              <p className="text-sm text-gray-500">
+                                {application.submittedAt 
+                                  ? `Gönderilme: ${new Date(application.submittedAt).toLocaleDateString('tr-TR')}`
+                                  : 'Taslak'}
                               </p>
                             </div>
                           </div>
+                          <div className="flex flex-col items-end">
+                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                              application.status === 'approved' ? 'bg-green-100 text-green-800' :
+                              application.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                              application.status === 'documents_reviewing' ? 'bg-yellow-100 text-yellow-800' :
+                              application.status === 'appointment_scheduled' ? 'bg-blue-100 text-blue-800' :
+                              'bg-gray-100 text-gray-800'
+                            }`}>
+                              {application.status === 'draft' ? 'Taslak' :
+                                application.status === 'submitted' ? 'Gönderildi' :
+                                application.status === 'documents_pending' ? 'Belge Bekleniyor' :
+                                application.status === 'documents_reviewing' ? 'İnceleniyor' :
+                                application.status === 'documents_approved' ? 'Belgeler Onaylandı' :
+                                application.status === 'appointment_scheduled' ? 'Randevu Planlandı' :
+                                application.status === 'interview_completed' ? 'Görüşme Tamamlandı' :
+                                application.status === 'approved' ? 'Onaylandı' :
+                                application.status === 'rejected' ? 'Reddedildi' :
+                                application.status === 'additional_documents_required' ? 'Ek Belge Gerekli' :
+                                'Bilinmeyen Durum'}
+                            </span>
+                            <p className="text-xs text-gray-500 mt-1">
+                              {application.visaTypeId === 1 ? 'B1 (İş)' : 
+                                application.visaTypeId === 2 ? 'B2 (Turist)' : 
+                                application.visaTypeId === 3 ? 'F1 (Öğrenci)' :
+                                application.visaTypeId === 4 ? 'H1B (Çalışma)' :
+                                application.visaTypeId === 5 ? 'J1 (Değişim)' : 'Diğer'}
+                            </p>
+                          </div>
                         </div>
-                      </a>
-                    </Link>
+                      </div>
+                    </div>
                   </li>
                 ))}
               </ul>

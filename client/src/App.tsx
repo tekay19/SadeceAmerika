@@ -11,6 +11,7 @@ import Applications from "@/pages/applications";
 import Documents from "@/pages/documents";
 import Appointments from "@/pages/appointments";
 import ApplicationForm from "@/pages/application-form";
+import ApplicationDetails from "@/pages/application-details";
 import AdminDashboard from "@/pages/admin-dashboard";
 import OfficerDashboard from "@/pages/officer-dashboard";
 
@@ -21,6 +22,7 @@ function Router() {
       <ProtectedRoute path="/" component={Dashboard} />
       <ProtectedRoute path="/applications" component={Applications} />
       <ProtectedRoute path="/applications/new" component={ApplicationForm} />
+      <ProtectedRoute path="/applications/:id" component={ApplicationDetails} />
       <ProtectedRoute path="/documents" component={Documents} />
       <ProtectedRoute path="/appointments" component={Appointments} />
       <ProtectedRoute path="/admin" component={AdminDashboard} />
