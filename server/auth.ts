@@ -59,6 +59,12 @@ export function setupAuth(app: Express) {
     new LocalStrategy(async (username, password, done) => {
       try {
         const user = await storage.getUserByUsername(username);
+        if (user) {
+          console.log("Kullanıcı bulundu:", user.username);
+          console.log("Şifre kontrol ediliyor, verilen:", password, "saklanan:", user.password.substring(0, 20) + "...");
+        } else {
+          console.log("Kullanıcı bulunamadı:", username);
+        }
         if (!user || !(await comparePasswords(password, user.password))) {
           return done(null, false);
         } else {

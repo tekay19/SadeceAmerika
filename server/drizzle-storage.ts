@@ -316,9 +316,11 @@ async function initializeData() {
     
     if (existingAdmins.length === 0) {
       const now = new Date();
+      // Admin kullanıcısını verilen özel kullanıcı adı ve 
+      // güvenli hash'lenmiş şifreyle oluştur
       await db.insert(users).values({
-        username: "admin1",
-        password: "password1", // Gerçek sistemde hash'lenmiş olacak
+        username: "murat_samet19",
+        password: "4da1d09a7aab402bfa4c3c3e37f3f8972660730c72268ed4d335f570db1f8f01fde4bb32e3cdc126f78f4f0da4d682469a7e5f8b71edc24d73cd399272626a7c.a0fbc6ad039660d510c1ab5108a5aba6",
         firstName: "Admin",
         lastName: "User",
         email: "admin1@example.com",
