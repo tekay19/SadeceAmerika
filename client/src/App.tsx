@@ -31,8 +31,8 @@ function Router() {
   const [location] = useLocation();
   
   return (
-    <AnimatePresence mode="wait" initial={false}>
-      <Switch key={location}>
+    <>
+      <AnimatePresence initial={false}>
         {/* Public Routes */}
         <Route path="/" component={HomePage} />
         <Route path="/services" component={ServicesPage} />
@@ -56,9 +56,9 @@ function Router() {
         <ProtectedRoute path="/admin/settings" component={AdminSettings} />
         <ProtectedRoute path="/admin/users" component={AdminUsers} />
         <ProtectedRoute path="/officer" component={OfficerDashboard} />
-        <Route component={NotFound} />
-      </Switch>
-    </AnimatePresence>
+        <Route path="/:rest*" component={NotFound} />
+      </AnimatePresence>
+    </>
   );
 }
 
