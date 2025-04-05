@@ -53,13 +53,7 @@ export default function HomePage() {
           </div>
           <div className="container mx-auto px-4 py-20 md:py-28 relative z-10">
             <div className="max-w-3xl mx-auto text-center">
-              <div className="flex justify-center mb-6">
-                <RemoteImage 
-                  src={USA_FLAG_URL} 
-                  altText="ABD Bayrağı" 
-                  className="h-12 w-auto rounded shadow-lg bg-white" 
-                />
-              </div>
+
               <h1 className="text-4xl md:text-5xl font-bold mb-6">
                 ABD Vize Başvurunuzu Kolaylaştırıyoruz
               </h1>

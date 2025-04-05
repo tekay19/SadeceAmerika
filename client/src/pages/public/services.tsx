@@ -13,17 +13,45 @@ import {
   Landmark,
   Building2
 } from "lucide-react";
+import { RemoteImage } from "@/components/ui/remote-image";
+
+// Vize formları ve pasaport resimleri
+import {
+  VISA_STAMP_URL,
+  VISA_FORM_URL,
+  PASSPORT_DOCUMENTS_URL,
+  PASSPORT_WITH_FLAG_URL,
+  CITY_LIFE_URL,
+  NEW_YORK_URL,
+  GOLDEN_GATE_URL,
+  STATUE_OF_LIBERTY_URL,
+  DIVERSE_PEOPLE_URL,
+  BUSINESS_MEETING_URL,
+  GRAND_CANYON_URL,
+  AIRPORT_URL,
+  AIRPLANE_URL
+} from "@/lib/image-constants";
 
 export default function ServicesPage() {
   return (
     <PublicLayout>
       <PageTransition>
         {/* Hero */}
-        <section className="bg-gray-50 py-16">
-          <div className="container mx-auto px-4">
+        <section className="relative py-24 overflow-hidden">
+          <div className="absolute inset-0 z-0">
+            <RemoteImage 
+              src={STATUE_OF_LIBERTY_URL}
+              fallbackUrl={NEW_YORK_URL}
+              altText="Amerika Vize Hizmetleri"
+              className="w-full h-full object-cover opacity-25"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-900/60 to-indigo-900/60"></div>
+          </div>
+          
+          <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-3xl mx-auto text-center">
-              <h1 className="text-4xl font-bold text-gray-900 mb-6">Vize Hizmetlerimiz</h1>
-              <p className="text-xl text-gray-600">
+              <h1 className="text-4xl font-bold text-white mb-6">Vize Hizmetlerimiz</h1>
+              <p className="text-xl text-white/90">
                 Sadece Amerika olarak, ABD vize başvuru süreçlerinizde size destek oluyoruz. 
                 Amerika merkezli Mese Consultancy'nin Türkiye uzantısı olarak, göçmenlik hukuku alanındaki tecrübemizle vize başvurunuzu başarıyla tamamlamanıza yardımcı oluyoruz.
               </p>
@@ -283,7 +311,19 @@ export default function ServicesPage() {
             <div className="grid lg:grid-cols-2 gap-8">
               {/* Green Card Integration Services */}
               <div className="bg-white rounded-lg shadow-sm overflow-hidden transform transition duration-300 hover:shadow-md hover:-translate-y-1">
-                <div className="h-3 bg-green-600"></div>
+                <div className="h-48 relative overflow-hidden">
+                  <RemoteImage 
+                    src={BUSINESS_MEETING_URL} 
+                    fallbackUrl={DIVERSE_PEOPLE_URL}
+                    altText="Green Card Entegrasyon" 
+                    className="w-full h-full object-cover" 
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
+                  <div className="absolute bottom-0 left-0 p-4">
+                    <span className="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-semibold">Yeni Hizmet</span>
+                  </div>
+                </div>
+                
                 <div className="p-6">
                   <div className="flex items-start mb-4">
                     <div className="bg-green-100 text-green-700 w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 mr-4">
@@ -334,7 +374,19 @@ export default function ServicesPage() {
 
               {/* Housing and Auto Services */}
               <div className="bg-white rounded-lg shadow-sm overflow-hidden transform transition duration-300 hover:shadow-md hover:-translate-y-1">
-                <div className="h-3 bg-blue-600"></div>
+                <div className="h-48 relative overflow-hidden">
+                  <RemoteImage 
+                    src={APARTMENT_URL} 
+                    fallbackUrl={CITY_LIFE_URL}
+                    altText="Konaklama ve Araç Kiralama" 
+                    className="w-full h-full object-cover" 
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
+                  <div className="absolute bottom-0 left-0 p-4">
+                    <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-semibold">Popüler</span>
+                  </div>
+                </div>
+                
                 <div className="p-6">
                   <div className="flex items-start mb-4">
                     <div className="bg-blue-100 text-blue-700 w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 mr-4">
