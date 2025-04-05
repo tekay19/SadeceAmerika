@@ -1,0 +1,223 @@
+Aşağıda, Blog + CV destekli kişisel web siten için hazırlanan sağlam, güvenli ve geliştirilebilir backend mimarisinin özetini ve temel yapı taşlarını bulabilirsin:
+
+⸻
+
+1. Veritabanı Tasarımı
+
+Kullanılacak Tablolar ve İlişkiler:
+	•	Users: Kullanıcılar (admin dahil) için. E-posta benzersiz, şifreler hash’lenmiş tutulur.
+	•	Posts: Blog yazıları. Her yazı bir kullanıcı (author_id) ve kategori (category_id) ile ilişkilidir.
+	•	Categories: Blog kategorileri. Her kategori benzersiz isim içerir.
+	•	Tags & PostTags: Yazılara etiket ekleyebilmek için; ilişkisel (many-to-many) yapı.
+	•	Projects: Portföy projeleri; proje başlığı, açıklama, görsel, URL ve kullanılan teknolojiler gibi alanları içerir.
+	•	CV_Files: Kullanıcıların CV dosyalarını (PDF / DOCX) yükleyebilmesi için; dosya adı, URL, yüklenme tarihi ve kullanıcı kimliği.
+	•	ContactMessages: İletişim formundan gelen mesajlar; okundu durumu, gönderim zamanı gibi bilgileri barındırır.
+	•	(Opsiyonel) Pages / Translations: Statik sayfaların (Hakkımda, KVKK, vb.) ve çoklu dil desteğinin yönetimi için.
+
+⸻
+
+2. API Endpoint Listesi
+
+Kimlik Doğrulama (JWT ile korumalı):
+	•	POST /api/auth/login – Giriş işlemi
+	•	POST /api/auth/register – (Opsiyonel) Yeni kullanıcı ekleme
+	•	GET /api/auth/profile – Korumalı kullanıcı bilgileri
+
+Blog İşlemleri:
+	•	GET /api/posts – Tüm blog yazılarını getirir
+	•	GET /api/posts/:slug – Slug’a göre detay
+	•	POST /api/posts – Yeni blog yazısı oluşturur (JWT korumalı)
+	•	PUT /api/posts/:id – Yazıyı günceller
+	•	DELETE /api/posts/:id – Yazıyı siler
+
+Kategoriler & Etiketler:
+	•	GET /api/categories – Kategorileri getirir
+	•	POST /api/categories – Yeni kategori oluşturur
+	•	GET /api/tags – Etiketleri getirir
+	•	POST /api/tags – Yeni etiket oluşturur
+
+Projeler (Portföy):
+	•	GET /api/projects – Tüm projeleri getirir
+	•	GET /api/projects/:id – Proje detayını getirir
+	•	POST /api/projects – Yeni proje ekler (Admin erişimi)
+	•	PUT /api/projects/:id – Projeyi günceller
+	•	DELETE /api/projects/:id – Projeyi siler
+
+CV Dosya İşlemleri:
+	•	POST /api/cv/upload – CV dosyası yükler
+	•	GET /api/cv/latest – En son yüklenen CV dosyasını getirir
+
+İletişim:
+	•	POST /api/contact – Ziyaretçi mesajı gönderir
+	•	GET /api/contact – Tüm mesajları getirir
+	•	GET /api/contact/:id – Tek bir mesajı getirir
+	•	PUT /api/contact/:id/read – Mesajı okundu olarak işaretler
+	•	DELETE /api/contact/:id – Mesajı siler
+
+⸻
+
+3. Ortam Değişkenleri (.env)
+
+Örnek dosya içeriği:
+
+PORT=5000
+DATABASE_URL=postgres://username:password@localhost:5432/personal_site
+JWT_SECRET=mySuperSecretKey
+UPLOAD_FOLDER=uploads
+
+Bu yapı, farklı veritabanı sistemlerine (PostgreSQL, MySQL, MSSQL) uyum sağlayacak şekilde yapılandırılabilir.
+
+⸻
+
+4. Backend Dosya Mimarisi (Node.js + Express)
+
+personal-website-backend/
+│
+├── src/
+│   ├── config/                  # DB bağlantısı, JWT, mail vs.
+│   │   ├── db.js
+│   │   ├── jwt.js
+│   │   └── mail.js
+│   │
+│   ├── controllers/             # Route çağrılarını yöneten kontrol katmanı
+│   │   ├── authController.js
+│   │   ├── blogController.js
+│   │   ├── projectController.js
+│   │   ├── contactController.js
+│   │   └── cvController.js
+│   │
+│   ├── models/                  # ORM modelleri (Sequelize / Prisma)
+│   │   ├── User.js
+│   │   ├── Post.js
+│   │   ├── Category.js
+│   │   ├── Tag.js
+│   │   ├── Project.js
+│   │   ├── CV.js
+│   │   └── ContactMessage.js
+│   │
+│   ├── routes/                  # API route dosyaları
+│   │   ├── authRoutes.js
+│   │   ├── blogRoutes.js
+│   │   ├── projectRoutes.js
+│   │   ├── contactRoutes.js
+│   │   ├── cvRoutes.js
+│   │   └── index.js             # Tüm route'ları birleştirir
+│   │
+│   ├── services/                # İş mantığı (business logic)
+│   │   ├── authService.js
+│   │   ├── blogService.js
+│   │   ├── projectService.js
+│   │   ├── contactService.js
+│   │   └── cvService.js
+│   │
+│   ├── middleware/              # Özel middleware’ler (kimlik doğrulama, hata yönetimi, dosya yükleme)
+│   │   ├── authMiddleware.js
+│   │   ├── errorHandler.js
+│   │   └── uploadMiddleware.js
+│   │
+│   ├── utils/                   # Yardımcı araçlar (şifre hash, dosya işlemleri, validasyon)
+│   │   ├── passwordHash.js
+│   │   ├── fileHandler.js
+│   │   └── validator.js
+│   │
+│   ├── validations/             # Request body doğrulama şemaları
+│   │   ├── loginValidation.js
+│   │   ├── blogValidation.js
+│   │   ├── contactValidation.js
+│   │   └── cvValidation.js
+│   │
+│   ├── app.js                   # Express uygulamasının tanımı
+│   └── server.js                # Sunucunun başlatıldığı dosya
+│
+├── uploads/                     # CV ve görsel dosyaları için yükleme klasörü
+│
+├── .env                         # Ortam değişkenleri
+├── .gitignore
+├── package.json
+└── README.md
+
+Bu yapı, MVC ve service-layer prensiplerine uygun, modüler bir backend mimarisi sunar.
+
+⸻
+
+5. Kullanılacak Temel Paketler
+
+Amaç	Paketler
+Sunucu ve API	express, cors, dotenv
+Veritabanı	pg (PostgreSQL) / mysql2 / mssql, sequelize/prisma
+Kimlik Doğrulama	jsonwebtoken, bcrypt
+Dosya Yükleme	multer
+Doğrulama	joi veya express-validator
+Hata Yönetimi	http-errors
+
+
+
+⸻
+
+6. Güvenlik ve Ek Öneriler
+	•	JWT ile Yetkilendirme: Tüm admin işlemleri JWT token ile korunur.
+	•	Şifre Hashleme: Bcrypt kullanılarak şifreler güvenli bir şekilde hash’lenir.
+	•	Ortamdaki Gizli Bilgiler: .env dosyası ile hassas bilgiler saklanır.
+	•	SQL Enjeksiyon Koruması: ORM (Prisma / Sequelize) veya parametreli sorgular kullanılır.
+	•	Dosya Yükleme: Multer ile sadece .pdf ve .docx uzantılarına izin verilir, dosya boyutu limiti (örneğin 5 MB) belirlenir.
+	•	Mail Gönderimi: Opsiyonel olarak nodemailer entegrasyonu ile e-posta bildirimleri yapılabilir.
+	•	Hata Yönetimi: Merkezi hata yönetimi middleware ile uygulama genelinde hatalar düzgünce ele alınır.
+
+⸻
+
+7. Kullanıcı Yolculuğu Senaryosu
+
+Senaryo: Semih (Admin) Kişisel Web Sitesini Kullanıyor
+	1.	Giriş Yapma (Login):
+	•	Semih, /api/auth/login endpoint’ine kullanıcı bilgilerini gönderir.
+	•	Kimlik doğrulama başarılı ise, JWT token alır ve admin paneline yönlendirilir.
+	2.	Blog Yazısı Oluşturma:
+	•	Admin panelde “Yeni Yazı Ekle” formunu doldurur (başlık, içerik, kapak görseli, kategori, etiketler, yayın durumu).
+	•	POST isteği ile /api/posts endpoint’ine veri gönderilir.
+	•	Veritabanında Posts tablosuna kayıt, ilgili kategori ve etiket bağlantıları (PostTags) oluşturulur.
+	3.	Portföy Projesi Ekleme:
+	•	Semih, “Yeni Proje” sayfasında proje başlığı, açıklama, görsel, proje URL’si ve kullanılan teknolojileri girer.
+	•	POST isteği ile /api/projects endpoint’ine gönderilir ve Projects tablosuna kayıt eklenir.
+	4.	CV Dosyası Yükleme:
+	•	“CV Yükle” sayfasında, desteklenen dosya formatında (PDF / DOCX) dosya seçilir.
+	•	Multer kullanılarak dosya sunucuya yüklenir, CV_Files tablosunda dosya adı, URL, yükleme tarihi ve kullanıcı ID’si eklenir.
+	5.	İletişim Mesajlarını Görüntüleme:
+	•	Ziyaretçiler, iletişim formundan mesaj gönderir.
+	•	Semih admin panelde /api/contact üzerinden gelen mesajları görüntüler, mesaj okundu ise is_read durumu güncellenir.
+	6.	Statik Sayfaların Güncellenmesi & İstatistikler:
+	•	“Hakkımda”, “KVKK” gibi sayfalar zengin metin editörü ile güncellenir.
+	•	Admin panelde, blog yazısı sayıları, yayınlanan/taslak oranı, popüler projeler ve toplam mesaj sayısı gibi istatistikler gösterilir.
+	7.	Çoklu Dil Desteği (Opsiyonel):
+	•	Gelecekte ek dil desteği için, içerikler Translations tablosunda saklanıp, sistem dil seçimine göre gösterilebilir.
+
+⸻
+
+8. Frontend’den Axios ile Örnek API Çağrısı
+
+Blog yazısı oluşturmak için örnek kod:
+
+await axios.post('/api/posts', {
+  title: "Yeni Yazı",
+  content: "İçerik",
+  slug: "yeni-yazi",
+  category_id: 1,
+  is_published: true
+}, {
+  headers: { Authorization: `Bearer ${token}` }
+});
+
+
+
+⸻
+
+Sonuç
+
+Bu mimari:
+	•	Modüler ve ölçeklenebilir bir yapı sunar.
+	•	Güvenlik (JWT, bcrypt, dosya ve SQL kontrolleri) konusunda önerilen önlemleri içerir.
+	•	Kolay yönetilebilir bir API endpoint setiyle, blog, portföy, CV ve iletişim modüllerinin sorunsuz çalışmasını sağlar.
+	•	MVC ve service-layer prensiplerine uygun, profesyonel düzeyde geliştirme için ideal bir altyapı sunar.
+
+Artık bu mimariyi uygulamaya alarak, kişisel web siteni yönetebilir, içerik ekleyebilir ve ziyaretçi etkileşimlerini güvenle takip edebilirsin.
+
+Başlayalım!

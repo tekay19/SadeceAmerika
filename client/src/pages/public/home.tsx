@@ -16,12 +16,14 @@ import {
 
 // Import visa application images
 import usaFlagImg from "../../assets/images/usa_flag.jpg";
+import logoImg from "../../assets/images/logo.jpg";
+
+// Import visa application images
 import visa1Img from "../../assets/images/visa1.jpeg";
 import visa2Img from "../../assets/images/visa2.jpeg";
 import visa3Img from "../../assets/images/visa3.jpeg";
 import visa4Img from "../../assets/images/visa4.jpeg";
 import visa5Img from "../../assets/images/visa5.jpeg";
-import logoImg from "../../assets/images/logo.jpg";
 
 export default function HomePage() {
   return (
@@ -29,8 +31,8 @@ export default function HomePage() {
       <PageTransition>
         {/* Hero Section */}
         <section className="relative bg-gradient-to-r from-blue-600 to-indigo-700 text-white overflow-hidden">
-          <div className="absolute inset-0 opacity-20">
-            <img src={visa4Img} alt="ABD Vizesi" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 opacity-30">
+            <img src={visa4Img} alt="Sadece Amerika" className="w-full h-full object-cover" />
           </div>
           <div className="container mx-auto px-4 py-20 md:py-28 relative z-10">
             <div className="max-w-3xl mx-auto text-center">
@@ -66,13 +68,13 @@ export default function HomePage() {
           <div className="container mx-auto px-4">
             <div className="grid md:grid-cols-2 gap-8 items-center max-w-5xl mx-auto">
               <div className="relative rounded-xl overflow-hidden shadow-lg h-80">
-                <img src={visa1Img} alt="Sadece Amerika Ofis" className="w-full h-full object-cover" />
+                <img src={visa2Img} alt="Green Card Profesyoneller" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
                   <div className="p-6">
                     <div className="bg-white/90 p-3 rounded-lg inline-block mb-2">
                       <img src={logoImg} alt="Sadece Amerika Logo" className="h-6 w-auto" />
                     </div>
-                    <h3 className="text-white text-xl font-bold">Ankara Merkez Ofisimiz</h3>
+                    <h3 className="text-white text-xl font-bold">Green Card Sahipleri İçin</h3>
                   </div>
                 </div>
               </div>
@@ -178,7 +180,7 @@ export default function HomePage() {
               {/* Green Card Integration Services */}
               <div className="bg-white rounded-lg shadow-sm overflow-hidden transform transition duration-300 hover:shadow-md hover:-translate-y-1">
                 <div className="h-48 relative overflow-hidden">
-                  <img src={visa2Img} alt="Green Card Entegrasyon" className="w-full h-full object-cover" />
+                  <img src={visa3Img} alt="Green Card Entegrasyon" className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
                   <div className="absolute bottom-0 left-0 p-4">
                     <span className="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-semibold">Yeni Hizmet</span>
@@ -235,7 +237,7 @@ export default function HomePage() {
               {/* Housing and Auto Services */}
               <div className="bg-white rounded-lg shadow-sm overflow-hidden transform transition duration-300 hover:shadow-md hover:-translate-y-1">
                 <div className="h-48 relative overflow-hidden">
-                  <img src={visa3Img} alt="Konaklama ve Araç Kiralama" className="w-full h-full object-cover" />
+                  <img src={visa1Img} alt="Konaklama ve Araç Kiralama" className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
                   <div className="absolute bottom-0 left-0 p-4">
                     <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-semibold">Popüler</span>
