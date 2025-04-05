@@ -38,14 +38,6 @@ async function comparePasswords(supplied: string, stored: string) {
     const [hashed, salt] = stored.split(".");
     const hashedBuf = Buffer.from(hashed, "hex");
     const suppliedBuf = (await scryptAsync(supplied, salt, 64)) as Buffer;
-    
-    // Make sure buffers are the same length to avoid errors
-    if (hashedBuf.length !== suppliedBuf.length) {
-      console.warn("Buffer length mismatch:", hashedBuf.length, suppliedBuf.length);
-      // Fall back to string comparison for buffers with different lengths
-      return hashed === suppliedBuf.toString("hex");
-    }
-    
     return timingSafeEqual(hashedBuf, suppliedBuf);
   } catch (error) {
     console.error("Password comparison error:", error);
