@@ -28,6 +28,15 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, CalendarIcon, ArrowRight, PlusCircle, CheckCircle } from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLocation } from "wouter";
+import { RemoteImage } from "@/components/ui/remote-image";
+
+// Vize formları ve pasaport resimleri
+import {
+  VISA_STAMP_URL,
+  VISA_FORM_URL,
+  PASSPORT_DOCUMENTS_URL,
+  PASSPORT_WITH_FLAG_URL
+} from "@/lib/image-constants";
 
 // Define the form schema with Zod
 const formSchema = z.object({
@@ -196,35 +205,55 @@ export default function ApplicationForm() {
                         )}
                       />
                       
-                      <div className="space-y-2">
+                      <div className="space-y-3">
                         <h3 className="text-sm font-medium">Vize Tipleri Hakkında Bilgi</h3>
-                        <div className="rounded-md bg-blue-50 p-4">
-                          <div className="flex">
-                            <div className="flex-shrink-0">
-                              <PlusCircle className="h-5 w-5 text-blue-400" />
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          {/* B1/B2 Vize kartı */}
+                          <div className="rounded-md overflow-hidden border border-blue-100">
+                            <div className="h-32 overflow-hidden relative">
+                              <RemoteImage 
+                                src={VISA_STAMP_URL}
+                                fallbackUrl={PASSPORT_WITH_FLAG_URL}
+                                altText="B1/B2 Vize - İş/Turist Vizesi"
+                                className="w-full h-full object-cover" 
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t from-blue-700/70 to-blue-700/10"></div>
+                              <div className="absolute bottom-0 left-0 p-3">
+                                <h4 className="text-white font-medium">B1/B2 Vize</h4>
+                                <p className="text-white/90 text-sm">İş/Turist Vizesi</p>
+                              </div>
                             </div>
-                            <div className="ml-3">
-                              <h4 className="text-sm font-medium text-blue-800">B1/B2 Vize - İş/Turist Vizesi</h4>
-                              <p className="mt-1 text-sm text-blue-700">
+                            <div className="p-3 bg-blue-50">
+                              <p className="text-sm text-blue-700">
                                 Turistik seyahat, aile ziyareti, tedavi, iş görüşmeleri gibi amaçlarla kullanılır.
                               </p>
                             </div>
                           </div>
-                        </div>
-                        
-                        <div className="rounded-md bg-blue-50 p-4">
-                          <div className="flex">
-                            <div className="flex-shrink-0">
-                              <PlusCircle className="h-5 w-5 text-blue-400" />
+                          
+                          {/* F1 Vize kartı */}
+                          <div className="rounded-md overflow-hidden border border-green-100">
+                            <div className="h-32 overflow-hidden relative">
+                              <RemoteImage 
+                                src={VISA_FORM_URL}
+                                fallbackUrl={PASSPORT_DOCUMENTS_URL}
+                                altText="F1 Vize - Öğrenci Vizesi"
+                                className="w-full h-full object-cover" 
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t from-green-700/70 to-green-700/10"></div>
+                              <div className="absolute bottom-0 left-0 p-3">
+                                <h4 className="text-white font-medium">F1 Vize</h4>
+                                <p className="text-white/90 text-sm">Öğrenci Vizesi</p>
+                              </div>
                             </div>
-                            <div className="ml-3">
-                              <h4 className="text-sm font-medium text-blue-800">F1 Vize - Öğrenci Vizesi</h4>
-                              <p className="mt-1 text-sm text-blue-700">
+                            <div className="p-3 bg-green-50">
+                              <p className="text-sm text-green-700">
                                 ABD'de yükseköğrenim görmek isteyen öğrencilerin başvurduğu vize türüdür.
                               </p>
                             </div>
                           </div>
                         </div>
+                        
                       </div>
                     </CardContent>
                     <CardFooter className="flex justify-end">

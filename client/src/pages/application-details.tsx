@@ -12,6 +12,15 @@ import { StatusTimeline } from "@/components/application/status-timeline";
 import { DocumentList } from "@/components/application/document-list";
 import { StatusUpdate } from "@/components/application/status-update";
 import { AppointmentCreate } from "@/components/application/appointment-create";
+import { RemoteImage } from "@/components/ui/remote-image";
+
+// Vize formları ve pasaport resimleri
+import {
+  VISA_STAMP_URL,
+  VISA_FORM_URL,
+  PASSPORT_DOCUMENTS_URL,
+  PASSPORT_WITH_FLAG_URL
+} from "@/lib/image-constants";
 
 export default function ApplicationDetails() {
   const { user } = useAuth();
@@ -137,11 +146,21 @@ export default function ApplicationDetails() {
               {/* Sol Kolon - Başvuru Durumu ve Özet */}
               <div className="lg:col-span-1 space-y-6">
                 <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle>Durum Takibi</CardTitle>
-                    <CardDescription>Başvurunuzun mevcut durumu</CardDescription>
-                  </CardHeader>
-                  <CardContent>
+                  <div className="relative h-40 overflow-hidden">
+                    <RemoteImage 
+                      src={PASSPORT_WITH_FLAG_URL}
+                      fallbackUrl={VISA_STAMP_URL}
+                      altText="ABD Vize Evrakları"
+                      className="w-full h-full object-cover" 
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-blue-900/90 to-blue-600/20 flex items-end">
+                      <div className="p-4">
+                        <CardTitle className="text-white mb-1">Durum Takibi</CardTitle>
+                        <CardDescription className="text-blue-100">Başvurunuzun mevcut durumu</CardDescription>
+                      </div>
+                    </div>
+                  </div>
+                  <CardContent className="pt-4">
                     <StatusTimeline status={application.status} />
                   </CardContent>
                 </Card>
@@ -266,13 +285,26 @@ export default function ApplicationDetails() {
                   
                   <TabsContent value="documents" className="mt-4">
                     <Card>
-                      <CardHeader>
-                        <CardTitle>Belgeler</CardTitle>
-                        <CardDescription>Başvurunuz için yüklediğiniz gerekli belgeler</CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <DocumentList applicationId={applicationId} />
-                      </CardContent>
+                      <div className="flex flex-col md:flex-row">
+                        <div className="md:w-1/3 relative">
+                          <div className="h-full min-h-[200px]">
+                            <RemoteImage 
+                              src={PASSPORT_DOCUMENTS_URL}
+                              fallbackUrl={VISA_FORM_URL}
+                              altText="ABD Vize Belgeleri" 
+                              className="w-full h-full object-cover" 
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-700/30 to-transparent md:bg-gradient-to-r md:from-gray-900/90 md:to-transparent" />
+                            <div className="absolute bottom-0 left-0 p-6 md:p-8">
+                              <h3 className="text-xl font-semibold text-white mb-2">Başvuru Belgeleri</h3>
+                              <p className="text-white/80 text-sm max-w-xs">Vize başvurunuz için gerekli tüm evraklar</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="md:w-2/3 p-6">
+                          <DocumentList applicationId={applicationId} />
+                        </div>
+                      </div>
                     </Card>
                   </TabsContent>
                 </Tabs>

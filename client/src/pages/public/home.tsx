@@ -13,21 +13,29 @@ import {
   Building2,
   Landmark
 } from "lucide-react";
+import { RemoteImage } from "@/components/ui/remote-image";
 
-// Import visa application images
-import usaFlagImg from "../../assets/images/usa_flag.jpg";
+// Resim URL'leri
+import {
+  USA_FLAG_URL,
+  PASSPORT_WITH_FLAG_URL,
+  VISA_STAMP_URL,
+  NEW_YORK_URL,
+  GOLDEN_GATE_URL,
+  STATUE_OF_LIBERTY_URL,
+  DIVERSE_PEOPLE_URL,
+  BUSINESS_MEETING_URL,
+  UNIVERSITY_URL,
+  APARTMENT_URL,
+  PASSPORT_DOCUMENTS_URL,
+  CITY_LIFE_URL,
+  GRAND_CANYON_URL,
+  AIRPORT_URL,
+  AIRPLANE_URL
+} from "@/lib/image-constants";
+
+// Yerel logoyu koru
 import logoImg from "../../assets/images/logo.jpg";
-
-// Import visa application images
-import visa1Img from "../../assets/images/visa1.jpeg";
-import visa2Img from "../../assets/images/visa2.jpeg";
-import visa3Img from "../../assets/images/visa3.jpeg";
-import visa4Img from "../../assets/images/visa4.jpeg";
-import visa5Img from "../../assets/images/visa5.jpeg";
-
-// Import new images
-import everydayInAmericaImg from "../../assets/images/new-images/everyday-in-america.png";
-import imageOneImg from "../../assets/images/new-images/image_1743801276689.png";
 
 export default function HomePage() {
   return (
@@ -36,12 +44,21 @@ export default function HomePage() {
         {/* Hero Section */}
         <section className="relative bg-gradient-to-r from-blue-600 to-indigo-700 text-white overflow-hidden">
           <div className="absolute inset-0 opacity-30">
-            <img src={everydayInAmericaImg} alt="Everyday in America" className="w-full h-full object-cover" />
+            <RemoteImage 
+              src={STATUE_OF_LIBERTY_URL} 
+              fallbackUrl={NEW_YORK_URL}
+              altText="Amerika'da Özgürlük Anıtı" 
+              className="w-full h-full object-cover" 
+            />
           </div>
           <div className="container mx-auto px-4 py-20 md:py-28 relative z-10">
             <div className="max-w-3xl mx-auto text-center">
               <div className="flex justify-center mb-6">
-                <img src={usaFlagImg} alt="ABD Bayrağı" className="h-12 w-auto rounded shadow-lg" />
+                <RemoteImage 
+                  src={USA_FLAG_URL} 
+                  altText="ABD Bayrağı" 
+                  className="h-12 w-auto rounded shadow-lg bg-white" 
+                />
               </div>
               <h1 className="text-4xl md:text-5xl font-bold mb-6">
                 ABD Vize Başvurunuzu Kolaylaştırıyoruz
@@ -72,7 +89,12 @@ export default function HomePage() {
           <div className="container mx-auto px-4">
             <div className="grid md:grid-cols-2 gap-8 items-center max-w-5xl mx-auto">
               <div className="relative rounded-xl overflow-hidden shadow-lg h-80">
-                <img src={imageOneImg} alt="Green Card Profesyoneller" className="w-full h-full object-cover" />
+                <RemoteImage 
+                  src={DIVERSE_PEOPLE_URL} 
+                  fallbackUrl={GOLDEN_GATE_URL}
+                  altText="Green Card Profesyoneller" 
+                  className="w-full h-full object-cover" 
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
                   <div className="p-6">
                     <div className="bg-white/90 p-3 rounded-lg inline-block mb-2">
@@ -184,7 +206,12 @@ export default function HomePage() {
               {/* Green Card Integration Services */}
               <div className="bg-white rounded-lg shadow-sm overflow-hidden transform transition duration-300 hover:shadow-md hover:-translate-y-1">
                 <div className="h-48 relative overflow-hidden">
-                  <img src={everydayInAmericaImg} alt="Green Card Entegrasyon" className="w-full h-full object-cover" />
+                  <RemoteImage 
+                    src={BUSINESS_MEETING_URL} 
+                    fallbackUrl={DIVERSE_PEOPLE_URL}
+                    altText="Green Card Entegrasyon" 
+                    className="w-full h-full object-cover" 
+                  />
                   <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
                   <div className="absolute bottom-0 left-0 p-4">
                     <span className="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-semibold">Yeni Hizmet</span>
@@ -241,7 +268,12 @@ export default function HomePage() {
               {/* Housing and Auto Services */}
               <div className="bg-white rounded-lg shadow-sm overflow-hidden transform transition duration-300 hover:shadow-md hover:-translate-y-1">
                 <div className="h-48 relative overflow-hidden">
-                  <img src={imageOneImg} alt="Konaklama ve Araç Kiralama" className="w-full h-full object-cover" />
+                  <RemoteImage 
+                    src={APARTMENT_URL} 
+                    fallbackUrl={CITY_LIFE_URL}
+                    altText="Konaklama ve Araç Kiralama" 
+                    className="w-full h-full object-cover" 
+                  />
                   <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
                   <div className="absolute bottom-0 left-0 p-4">
                     <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-semibold">Popüler</span>
@@ -347,7 +379,12 @@ export default function HomePage() {
         {/* CTA Section */}
         <section className="py-16 bg-blue-700 text-white relative overflow-hidden">
           <div className="absolute inset-0 opacity-20">
-            <img src={everydayInAmericaImg} alt="ABD Vize Başvurusu" className="w-full h-full object-cover" />
+            <RemoteImage 
+              src={AIRPLANE_URL}
+              fallbackUrl={AIRPORT_URL} 
+              altText="ABD Vize Başvurusu" 
+              className="w-full h-full object-cover" 
+            />
           </div>
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-3xl mx-auto text-center">
