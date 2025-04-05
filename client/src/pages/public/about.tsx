@@ -88,7 +88,7 @@ export default function AboutPage() {
               <div className="overflow-hidden rounded-lg shadow-sm">
                 <img src={visa2Img} alt="İstanbul ofisi" className="w-full h-64 object-cover object-center hover:scale-105 transition-transform" />
                 <div className="p-4 bg-white">
-                  <h3 className="font-semibold text-lg">İstanbul, Levent Ofisimiz</h3>
+                  <h3 className="font-semibold text-lg">İstanbul, Bahçelievler Ofisimiz</h3>
                   <p className="text-gray-600">Sadece Amerika Genel Merkezi</p>
                 </div>
               </div>
@@ -248,7 +248,7 @@ export default function AboutPage() {
                   İstanbul ofisimiz ile Amerika'daki ortaklarımız arasında güçlü bir iş birliği içerisinde çalışıyoruz. Bu sayede hem Amerika'daki işlemlerinizi hem de Türkiye'deki hazırlıklarınızı tek elden yönetebiliyoruz.
                 </p>
                 <p className="text-gray-600 mb-4">
-                  İstanbul Levent'teki merkez ofisimiz, göçmenlik hukuku alanında uzmanlaşmış danışmanlarımızın çalıştığı ve vize başvurularınızın tüm ön hazırlık işlemlerinin titizlikle yürütüldüğü yerdir.
+                  İstanbul Bahçelievler'deki merkez ofisimiz, göçmenlik hukuku alanında uzmanlaşmış danışmanlarımızın çalıştığı ve vize başvurularınızın tüm ön hazırlık işlemlerinin titizlikle yürütüldüğü yerdir.
                 </p>
                 <p className="text-gray-600">
                   İstanbul'da gerçekleştirilen ön görüşmeler ve hazırlık çalışmalarının ardından, dosyanız Amerika'daki ortaklarımız tarafından incelenerek vize başvuru süreciniz en doğru şekilde yönlendirilir.

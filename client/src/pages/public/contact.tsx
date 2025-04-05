@@ -260,7 +260,8 @@ export default function ContactPage() {
                     style={{ border: 0 }} 
                     allowFullScreen 
                     loading="lazy" 
-                    referrerPolicy="no-referrer-when-downgrade">
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="Nish Istanbul, Çobançeşme, Sanayi Cd. No: 44, B Block 60. Ofis, PK:34196 Bahçelievler/İstanbul">
                   </iframe>
                 </div>
               </div>
