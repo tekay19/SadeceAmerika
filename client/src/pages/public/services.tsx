@@ -32,6 +32,10 @@ import {
   AIRPLANE_URL
 } from "@/lib/image-constants";
 
+// Konaklama ve yatırım görselleri için URL
+const APARTMENT_URL = "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=1000&auto=format&fit=crop";
+const INVESTMENT_URL = "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?q=80&w=1000&auto=format&fit=crop";
+
 export default function ServicesPage() {
   return (
     <PublicLayout>
@@ -298,6 +302,99 @@ export default function ServicesPage() {
           </div>
         </section>
         
+        {/* Investor Visa Special Section */}
+        <section className="py-16 bg-gradient-to-r from-indigo-50 to-purple-50">
+          <div className="container mx-auto px-4">
+            <div className="grid lg:grid-cols-2 gap-10 items-center">
+              <div className="order-2 lg:order-1">
+                <h2 className="text-3xl font-bold mb-6">Amerika'da Yatırımcı Vizesi ile Yaşamak ve İş Kurmak</h2>
+                <p className="text-lg text-gray-700 mb-6">
+                  Amerika, yatırım yapmak isteyen yabancı girişimcilere özel yatırımcı vizesi seçenekleri sunar. 
+                  Bu vizeler, ABD'de iş kurmak, yaşamak, çalışmak ve aileyle birlikte uzun süreli olarak ikamet 
+                  etmek isteyenler için ideal bir fırsattır.
+                </p>
+                
+                <div className="mb-6">
+                  <h3 className="text-xl font-semibold mb-3">🎯 Yatırımcı Vizeleri Kimler İçin Uygun?</h3>
+                  <ul className="space-y-2 pl-5">
+                    <li className="flex items-start">
+                      <span className="text-purple-500 mr-2">✓</span>
+                      <span>Amerika'da yeni bir iş kurmak isteyen girişimciler</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-purple-500 mr-2">✓</span>
+                      <span>Mevcut bir işletmeyi satın alarak yönetmek isteyen yatırımcılar</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-purple-500 mr-2">✓</span>
+                      <span>ABD'de uzun vadeli yaşamak isteyen aileler</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-purple-500 mr-2">✓</span>
+                      <span>Ticaret hayatını Amerika'ya taşımayı hedefleyen profesyoneller</span>
+                    </li>
+                  </ul>
+                </div>
+                
+                <div className="mb-6">
+                  <h3 className="text-xl font-semibold mb-3">📌 Yatırımcıdan Beklenen Temel Şartlar</h3>
+                  <ul className="space-y-2 pl-5">
+                    <li className="flex items-start">
+                      <span className="text-purple-500 mr-2">✓</span>
+                      <span>Gerçek bir işletmeye yatırım yapılmalı</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-purple-500 mr-2">✓</span>
+                      <span>Yatırım aktif ve sürdürülebilir bir ticari faaliyet olmalı</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-purple-500 mr-2">✓</span>
+                      <span>Yatırımcı, işletmenin yönetiminde aktif rol almalı</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-purple-500 mr-2">✓</span>
+                      <span>İşletme, istihdam sağlamaya uygun yapıda olmalı</span>
+                    </li>
+                  </ul>
+                </div>
+                
+                <div className="flex space-x-4">
+                  <Link href="/auth?mode=register">
+                    <Button className="bg-purple-600 hover:bg-purple-700">Başvuru Yap</Button>
+                  </Link>
+                  <Link href="/auth?mode=register">
+                    <Button variant="outline" className="border-purple-600 text-purple-700 hover:bg-purple-50">Detaylı Bilgi Al</Button>
+                  </Link>
+                </div>
+              </div>
+              
+              <div className="order-1 lg:order-2 mb-8 lg:mb-0">
+                <div className="relative">
+                  <div className="rounded-lg overflow-hidden shadow-xl">
+                    <RemoteImage 
+                      src={INVESTMENT_URL}
+                      fallbackUrl={BUSINESS_MEETING_URL}
+                      altText="Amerika'da Yatırımcı Vizesi" 
+                      className="w-full h-[500px] object-cover" 
+                    />
+                  </div>
+                  <div className="absolute -bottom-6 -right-6 bg-white p-4 rounded-lg shadow-lg w-48">
+                    <div className="flex items-center">
+                      <div className="bg-purple-100 text-purple-700 w-12 h-12 rounded-full flex items-center justify-center mr-3">
+                        <Landmark size={24} />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-sm">E-2 Yatırımcı Vizesi</h4>
+                        <p className="text-xs text-gray-500">5 yıla kadar geçerli</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        
         {/* Additional Services */}
         <section className="py-16 bg-gradient-to-r from-blue-50 to-green-50">
           <div className="container mx-auto px-4">
@@ -376,7 +473,7 @@ export default function ServicesPage() {
               <div className="bg-white rounded-lg shadow-sm overflow-hidden transform transition duration-300 hover:shadow-md hover:-translate-y-1">
                 <div className="h-48 relative overflow-hidden">
                   <RemoteImage 
-                    src={APARTMENT_URL} 
+                    src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=1000&auto=format&fit=crop" 
                     fallbackUrl={CITY_LIFE_URL}
                     altText="Konaklama ve Araç Kiralama" 
                     className="w-full h-full object-cover" 

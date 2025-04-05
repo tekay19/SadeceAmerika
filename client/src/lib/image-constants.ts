@@ -1,5 +1,10 @@
 // Bu dosya, projede kullanılan resim URL'lerini saklayan sabitleri içerir
 
+// Konaklama ve yaşam tarzı görselleri - En üste taşındı (bağımlılık sıralaması için)
+export const APARTMENT_URL = "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=1000&auto=format&fit=crop";
+export const CITY_LIFE_URL = "https://images.unsplash.com/photo-1517732306149-e8f829eb588a?q=80&w=1000&auto=format&fit=crop";
+export const DIVERSE_PEOPLE_URL = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=1000&auto=format&fit=crop";
+
 // Bayraklar ve genel görseller
 export const USA_FLAG_URL = "https://images.unsplash.com/photo-1603417406253-4c65c06974c2?q=80&w=1000&auto=format&fit=crop";
 export const PASSPORT_WITH_FLAG_URL = "https://images.unsplash.com/photo-1614633833026-0820552978b6?q=80&w=1000&auto=format&fit=crop";
@@ -18,11 +23,6 @@ export const GRAND_CANYON_URL = "https://images.unsplash.com/photo-1535052288192
 // İş ve eğitim görselleri
 export const BUSINESS_MEETING_URL = "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=1000&auto=format&fit=crop";
 export const UNIVERSITY_URL = "https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?q=80&w=1000&auto=format&fit=crop";
-
-// İnsanlar ve yaşam tarzı görselleri
-export const DIVERSE_PEOPLE_URL = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=1000&auto=format&fit=crop";
-export const CITY_LIFE_URL = "https://images.unsplash.com/photo-1517732306149-e8f829eb588a?q=80&w=1000&auto=format&fit=crop";
-export const APARTMENT_URL = "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=1000&auto=format&fit=crop";
 
 // Havaalanı ve ulaşım görselleri
 export const AIRPORT_URL = "https://images.unsplash.com/photo-1506012787146-f92b2d7d6d96?q=80&w=1000&auto=format&fit=crop";
