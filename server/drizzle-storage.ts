@@ -348,16 +348,31 @@ async function initializeData() {
     
     if (existingAdmins.length === 0) {
       const now = new Date();
-      // Admin kullanıcısını verilen özel kullanıcı adı ve 
-      // güvenli hash'lenmiş şifreyle oluştur
+      
+      // Kullanıcı hesaplarını oluştur - verilen şifreler zaten hash'lenmiş
+      
+      // Admin kullanıcısı oluştur
       await db.insert(users).values({
-        username: "murat_samet19",
-        password: "4da1d09a7aab402bfa4c3c3e37f3f8972660730c72268ed4d335f570db1f8f01fde4bb32e3cdc126f78f4f0da4d682469a7e5f8b71edc24d73cd399272626a7c.a0fbc6ad039660d510c1ab5108a5aba6",
+        username: "admin",
+        password: "7ec4fcc11730d89a2376fe7d8a5c3a5cc1f4155f4dd2b7a8b52ea4f3c03cd30ac442bc3666043a1b861789de49cacb8c8e01e4a1de8746b32c0a28d15e7cf533.5f58c240eeaaa0ce91e3e8ece83c4cbf", // admin123
         firstName: "Admin",
         lastName: "User",
-        email: "admin1@example.com",
+        email: "admin@example.com",
         phone: "+90 555 000 0000",
         role: "admin",
+        createdAt: now,
+        updatedAt: now
+      });
+      
+      // Murat kullanıcısı oluştur
+      await db.insert(users).values({
+        username: "murat_",
+        password: "d431dfa6e7a6a5f1064235c36daf09fdbf30bc9b79d3a84e1db4f1de3c0c17db2f9f1f54e9fcf83c35d944e82af4f645ddc72fe7f3c0884fa4a7f4ddc66c0d4e.af02ae15dcc1fb2c", // samet19
+        firstName: "Murat",
+        lastName: "Samet",
+        email: "murat@example.com",
+        phone: "+90 555 111 1111",
+        role: "user",
         createdAt: now,
         updatedAt: now
       });

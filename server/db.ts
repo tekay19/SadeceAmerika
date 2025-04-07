@@ -10,16 +10,17 @@ if (!process.env.PGUSER || !process.env.PGPASSWORD || !process.env.PGHOST || !pr
   process.exit(1);
 }
 
-// Create a PostgreSQL connection pool - use direct connection params instead of URL
+// Create a PostgreSQL connection pool - using individual environment variables
+// We had an invalid DATABASE_URL, so we'll use individual environment variables instead
 const pool = new Pool({
   user: process.env.PGUSER,
   password: process.env.PGPASSWORD,
   host: process.env.PGHOST,
-  port: parseInt(process.env.PGPORT),
+  port: parseInt(process.env.PGPORT || '5432'),
   database: process.env.PGDATABASE,
   max: 10, // Maximum number of clients in the pool
   idleTimeoutMillis: 30000, // How long a client is allowed to remain idle before being closed
-  connectionTimeoutMillis: 2000, // How long to wait for a connection
+  connectionTimeoutMillis: 10000, // Increased connection timeout to 10 seconds
   ssl: { rejectUnauthorized: false } // SSL required but don't reject unauthorized
 });
 

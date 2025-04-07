@@ -73,14 +73,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   let activeStorage: IStorage;
   
   try {
-    if (process.env.DATABASE_URL) {
-      console.log('Using PostgreSQL database');
+    if (process.env.PGUSER && process.env.PGPASSWORD && process.env.PGHOST && process.env.PGPORT && process.env.PGDATABASE) {
+      console.log('Using PostgreSQL database with connection variables');
       activeStorage = await initializeDrizzleStorage();
       
       // Hafıza tabanlı depolama yerine PostgreSQL depolamayı kullan
       global.storage = activeStorage;
     } else {
-      console.log('DATABASE_URL not found, using in-memory storage');
+      console.log('PostgreSQL connection variables not found, using in-memory storage');
       activeStorage = storage;
       global.storage = storage;
     }
