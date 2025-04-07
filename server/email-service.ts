@@ -153,7 +153,9 @@ class EmailService {
    * Şifre sıfırlama e-postası gönderir
    */
   async sendPasswordResetEmail(email: string, resetToken: string, username: string): Promise<boolean> {
-    const resetUrl = `${process.env.APP_URL || 'http://localhost:5000'}/reset-password?token=${resetToken}`;
+    // Sunucu URL'si yerine doğrudan çalışan sunucunun adresini kullanmak için
+    // Replit tarafından otomatik oluşturulan adresi kullan
+    const resetUrl = `https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co/reset-password?token=${resetToken}`;
     
     const subject = 'Şifre Sıfırlama Talebi - Sadece Amerika';
     const html = `

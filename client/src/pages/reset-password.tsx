@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useLocation, Redirect, Link } from "wouter";
+import { useState, useEffect } from "react";
+import { useLocation, Link } from "wouter";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -12,17 +12,31 @@ import { Label } from "@/components/ui/label";
 
 export default function ResetPassword() {
   // URL'den token bilgisini alıyoruz
-  const token = new URLSearchParams(window.location.search).get("token");
+  const [token, setToken] = useState<string | null>(null);
   const [_, navigate] = useLocation();
 
   const { toast } = useToast();
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-
-  // Token yoksa ana sayfaya yönlendir
-  if (!token) {
-    return <Redirect to="/" />;
+  
+  // Component yüklendiğinde URL'den token'ı al
+  useEffect(() => {
+    const tokenParam = new URLSearchParams(window.location.search).get("token");
+    setToken(tokenParam);
+    
+    if (!tokenParam) {
+      navigate("/");
+    }
+  }, []);
+  
+  // Token yoksa yükleniyor göster
+  if (token === null) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
   }
 
   // Şifre sıfırlama mutasyonu
