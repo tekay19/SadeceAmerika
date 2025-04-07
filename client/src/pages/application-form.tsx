@@ -43,6 +43,12 @@ const formSchema = z.object({
   visaTypeId: z.string().min(1, "Vize tipini seçiniz"),
   purpose: z.string().min(5, "Seyahat amacınızı detaylı olarak yazınız").max(500, "En fazla 500 karakter girebilirsiniz"),
   travelDate: z.date().optional(),
+  // Kişisel bilgiler
+  firstName: z.string().min(2, "İsim en az 2 karakter olmalıdır"),
+  lastName: z.string().min(2, "Soyisim en az 2 karakter olmalıdır"),
+  age: z.string().min(1, "Yaş bilgisi gereklidir").transform(Number),
+  phone: z.string().min(10, "Telefon numarası en az 10 karakter olmalıdır"),
+  occupation: z.string().min(2, "Meslek bilgisi en az 2 karakter olmalıdır"),
 });
 
 export default function ApplicationForm() {
@@ -50,7 +56,7 @@ export default function ApplicationForm() {
   const { toast } = useToast();
   const [location, navigate] = useLocation();
   const [step, setStep] = useState(1);
-  const totalSteps = 3;
+  const totalSteps = 4;
   
   // Fetch visa types
   const { data: visaTypes, isLoading: isLoadingVisaTypes } = useQuery({
@@ -64,6 +70,11 @@ export default function ApplicationForm() {
       visaTypeId: "",
       purpose: "",
       travelDate: undefined,
+      firstName: "",
+      lastName: "",
+      age: "",
+      phone: "",
+      occupation: "",
     },
   });
   
@@ -103,6 +114,7 @@ export default function ApplicationForm() {
     const currentStepFields = {
       1: ["visaTypeId"],
       2: ["purpose", "travelDate"],
+      3: ["firstName", "lastName", "age", "phone", "occupation"],
     };
     
     // Validate current step fields
@@ -348,8 +360,117 @@ export default function ApplicationForm() {
                   </Card>
                 )}
                 
-                {/* Step 3: Review and Submit */}
+                {/* Step 3: Personal Information */}
                 {step === 3 && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Kişisel Bilgiler</CardTitle>
+                      <CardDescription>
+                        Başvurunuz için gerekli kişisel bilgilerinizi girin
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <FormField
+                          control={form.control}
+                          name="firstName"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Ad</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Adınız" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <FormField
+                          control={form.control}
+                          name="lastName"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Soyad</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Soyadınız" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <FormField
+                          control={form.control}
+                          name="age"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Yaş</FormLabel>
+                              <FormControl>
+                                <Input 
+                                  type="number" 
+                                  placeholder="Yaşınız" 
+                                  {...field} 
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <FormField
+                          control={form.control}
+                          name="phone"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Telefon</FormLabel>
+                              <FormControl>
+                                <Input 
+                                  placeholder="Telefon numarınız" 
+                                  {...field} 
+                                />
+                              </FormControl>
+                              <FormDescription>
+                                Örnek: +90 555 123 4567
+                              </FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      
+                      <FormField
+                        control={form.control}
+                        name="occupation"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Meslek</FormLabel>
+                            <FormControl>
+                              <Input 
+                                placeholder="Mesleğiniz" 
+                                {...field} 
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </CardContent>
+                    <CardFooter className="flex justify-between">
+                      <Button type="button" variant="outline" onClick={prevStep}>
+                        Geri
+                      </Button>
+                      <Button type="button" onClick={nextStep}>
+                        Devam Et
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                )}
+                
+                {/* Step 4: Review and Submit */}
+                {step === 4 && (
                   <Card>
                     <CardHeader>
                       <CardTitle>Başvuru Özeti</CardTitle>
@@ -384,9 +505,30 @@ export default function ApplicationForm() {
                           </div>
                           
                           <div className="grid grid-cols-3 gap-4 py-3">
-                            <dt className="text-sm font-medium text-gray-500">Başvuran</dt>
+                            <dt className="text-sm font-medium text-gray-500">Ad Soyad</dt>
                             <dd className="text-sm text-gray-900 col-span-2">
-                              {user?.firstName} {user?.lastName}
+                              {form.getValues("firstName")} {form.getValues("lastName")}
+                            </dd>
+                          </div>
+                          
+                          <div className="grid grid-cols-3 gap-4 py-3">
+                            <dt className="text-sm font-medium text-gray-500">Yaş</dt>
+                            <dd className="text-sm text-gray-900 col-span-2">
+                              {form.getValues("age")}
+                            </dd>
+                          </div>
+                          
+                          <div className="grid grid-cols-3 gap-4 py-3">
+                            <dt className="text-sm font-medium text-gray-500">Telefon</dt>
+                            <dd className="text-sm text-gray-900 col-span-2">
+                              {form.getValues("phone")}
+                            </dd>
+                          </div>
+                          
+                          <div className="grid grid-cols-3 gap-4 py-3">
+                            <dt className="text-sm font-medium text-gray-500">Meslek</dt>
+                            <dd className="text-sm text-gray-900 col-span-2">
+                              {form.getValues("occupation")}
                             </dd>
                           </div>
                         </dl>

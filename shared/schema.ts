@@ -94,7 +94,13 @@ export const applications = pgTable("applications", {
   applicationDate: timestamp("application_date").notNull().defaultNow(),
   status: applicationStatusEnum("status").notNull().default('pending'),
   notes: text("notes"),
-  assignedOfficerId: integer("assigned_officer_id").references(() => users.id)
+  assignedOfficerId: integer("assigned_officer_id").references(() => users.id),
+  // Ek kişisel bilgiler
+  firstName: text("first_name"),
+  lastName: text("last_name"),
+  age: integer("age"),
+  phone: text("phone"),
+  occupation: text("occupation") // Yapılan iş/meslek
 });
 
 // Documents table
@@ -186,7 +192,13 @@ export const insertApplicationSchema = createInsertSchema(applications, {
   visaTypeId: z.number(),
   status: z.enum(['pending', 'reviewing', 'approved', 'rejected', 'completed']),
   notes: z.string().optional(),
-  assignedOfficerId: z.number().optional()
+  assignedOfficerId: z.number().optional(),
+  // Ek kişisel bilgiler
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  age: z.number().optional(),
+  phone: z.string().optional(),
+  occupation: z.string().optional()
 });
 
 // Schema for document insert
