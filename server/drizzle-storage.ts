@@ -431,7 +431,27 @@ export class DrizzleStorage implements IStorage {
   }
   
   async getLoginVerificationCodeByUserId(userId: number): Promise<LoginVerificationCode | undefined> {
-    const result = await db.select().from(loginVerificationCodes).where(eq(loginVerificationCodes.userId, userId));
+    // En son oluşturulan ve süresi dolmamış olanı bul
+    const now = new Date();
+    
+    const result = await db
+      .select()
+      .from(loginVerificationCodes)
+      .where(
+        and(
+          eq(loginVerificationCodes.userId, userId),
+          gt(loginVerificationCodes.expiresAt, now),
+          eq(loginVerificationCodes.isUsed, false)
+        )
+      )
+      .orderBy(desc(loginVerificationCodes.createdAt))
+      .limit(1);
+    
+    console.log(`Found verification code for user ${userId}:`, result.length > 0 ? "Yes" : "No");
+    if (result.length > 0) {
+      console.log(`Code: ${result[0].code}, Expires: ${result[0].expiresAt}`);
+    }
+    
     return result.length > 0 ? result[0] : undefined;
   }
   
