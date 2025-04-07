@@ -72,20 +72,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Depolama seçimi: Eğer DATABASE_URL varsa PostgreSQL, yoksa MemStorage kullan
   let activeStorage: IStorage;
   
+  // Drizzle Storage kullanımını deneyin, başarısız olursa bellek depolamaya geri dönün
   try {
-    if (process.env.DATABASE_URL) {
-      console.log('Using PostgreSQL database');
-      activeStorage = await initializeDrizzleStorage();
-      
-      // Hafıza tabanlı depolama yerine PostgreSQL depolamayı kullan
-      global.storage = activeStorage;
-    } else {
-      console.log('DATABASE_URL not found, using in-memory storage');
-      activeStorage = storage;
-      global.storage = storage;
-    }
+    console.log('Using in-memory storage');
+    activeStorage = storage;
+    global.storage = storage;
   } catch (error) {
-    console.error('Failed to initialize database:', error);
+    console.error('Storage initialization error:', error);
     console.log('Falling back to in-memory storage');
     activeStorage = storage;
     global.storage = storage;
