@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { Link, useLocation } from "wouter";
 import { 
@@ -12,7 +12,8 @@ import {
   Calendar,
   HelpCircle,
   MessageSquare,
-  LogOut
+  LogOut,
+  X
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,6 +23,17 @@ export function Header() {
   const { user, logoutMutation } = useAuth();
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  
+  // Scroll listener to add shadow on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
   
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -90,16 +102,16 @@ export function Header() {
   
   return (
     <>
-      <header className="bg-white border-b border-gray-200 shadow-sm">
+      <header className={cn(
+        "bg-white border-b border-gray-200 sticky top-0 z-20 transition-shadow duration-200",
+        isScrolled ? "shadow-md" : "shadow-sm"
+      )}>
         <div className="flex items-center justify-between px-4 py-3">
-          {/* Mobile menu button */}
-          <button 
-            className="md:hidden text-gray-500 hover:text-gray-700 focus:outline-none"
-            onClick={toggleMobileMenu}
-            aria-label="Toggle mobile menu"
-          >
-            <Menu className="w-6 h-6" />
-          </button>
+          {/* Logo for mobile */}
+          <div className="md:hidden flex items-center">
+            <img src="/logo.jpg" alt="SadeceAmerika logo" className="h-8 mr-2" />
+            <span className="text-sm font-semibold text-gray-800">ABD Vize</span>
+          </div>
           
           {/* Search */}
           <div className="flex-1 max-w-md mx-4 hidden md:block">
@@ -114,23 +126,37 @@ export function Header() {
           </div>
           
           {/* Action buttons */}
-          <div className="flex items-center">
+          <div className="flex items-center gap-2">
             <Button variant="ghost" size="icon" className="text-gray-500 hover:text-gray-700">
               <Bell className="h-5 w-5" />
             </Button>
-            <div className="relative ml-4 md:hidden">
-              <Button variant="ghost" size="icon" className="rounded-full">
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                  <User className="h-4 w-4" />
-                </div>
-              </Button>
-            </div>
+            
+            {/* User profile - always visible */}
+            <Button variant="ghost" size="icon" className="rounded-full">
+              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                <User className="h-4 w-4" />
+              </div>
+            </Button>
+            
+            {/* Mobile menu toggle */}
+            <Button 
+              variant="ghost"
+              size="icon" 
+              className="md:hidden text-gray-500 hover:text-gray-700"
+              onClick={toggleMobileMenu}
+              aria-label="Toggle mobile menu"
+            >
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </Button>
           </div>
         </div>
       </header>
 
-      {/* Mobile Menu */}
-      <div className={cn("md:hidden bg-white border-b border-gray-200 shadow-md", !mobileMenuOpen && "hidden")}>
+      {/* Mobile Menu - Full Screen Overlay */}
+      <div className={cn(
+        "fixed inset-0 z-10 md:hidden bg-white pt-16 pb-20 transition-transform duration-300 ease-in-out overflow-y-auto",
+        mobileMenuOpen ? "translate-x-0" : "translate-x-full"
+      )}>
         <div className="p-4 border-b border-gray-200">
           <div className="flex items-center">
             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
@@ -143,8 +169,23 @@ export function Header() {
           </div>
         </div>
         
+        {/* Mobile search */}
+        <div className="p-4 border-b border-gray-200">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Input
+              type="text"
+              placeholder="Başvuru ara..."
+              className="pl-10 pr-3 py-2 w-full"
+            />
+          </div>
+        </div>
+        
         <nav className="p-4">
-          <ul className="space-y-2">
+          <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+            Ana Menü
+          </div>
+          <ul className="space-y-1 mb-6">
             {navItems.map((item) => {
               const isActive = location === item.href;
               return (
@@ -156,7 +197,12 @@ export function Header() {
                 />
               );
             })}
-            
+          </ul>
+          
+          <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+            Destek
+          </div>
+          <ul className="space-y-1 mb-6">
             {supportItems.map((item) => {
               const isActive = location === item.href;
               return (
@@ -168,18 +214,19 @@ export function Header() {
                 />
               );
             })}
-            
-            <li>
-              <button 
-                className="flex items-center px-3 py-2 w-full text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100"
-                onClick={handleLogout}
-                disabled={logoutMutation.isPending}
-              >
-                <LogOut className="w-5 h-5 mr-2" />
-                <span>Çıkış Yap</span>
-              </button>
-            </li>
           </ul>
+          
+          <div className="border-t border-gray-100 pt-4 mt-4">
+            <Button 
+              className="w-full justify-center"
+              variant="outline"
+              onClick={handleLogout}
+              disabled={logoutMutation.isPending}
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              <span>Çıkış Yap</span>
+            </Button>
+          </div>
         </nav>
       </div>
     </>
