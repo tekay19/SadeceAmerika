@@ -336,51 +336,111 @@ export default function AdminSettings() {
                             Test e-postası gönderilecek adres.
                           </p>
                         </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="testSubject">Test E-posta Konusu</Label>
+                          <Input
+                            id="testSubject"
+                            type="text"
+                            placeholder="Test E-postası"
+                            defaultValue="Test E-postası"
+                          />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="testMessage">Test E-posta Mesajı</Label>
+                          <Textarea
+                            id="testMessage"
+                            placeholder="Bu bir test e-postasıdır."
+                            defaultValue="Bu bir test e-postasıdır."
+                            rows={3}
+                          />
+                        </div>
                         <div className="space-y-2 flex items-end">
-                          <Button 
-                            className="w-full" 
-                            variant="outline"
-                            onClick={() => {
-                              const emailInput = document.getElementById('testEmail') as HTMLInputElement;
-                              const email = emailInput?.value;
-                              
-                              if (!email) {
-                                toast({
-                                  title: "Hata",
-                                  description: "Lütfen geçerli bir e-posta adresi girin.",
-                                  variant: "destructive",
-                                });
-                                return;
-                              }
-                              
-                              // Test e-postası gönder
-                              apiRequest("POST", "/api/admin/send-test-monthly-email", { 
-                                userId: user?.id 
-                              }).then((response: any) => {
-                                if (response.success) {
-                                  toast({
-                                    title: "Test E-postası Gönderildi",
-                                    description: response.message || "Test e-postası başarıyla gönderildi.",
-                                  });
-                                } else {
+                          <div className="space-y-2 w-full">
+                            <Button 
+                              className="w-full mb-2" 
+                              variant="outline"
+                              onClick={() => {
+                                // Aylık test e-postası gönder
+                                apiRequest("POST", "/api/admin/send-test-monthly-email", { 
+                                  userId: user?.id 
+                                }).then((response: any) => {
+                                  if (response.success) {
+                                    toast({
+                                      title: "Aylık Test E-postası Gönderildi",
+                                      description: response.message || "Test e-postası başarıyla gönderildi.",
+                                    });
+                                  } else {
+                                    toast({
+                                      title: "Hata",
+                                      description: response.message || "Test e-postası gönderilemedi.",
+                                      variant: "destructive",
+                                    });
+                                  }
+                                }).catch((error) => {
                                   toast({
                                     title: "Hata",
-                                    description: response.message || "Test e-postası gönderilemedi.",
+                                    description: `Test e-postası gönderilemedi: ${error.message}`,
                                     variant: "destructive",
                                   });
-                                }
-                              }).catch((error) => {
-                                toast({
-                                  title: "Hata",
-                                  description: `Test e-postası gönderilemedi: ${error.message}`,
-                                  variant: "destructive",
                                 });
-                              });
-                            }}
-                          >
-                            <Mail className="mr-2 h-4 w-4" />
-                            Test E-postası Gönder
-                          </Button>
+                              }}
+                            >
+                              <Mail className="mr-2 h-4 w-4" /> Aylık Test E-postası
+                            </Button>
+                            
+                            <Button 
+                              className="w-full" 
+                              variant="default"
+                              onClick={() => {
+                                const emailInput = document.getElementById('testEmail') as HTMLInputElement;
+                                const subjectInput = document.getElementById('testSubject') as HTMLInputElement;
+                                const messageInput = document.getElementById('testMessage') as HTMLTextAreaElement;
+                                
+                                const email = emailInput?.value;
+                                const subject = subjectInput?.value || "Test E-postası";
+                                const message = messageInput?.value || "Bu bir test e-postasıdır.";
+                                
+                                if (!email) {
+                                  toast({
+                                    title: "Hata",
+                                    description: "Lütfen geçerli bir e-posta adresi girin.",
+                                    variant: "destructive",
+                                  });
+                                  return;
+                                }
+                                
+                                // Genel test e-postası gönder
+                                apiRequest("POST", "/api/admin/send-test-email", { 
+                                  email,
+                                  subject,
+                                  message
+                                }).then((response: any) => {
+                                  if (response.success) {
+                                    toast({
+                                      title: "Test E-postası Gönderildi",
+                                      description: response.message || `Test e-postası başarıyla gönderildi: ${email}`,
+                                    });
+                                  } else {
+                                    toast({
+                                      title: "Hata",
+                                      description: response.message || "Test e-postası gönderilemedi.",
+                                      variant: "destructive",
+                                    });
+                                  }
+                                }).catch((error) => {
+                                  toast({
+                                    title: "Hata",
+                                    description: `Test e-postası gönderilemedi: ${error.message}`,
+                                    variant: "destructive",
+                                  });
+                                });
+                              }}
+                            >
+                              <Mail className="mr-2 h-4 w-4" /> Özel Test E-postası Gönder
+                            </Button>
+                          </div>
                         </div>
                       </div>
                       

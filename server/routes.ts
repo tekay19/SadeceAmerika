@@ -987,6 +987,62 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Genel test e-postası gönder (Admin)
+  app.post('/api/admin/send-test-email', isAdmin, async (req, res) => {
+    try {
+      const { email, subject, message } = req.body;
+      
+      if (!email || !subject || !message) {
+        return res.status(400).json({ 
+          success: false, 
+          message: 'E-posta, konu ve mesaj alanları gereklidir' 
+        });
+      }
+      
+      // E-posta servisi modülünü import et
+      const { emailService } = await import('./email-service');
+      
+      // HTML içeriğini hazırla
+      const htmlContent = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px;">
+          <h2 style="color: #003366;">Sadece Amerika - Test E-postası</h2>
+          <div style="border-left: 4px solid #003366; padding-left: 15px; margin: 15px 0;">
+            <p>${message}</p>
+          </div>
+          <p style="color: #666; font-size: 0.9em;">Bu bir test e-postasıdır. Eğer bu e-postayı aldıysanız, e-posta sistemimiz doğru çalışıyor demektir.</p>
+          <hr style="border: 1px solid #eee; margin: 20px 0;" />
+          <p style="color: #999; font-size: 0.8em;">© ${new Date().getFullYear()} Sadece Amerika</p>
+        </div>
+      `;
+      
+      // E-postayı gönder
+      const success = await emailService.sendEmail({
+        to: email,
+        subject: subject,
+        html: htmlContent
+      });
+      
+      if (success) {
+        res.json({ 
+          success: true, 
+          message: `Test e-postası başarıyla gönderildi: ${email}` 
+        });
+      } else {
+        res.status(500).json({ 
+          success: false, 
+          message: 'Test e-postası gönderilirken bir hata oluştu' 
+        });
+      }
+    } catch (error) {
+      console.error('Test e-posta gönderme hatası:', error);
+      res.status(500).json({ 
+        success: false, 
+        message: 'E-posta gönderilirken bir hata oluştu',
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+  
   // Tüm kullanıcılara aylık güncellemeleri gönder (Admin)
   app.post('/api/admin/send-monthly-emails', isAdmin, async (req, res) => {
     try {
