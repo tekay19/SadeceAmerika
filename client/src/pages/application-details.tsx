@@ -178,6 +178,27 @@ export default function ApplicationDetails() {
                       <p className="text-sm text-gray-500">Vize Tipi</p>
                       <p className="font-medium">{visaTypeMap[application.visaTypeId] || 'Diğer'}</p>
                     </div>
+                    {/* Kişisel Bilgiler */}
+                    <div>
+                      <p className="text-sm text-gray-500">Ad Soyad</p>
+                      <p className="font-medium">{application.firstName} {application.lastName}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Yaş</p>
+                      <p className="font-medium">{application.age}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Telefon</p>
+                      <p className="font-medium">{application.phone}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Meslek</p>
+                      <p className="font-medium">{application.occupation}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Seyahat Amacı</p>
+                      <p className="font-medium">{application.purpose}</p>
+                    </div>
                     <div>
                       <p className="text-sm text-gray-500">Oluşturulma Tarihi</p>
                       <p className="font-medium">{formatDate(application.submittedAt)}</p>
@@ -242,6 +263,29 @@ export default function ApplicationDetails() {
                         <CardDescription>Vize başvurunuza ait ayrıntılı bilgiler</CardDescription>
                       </CardHeader>
                       <CardContent className="space-y-6">
+                        {/* Kişisel Bilgiler */}
+                        <div>
+                          <h3 className="text-md font-medium mb-2">Kişisel Bilgiler</h3>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <p className="text-sm text-gray-500">Ad Soyad</p>
+                              <p className="text-gray-700">{application.firstName} {application.lastName}</p>
+                            </div>
+                            <div>
+                              <p className="text-sm text-gray-500">Yaş</p>
+                              <p className="text-gray-700">{application.age}</p>
+                            </div>
+                            <div>
+                              <p className="text-sm text-gray-500">Telefon</p>
+                              <p className="text-gray-700">{application.phone}</p>
+                            </div>
+                            <div>
+                              <p className="text-sm text-gray-500">Meslek</p>
+                              <p className="text-gray-700">{application.occupation}</p>
+                            </div>
+                          </div>
+                        </div>
+                      
                         <div>
                           <h3 className="text-md font-medium mb-2">Seyahat Amacı</h3>
                           <p className="text-gray-700">{application.purpose || "Belirtilmemiş"}</p>
