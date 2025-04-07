@@ -64,8 +64,8 @@ export function setupAuth(app: Express) {
   // Daha sağlam oturum yönetimi
   const sessionSettings: session.SessionOptions = {
     secret: process.env.SESSION_SECRET || "a-very-long-and-secure-secret-key-for-visa-application-system",
-    resave: true,
-    saveUninitialized: true,
+    resave: false,
+    saveUninitialized: false,
     store: storage.sessionStore,
     name: 'visa_session_id',
     cookie: {

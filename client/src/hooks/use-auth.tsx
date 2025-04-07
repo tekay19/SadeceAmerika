@@ -45,6 +45,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         const res = await fetch(queryKey[0] as string, {
           credentials: "include",
+          headers: {
+            "Cache-Control": "no-cache",
+            "Pragma": "no-cache"
+          }
         });
         
         if (res.status === 401) {
@@ -65,6 +69,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return null;
       }
     },
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+    staleTime: 5 * 60 * 1000, // 5 dakika
   });
 
   const loginMutation = useMutation({
@@ -87,22 +95,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Kullanıcı verisini queryClient'a kaydedelim
       queryClient.setQueryData(["/api/user"], { success: true, user: userData });
       
-      // Önbellek güncelleme
+      // Önbellek güncelleme ve kullanıcı durumunu doğrudan sorgula
       queryClient.invalidateQueries({queryKey: ["/api/user"]});
       
+      // Giriş başarısını göster
       toast({
         title: "Giriş başarılı",
         description: "Hoş geldiniz!",
       });
       
-      // Redirect based on user role
-      if (userData.role === 'admin') {
-        window.location.href = "/admin";
-      } else if (userData.role === 'officer') {
-        window.location.href = "/officer";
-      } else {
-        window.location.href = "/dashboard";
-      }
+      // Kısa bir gecikme ile yönlendirme yap (çerezin kaydedilmesi için)
+      setTimeout(() => {
+        // Redirect based on user role
+        if (userData.role === 'admin') {
+          window.location.href = "/admin";
+        } else if (userData.role === 'officer') {
+          window.location.href = "/officer";
+        } else {
+          window.location.href = "/dashboard";
+        }
+      }, 500);
     },
     onError: (error: Error) => {
       console.error("Login error:", error);
