@@ -10,7 +10,7 @@ import {
   Contact, InsertContact,
   users, applications, documents, appointments, feedback, adminLogs, settings, visaTypes, contacts
 } from '@shared/schema';
-import { eq, and } from 'drizzle-orm';
+import { eq, and, sql } from 'drizzle-orm';
 import { db } from './db';
 import { IStorage } from './storage';
 import session from 'express-session';
@@ -290,6 +290,11 @@ export class DrizzleStorage implements IStorage {
 // Veritabanı bağlantısını başlatmak ve test etmek
 export const initializeDrizzleStorage = async (): Promise<DrizzleStorage> => {
   try {
+    // Bağlantıyı test et
+    console.log('Testing database connection...');
+    await db.select({ test: sql`1` });
+    console.log('Database connection successful');
+    
     // İlk başlangıç verilerini oluştur
     await initializeData();
     return new DrizzleStorage();
