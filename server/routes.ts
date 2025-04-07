@@ -712,6 +712,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get currently logged in user
+  app.get("/api/user", (req, res) => {
+    if (req.isAuthenticated()) {
+      // Return only necessary user data, omit sensitive info like password
+      const { password, ...userData } = req.user as any;
+      res.json(userData);
+    } else {
+      res.status(401).json({ message: "Unauthorized" });
+    }
+  });
+
   app.delete("/api/users/:id", isAdmin, async (req, res, next) => {
     try {
       const id = parseInt(req.params.id);
