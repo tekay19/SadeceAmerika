@@ -36,23 +36,19 @@ class EmailService {
         return acc;
       }, {} as Record<string, string>);
 
-      // Sabit e-posta bilgileri (sağlanan değerleri kullan)
+      // Gmail SMTP ayarları
       const emailUser = "info@mese.us";
       const emailPass = "xctp iqoa httu nupq";
 
       // Nodemailer transport oluştur
       this.transporter = nodemailer.createTransport({
-        host: config.smtpHost || "smtp.office365.com",
-        port: parseInt(config.smtpPort, 10) || 587,
-        secure: false, // true for 465, false for other ports
+        service: 'gmail',  // Gmail servisi kullan
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true, // SSL kullan
         auth: {
           user: emailUser,
           pass: emailPass,
-        },
-        tls: {
-          // Office 365 için gerekli ayarlar
-          ciphers: 'SSLv3',
-          rejectUnauthorized: false
         }
       });
 
