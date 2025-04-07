@@ -252,67 +252,168 @@ export default function AdminSettings() {
               
               {/* Email Settings Tab */}
               <TabsContent value="email">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>E-posta Ayarları</CardTitle>
-                    <CardDescription>
-                      SMTP sunucu ayarları ve e-posta gönderimi için gerekli yapılandırmaları düzenleyin.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="smtpHost">SMTP Host</Label>
-                        <Input
-                          id="smtpHost"
-                          value={settingsData?.email?.smtpHost || ""}
-                          onChange={(e) => handleInputChange("email", "smtpHost", e.target.value)}
-                        />
+                <div className="space-y-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>E-posta Ayarları</CardTitle>
+                      <CardDescription>
+                        SMTP sunucu ayarları ve e-posta gönderimi için gerekli yapılandırmaları düzenleyin.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="smtpHost">SMTP Host</Label>
+                          <Input
+                            id="smtpHost"
+                            value={settingsData?.email?.smtpHost || ""}
+                            onChange={(e) => handleInputChange("email", "smtpHost", e.target.value)}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="smtpPort">SMTP Port</Label>
+                          <Input
+                            id="smtpPort"
+                            type="number"
+                            value={settingsData?.email?.smtpPort || ""}
+                            onChange={(e) => handleInputChange("email", "smtpPort", e.target.value)}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="emailUser">E-posta Adresi</Label>
+                          <Input
+                            id="emailUser"
+                            type="email"
+                            value={settingsData?.email?.emailUser || ""}
+                            onChange={(e) => handleInputChange("email", "emailUser", e.target.value)}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="emailPass">E-posta Şifresi</Label>
+                          <Input
+                            id="emailPass"
+                            type="password"
+                            value={settingsData?.email?.emailPass || ""}
+                            onChange={(e) => handleInputChange("email", "emailPass", e.target.value)}
+                          />
+                        </div>
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="smtpPort">SMTP Port</Label>
-                        <Input
-                          id="smtpPort"
-                          type="number"
-                          value={settingsData?.email?.smtpPort || ""}
-                          onChange={(e) => handleInputChange("email", "smtpPort", e.target.value)}
-                        />
+                    </CardContent>
+                    <CardFooter className="justify-end">
+                      <Button 
+                        variant="outline" 
+                        onClick={() => handleSaveCategory("email")}
+                        disabled={updateCategoryMutation.isPending}
+                      >
+                        {updateCategoryMutation.isPending && updateCategoryMutation.variables?.category === "email" ? (
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : (
+                          <Save className="mr-2 h-4 w-4" />
+                        )}
+                        E-posta Ayarlarını Kaydet
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                  
+                  {/* Email Testing Card */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>E-posta Testi</CardTitle>
+                      <CardDescription>
+                        E-posta ayarlarını test edin ve toplu e-posta gönderim işlemlerini yönetin.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="testEmail">Test E-posta Adresi</Label>
+                          <Input
+                            id="testEmail"
+                            type="email"
+                            placeholder="ornek@eposta.com"
+                          />
+                          <p className="text-xs text-gray-500">
+                            Test e-postası gönderilecek adres.
+                          </p>
+                        </div>
+                        <div className="space-y-2 flex items-end">
+                          <Button 
+                            className="w-full" 
+                            variant="outline"
+                            onClick={() => {
+                              const emailInput = document.getElementById('testEmail') as HTMLInputElement;
+                              const email = emailInput?.value;
+                              
+                              if (!email) {
+                                toast({
+                                  title: "Hata",
+                                  description: "Lütfen geçerli bir e-posta adresi girin.",
+                                  variant: "destructive",
+                                });
+                                return;
+                              }
+                              
+                              // Test e-postası gönder
+                              apiRequest("POST", "/api/admin/send-test-monthly-email", { 
+                                userId: user?.id 
+                              }).then((response: any) => {
+                                if (response.success) {
+                                  toast({
+                                    title: "Test E-postası Gönderildi",
+                                    description: response.message || "Test e-postası başarıyla gönderildi.",
+                                  });
+                                } else {
+                                  toast({
+                                    title: "Hata",
+                                    description: response.message || "Test e-postası gönderilemedi.",
+                                    variant: "destructive",
+                                  });
+                                }
+                              }).catch((error) => {
+                                toast({
+                                  title: "Hata",
+                                  description: `Test e-postası gönderilemedi: ${error.message}`,
+                                  variant: "destructive",
+                                });
+                              });
+                            }}
+                          >
+                            <Mail className="mr-2 h-4 w-4" />
+                            Test E-postası Gönder
+                          </Button>
+                        </div>
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="emailUser">E-posta Adresi</Label>
-                        <Input
-                          id="emailUser"
-                          type="email"
-                          value={settingsData?.email?.emailUser || ""}
-                          onChange={(e) => handleInputChange("email", "emailUser", e.target.value)}
-                        />
+                      
+                      <div className="border-t pt-4">
+                        <h3 className="font-medium mb-2">Toplu E-posta İşlemleri</h3>
+                        <p className="text-sm text-gray-500 mb-4">
+                          Tüm kullanıcılara aylık bilgilendirme e-postaları gönderin.
+                        </p>
+                        
+                        <Button
+                          onClick={() => {
+                            // Tüm kullanıcılara aylık e-posta gönder
+                            apiRequest("POST", "/api/admin/send-monthly-emails", {}).then((result: any) => {
+                              toast({
+                                title: "Aylık E-postalar Gönderildi",
+                                description: result.message || "Aylık e-postalar başarıyla gönderildi.",
+                              });
+                            }).catch((error) => {
+                              toast({
+                                title: "Hata",
+                                description: `Aylık e-postalar gönderilemedi: ${error.message}`,
+                                variant: "destructive",
+                              });
+                            });
+                          }}
+                        >
+                          <Mail className="mr-2 h-4 w-4" />
+                          Aylık Bilgilendirme E-postaları Gönder
+                        </Button>
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="emailPass">E-posta Şifresi</Label>
-                        <Input
-                          id="emailPass"
-                          type="password"
-                          value={settingsData?.email?.emailPass || ""}
-                          onChange={(e) => handleInputChange("email", "emailPass", e.target.value)}
-                        />
-                      </div>
-                    </div>
-                  </CardContent>
-                  <CardFooter className="justify-end">
-                    <Button 
-                      variant="outline" 
-                      onClick={() => handleSaveCategory("email")}
-                      disabled={updateCategoryMutation.isPending}
-                    >
-                      {updateCategoryMutation.isPending && updateCategoryMutation.variables?.category === "email" ? (
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      ) : (
-                        <Save className="mr-2 h-4 w-4" />
-                      )}
-                      E-posta Ayarlarını Kaydet
-                    </Button>
-                  </CardFooter>
-                </Card>
+                    </CardContent>
+                  </Card>
+                </div>
               </TabsContent>
               
               {/* Security Settings Tab */}

@@ -1,7 +1,7 @@
 import { db } from '../db';
 import { randomBytes } from 'crypto';
 import { passwordResetTokens } from '../../shared/schema';
-import { eq } from 'drizzle-orm';
+import { eq, sql, inArray } from 'drizzle-orm';
 
 /**
  * Şifre sıfırlama için token üretir ve veritabanında saklar
@@ -92,12 +92,24 @@ export async function cleanExpiredTokens(): Promise<number> {
   try {
     const now = new Date();
     
-    // Süresi dolmuş tüm tokenleri sil
-    const result = await db.delete(passwordResetTokens)
-      .where(eq(now > passwordResetTokens.expiresAt, true))
-      .returning();
+    // Süresi dolmuş tokenları al
+    const expiredTokens = await db.select()
+      .from(passwordResetTokens)
+      .where(
+        sql`${passwordResetTokens.expiresAt} < ${now}`
+      );
     
-    return result.length;
+    // Süresi dolmuş tokenleri sil
+    if (expiredTokens.length > 0) {
+      const tokenIds = expiredTokens.map(token => token.id);
+      
+      await db.delete(passwordResetTokens)
+        .where(
+          inArray(passwordResetTokens.id, tokenIds)
+        );
+    }
+    
+    return expiredTokens.length;
   } catch (error) {
     console.error('Süresi dolmuş token temizleme hatası:', error);
     return 0;
