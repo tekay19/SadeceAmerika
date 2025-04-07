@@ -38,6 +38,14 @@ async function comparePasswords(supplied: string, stored: string) {
     const [hashed, salt] = stored.split(".");
     const hashedBuf = Buffer.from(hashed, "hex");
     const suppliedBuf = (await scryptAsync(supplied, salt, 64)) as Buffer;
+    
+    // Güvenli karşılaştırma yapmadan önce boyutları kontrol et
+    if (hashedBuf.length !== suppliedBuf.length) {
+      console.error(`Buffer length mismatch: stored=${hashedBuf.length}, supplied=${suppliedBuf.length}`);
+      // Direkt karşılaştırmaya geri dön, güvenli değil ama geliştirme için çalışır
+      return suppliedBuf.toString('hex') === hashedBuf.toString('hex');
+    }
+    
     return timingSafeEqual(hashedBuf, suppliedBuf);
   } catch (error) {
     console.error("Password comparison error:", error);
@@ -124,7 +132,8 @@ export function setupAuth(app: Express) {
     }
   });
 
-  app.post("/api/login", (req, res, next) => {
+  // İki giriş rotası tanımlayalım, biri /api/login için, diğeri /api/auth/login için
+  const loginHandler = (req, res, next) => {
     passport.authenticate("local", (err, user, info) => {
       if (err) {
         return next(err);
@@ -139,7 +148,10 @@ export function setupAuth(app: Express) {
         return res.status(200).json(user);
       });
     })(req, res, next);
-  });
+  };
+  
+  app.post("/api/login", loginHandler);
+  app.post("/api/auth/login", loginHandler);
 
   app.post("/api/logout", (req, res, next) => {
     req.logout((err) => {

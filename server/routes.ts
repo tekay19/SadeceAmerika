@@ -69,6 +69,12 @@ function isOfficer(req: Request, res: Response, next: NextFunction) {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // API rotaları için Content-Type'ı zorla
+  app.use('/api', (req, res, next) => {
+    res.setHeader('Content-Type', 'application/json');
+    next();
+  });
+  
   // Depolama seçimi: Eğer DATABASE_URL varsa PostgreSQL, yoksa MemStorage kullan
   let activeStorage: IStorage;
   
@@ -482,6 +488,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin routes
+  // Admin kullanıcıları getir
+  app.get("/api/admin/users", isAdmin, async (req, res, next) => {
+    try {
+      const users = await storage.getAllUsers();
+      res.json(users);
+    } catch (err) {
+      next(err);
+    }
+  });
+
   app.get("/api/admin/logs", isAdmin, async (req, res, next) => {
     try {
       const logs = await storage.getAllAdminLogs();

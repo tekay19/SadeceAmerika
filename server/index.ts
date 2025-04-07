@@ -37,24 +37,35 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  console.log("Uygulama başlatılıyor...");
+  
+  // API rotalarını önce kaydet
   const server = await registerRoutes(app);
-
-  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
-
-    res.status(status).json({ message });
-    throw err;
+  
+  // Upload klasörünü statik dosya olarak serve et
+  app.use('/uploads', express.static('./uploads'));
+  
+  // 404 handler for API routes - API rotaları için 404 yanıtı
+  app.use('/api/*', (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.status(404).json({ message: 'API endpoint not found' });
   });
-
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
+  
+  // Tüm API dışı istekleri Vite'a yönlendir
   if (app.get("env") === "development") {
     await setupVite(app, server);
   } else {
     serveStatic(app);
   }
+  
+  // Hata işleyicisini en sona ekle
+  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+    const status = err.status || err.statusCode || 500;
+    const message = err.message || "Internal Server Error";
+
+    res.status(status).json({ message });
+    console.error("Hata:", err);
+  });
 
   // ALWAYS serve the app on port 5000
   // this serves both the API and the client.
