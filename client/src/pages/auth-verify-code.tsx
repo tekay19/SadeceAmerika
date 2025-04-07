@@ -109,8 +109,25 @@ export default function AuthVerifyCodePage() {
         // Yönlendirme yaparken userId'yi önbelleğe kaydedelim
         localStorage.setItem('userId', userData.userId.toString());
         
-        // Anasayfaya yönlendir
-        navigate("/");
+        // Kullanıcı rolüne göre doğru sayfaya yönlendir
+        const userData = data.user;
+        if (userData) {
+          console.log("Verification successful, user data:", userData);
+          
+          // Kullanıcı rolüne göre yönlendirme
+          setTimeout(() => {
+            if (userData.role === 'admin') {
+              window.location.href = "/admin";
+            } else if (userData.role === 'officer') {
+              window.location.href = "/officer";
+            } else {
+              window.location.href = "/dashboard";
+            }
+          }, 500);
+        } else {
+          // Eğer kullanıcı verisi bulunamazsa güvenli bir şekilde anasayfaya yönlendir
+          navigate("/");
+        }
       } else {
         setError(data.message || "Doğrulama kodu geçersiz. Lütfen tekrar deneyin.");
       }
