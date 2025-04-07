@@ -52,6 +52,17 @@ export const passwordResetTokens = pgTable("password_reset_tokens", {
   createdAt: timestamp("created_at").notNull().defaultNow()
 });
 
+// Login verification codes table
+export const loginVerificationCodes = pgTable("login_verification_codes", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  email: text("email").notNull(),
+  code: text("code").notNull(),
+  isUsed: boolean("is_used").notNull().default(false),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow()
+});
+
 // Users table
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
@@ -231,6 +242,14 @@ export const insertContactSchema = createInsertSchema(contacts, {
   responseNotes: z.string().optional()
 });
 
+// Login verification code insert schema
+export const insertLoginVerificationCodeSchema = createInsertSchema(loginVerificationCodes, {
+  userId: z.number(),
+  email: z.string().email(),
+  code: z.string(),
+  expiresAt: z.date()
+});
+
 // Types
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -258,3 +277,6 @@ export type Setting = typeof settings.$inferSelect;
 
 export type InsertContact = z.infer<typeof insertContactSchema>;
 export type Contact = typeof contacts.$inferSelect;
+
+export type InsertLoginVerificationCode = z.infer<typeof insertLoginVerificationCodeSchema>;
+export type LoginVerificationCode = typeof loginVerificationCodes.$inferSelect;

@@ -78,6 +78,20 @@ async function main() {
       END $$;
     `);
     
+    // Create login verification codes table
+    console.log('Creating login verification codes table...');
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS login_verification_codes (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER NOT NULL REFERENCES users(id),
+        email VARCHAR(255) NOT NULL,
+        code VARCHAR(10) NOT NULL,
+        is_used BOOLEAN NOT NULL DEFAULT FALSE,
+        expires_at TIMESTAMP NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+    
     console.log('Creating applications table...');
     await pool.query(`
       CREATE TABLE IF NOT EXISTS applications (

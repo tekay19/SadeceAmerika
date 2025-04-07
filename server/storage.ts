@@ -7,7 +7,8 @@ import {
   adminLogs, AdminLog, InsertAdminLog,
   settings, Setting, InsertSetting,
   visaTypes, VisaType, InsertVisaType,
-  contacts, Contact, InsertContact
+  contacts, Contact, InsertContact,
+  loginVerificationCodes, LoginVerificationCode, InsertLoginVerificationCode
 } from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
@@ -68,11 +69,57 @@ export interface IStorage {
   getAllContacts(): Promise<Contact[]>;
   updateContact(id: number, updates: Partial<Contact>): Promise<Contact>;
   
+  // Login verification code methods
+  createLoginVerificationCode(code: InsertLoginVerificationCode): Promise<LoginVerificationCode>;
+  getLoginVerificationCodeByCode(code: string): Promise<LoginVerificationCode | undefined>;
+  getLoginVerificationCodeByUserId(userId: number): Promise<LoginVerificationCode | undefined>;
+  updateLoginVerificationCode(id: number, updates: Partial<LoginVerificationCode>): Promise<LoginVerificationCode>;
+  deleteLoginVerificationCode(id: number): Promise<boolean>;
+  
   // Session store
   sessionStore: any; // Using any type to avoid SessionStore error
 }
 
 export class MemStorage implements IStorage {
+  // Login verification code methods
+  async createLoginVerificationCode(code: InsertLoginVerificationCode): Promise<LoginVerificationCode> {
+    const id = this.loginVerificationCodeCurrentId++;
+    const loginVerificationCode: LoginVerificationCode = {
+      ...code,
+      id,
+      createdAt: code.createdAt || new Date(),
+      expiresAt: code.expiresAt || new Date(Date.now() + 10 * 60 * 1000) // Default 10 minutes expiration
+    };
+    this.loginVerificationCodes.set(id, loginVerificationCode);
+    return loginVerificationCode;
+  }
+
+  async getLoginVerificationCodeByCode(code: string): Promise<LoginVerificationCode | undefined> {
+    return Array.from(this.loginVerificationCodes.values()).find(
+      (verification) => verification.code === code
+    );
+  }
+
+  async getLoginVerificationCodeByUserId(userId: number): Promise<LoginVerificationCode | undefined> {
+    return Array.from(this.loginVerificationCodes.values()).find(
+      (verification) => verification.userId === userId
+    );
+  }
+
+  async updateLoginVerificationCode(id: number, updates: Partial<LoginVerificationCode>): Promise<LoginVerificationCode> {
+    const code = this.loginVerificationCodes.get(id);
+    if (!code) {
+      throw new Error(`Login verification code with ID ${id} not found`);
+    }
+    
+    const updatedCode = { ...code, ...updates };
+    this.loginVerificationCodes.set(id, updatedCode);
+    return updatedCode;
+  }
+
+  async deleteLoginVerificationCode(id: number): Promise<boolean> {
+    return this.loginVerificationCodes.delete(id);
+  }
   private users: Map<number, User>;
   private visaTypes: Map<number, VisaType>;
   private applications: Map<number, Application>;
@@ -82,6 +129,7 @@ export class MemStorage implements IStorage {
   private adminLogs: Map<number, AdminLog>;
   private settings: Map<number, Setting>;
   private contacts: Map<number, Contact>;
+  private loginVerificationCodes: Map<number, LoginVerificationCode>;
   sessionStore: any; // Using any type to avoid SessionStore error
   
   private userCurrentId: number;
@@ -93,6 +141,7 @@ export class MemStorage implements IStorage {
   private adminLogCurrentId: number;
   private settingCurrentId: number;
   private contactCurrentId: number;
+  private loginVerificationCodeCurrentId: number;
 
   constructor() {
     this.users = new Map();
@@ -104,6 +153,7 @@ export class MemStorage implements IStorage {
     this.adminLogs = new Map();
     this.settings = new Map();
     this.contacts = new Map();
+    this.loginVerificationCodes = new Map();
     
     this.userCurrentId = 1;
     this.visaTypeCurrentId = 1;
@@ -114,6 +164,7 @@ export class MemStorage implements IStorage {
     this.adminLogCurrentId = 1;
     this.settingCurrentId = 1;
     this.contactCurrentId = 1;
+    this.loginVerificationCodeCurrentId = 1;
     
     this.sessionStore = new MemoryStore({
       checkPeriod: 86400000 // 24 hours

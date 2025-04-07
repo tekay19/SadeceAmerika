@@ -8,7 +8,8 @@ import {
   Setting, InsertSetting,
   VisaType, InsertVisaType,
   Contact, InsertContact,
-  users, applications, documents, appointments, feedback, adminLogs, settings, visaTypes, contacts
+  LoginVerificationCode, InsertLoginVerificationCode,
+  users, applications, documents, appointments, feedback, adminLogs, settings, visaTypes, contacts, loginVerificationCodes
 } from '@shared/schema';
 import { eq, and } from 'drizzle-orm';
 import { db } from './db';
@@ -416,6 +417,40 @@ export class DrizzleStorage implements IStorage {
     }
     
     return result[0];
+  }
+  
+  // Login verification code methods
+  async createLoginVerificationCode(code: InsertLoginVerificationCode): Promise<LoginVerificationCode> {
+    const result = await db.insert(loginVerificationCodes).values(code).returning();
+    return result[0];
+  }
+  
+  async getLoginVerificationCodeByCode(code: string): Promise<LoginVerificationCode | undefined> {
+    const result = await db.select().from(loginVerificationCodes).where(eq(loginVerificationCodes.code, code));
+    return result[0];
+  }
+  
+  async getLoginVerificationCodeByUserId(userId: number): Promise<LoginVerificationCode | undefined> {
+    const result = await db.select().from(loginVerificationCodes).where(eq(loginVerificationCodes.userId, userId));
+    return result.length > 0 ? result[0] : undefined;
+  }
+  
+  async updateLoginVerificationCode(id: number, updates: Partial<LoginVerificationCode>): Promise<LoginVerificationCode> {
+    const result = await db.update(loginVerificationCodes)
+      .set(updates)
+      .where(eq(loginVerificationCodes.id, id))
+      .returning();
+    
+    if (result.length === 0) {
+      throw new Error(`Login verification code with ID ${id} not found`);
+    }
+    
+    return result[0];
+  }
+  
+  async deleteLoginVerificationCode(id: number): Promise<boolean> {
+    const result = await db.delete(loginVerificationCodes).where(eq(loginVerificationCodes.id, id)).returning();
+    return result.length > 0;
   }
 }
 
