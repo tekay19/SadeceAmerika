@@ -11,7 +11,7 @@ import {
   LoginVerificationCode, InsertLoginVerificationCode,
   users, applications, documents, appointments, feedback, adminLogs, settings, visaTypes, contacts, loginVerificationCodes
 } from '@shared/schema';
-import { eq, and } from 'drizzle-orm';
+import { eq, and, gt, desc } from 'drizzle-orm';
 import { db } from './db';
 import { IStorage } from './storage';
 import session from 'express-session';
