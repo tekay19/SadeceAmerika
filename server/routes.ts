@@ -49,23 +49,32 @@ function isAuthenticated(req: Request, res: Response, next: NextFunction) {
   if (req.isAuthenticated()) {
     return next();
   }
-  res.status(401).json({ message: "Unauthorized" });
+  res.status(401).json({ 
+    success: false, 
+    message: "Unauthorized, please login" 
+  });
 }
 
 // Middleware to check if user is an admin
 function isAdmin(req: Request, res: Response, next: NextFunction) {
-  if (req.isAuthenticated() && req.user.role === "admin") {
+  if (req.isAuthenticated() && req.user && (req.user as any).role === "admin") {
     return next();
   }
-  res.status(403).json({ message: "Forbidden" });
+  res.status(403).json({ 
+    success: false, 
+    message: "Forbidden, admin access required" 
+  });
 }
 
 // Middleware to check if user is an officer
 function isOfficer(req: Request, res: Response, next: NextFunction) {
-  if (req.isAuthenticated() && (req.user.role === "officer" || req.user.role === "admin")) {
+  if (req.isAuthenticated() && req.user && ((req.user as any).role === "officer" || (req.user as any).role === "admin")) {
     return next();
   }
-  res.status(403).json({ message: "Forbidden" });
+  res.status(403).json({ 
+    success: false, 
+    message: "Forbidden, officer access required" 
+  });
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {

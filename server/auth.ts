@@ -61,16 +61,17 @@ export async function generateHashForPassword(password: string) {
 }
 
 export function setupAuth(app: Express) {
+  // Daha sağlam oturum yönetimi
   const sessionSettings: session.SessionOptions = {
-    secret: process.env.SESSION_SECRET || "visa-application-secret",
-    resave: true, // Oturum her istekte yeniden kaydedilsin
-    saveUninitialized: true, // Başlatılmamış oturumları da kaydet
+    secret: process.env.SESSION_SECRET || "a-very-long-and-secure-secret-key-for-visa-application-system",
+    resave: true,
+    saveUninitialized: true,
     store: storage.sessionStore,
-    name: 'visa_session', // Cookie adını belirtelim
+    name: 'visa_session_id',
     cookie: {
-      maxAge: 1000 * 60 * 60 * 24, // 1 day
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 gün - daha uzun süre kalıcı
       httpOnly: true,
-      secure: false, // development ortamı için false
+      secure: false, // Production'da true olmalı
       sameSite: "lax",
       path: '/'
     }
@@ -138,20 +139,41 @@ export function setupAuth(app: Express) {
     }
   });
 
-  // İki giriş rotası tanımlayalım, biri /api/login için, diğeri /api/auth/login için
+  // Gelişmiş giriş yönetimi
   const loginHandler = (req, res, next) => {
     passport.authenticate("local", (err, user, info) => {
       if (err) {
+        console.error("Passport authentication error:", err);
         return next(err);
       }
+      
       if (!user) {
-        return res.status(401).json({ message: "Invalid username or password" });
+        console.log("Authentication failed: Invalid username or password");
+        return res.status(401).json({ 
+          success: false, 
+          message: "Invalid username or password" 
+        });
       }
+      
+      // Kullanıcıyı oturuma ekle
       req.login(user, (err) => {
         if (err) {
+          console.error("Login session error:", err);
           return next(err);
         }
-        return res.status(200).json(user);
+        
+        console.log(`User logged in successfully: ${user.username} (ID: ${user.id})`);
+        console.log("Session ID:", req.sessionID);
+        
+        // Hassas bilgileri yanıttan çıkar
+        const { password, ...userWithoutPassword } = user;
+        
+        // Başarılı yanıt (istemci tarafında kullanılacak yeni format)
+        return res.status(200).json({
+          success: true,
+          message: "Login successful",
+          user: userWithoutPassword
+        });
       });
     })(req, res, next);
   };
@@ -160,15 +182,56 @@ export function setupAuth(app: Express) {
   app.post("/api/auth/login", loginHandler);
 
   app.post("/api/logout", (req, res, next) => {
+    // Oturum bilgisini loglayalım
+    console.log("Logging out user - Session ID:", req.sessionID);
+    
+    // Session'ı sonlandır
     req.logout((err) => {
-      if (err) return next(err);
-      res.sendStatus(200);
+      if (err) {
+        console.error("Logout error:", err);
+        return next(err);
+      }
+      
+      // Session'ı temizle
+      req.session.destroy((err) => {
+        if (err) {
+          console.error("Session destroy error:", err);
+          return next(err);
+        }
+        
+        // Clear cookie
+        res.clearCookie('visa_session_id');
+        
+        // Başarılı yanıt
+        res.status(200).json({
+          success: true,
+          message: "Logout successful"
+        });
+      });
     });
   });
 
   app.get("/api/user", (req, res) => {
-    if (!req.isAuthenticated()) return res.sendStatus(401);
-    res.json(req.user);
+    if (!req.isAuthenticated()) {
+      console.log("Unauthorized access attempt to /api/user - Not authenticated");
+      return res.status(401).json({ 
+        success: false, 
+        message: "Unauthorized, please login" 
+      });
+    }
+    
+    // Session bilgisini loglayalım
+    console.log("Session info for /api/user request:");
+    console.log("- Session ID:", req.sessionID);
+    console.log("- Is Authenticated:", req.isAuthenticated());
+    
+    // Hassas bilgileri yanıttan çıkar
+    const { password, ...userWithoutPassword } = req.user as any;
+    
+    res.json({
+      success: true,
+      user: userWithoutPassword
+    });
   });
   
   // Şifre sıfırlama rotaları

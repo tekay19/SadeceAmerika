@@ -36,25 +36,58 @@ export const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const { toast } = useToast();
   const {
-    data: user,
+    data: userData,
     error,
     isLoading,
-  } = useQuery<User | null, Error>({
+  } = useQuery<any | null, Error>({
     queryKey: ["/api/user"],
-    queryFn: getQueryFn({ on401: "returnNull" }),
+    queryFn: async ({ queryKey }) => {
+      try {
+        const res = await fetch(queryKey[0] as string, {
+          credentials: "include",
+        });
+        
+        if (res.status === 401) {
+          return null;
+        }
+        
+        const data = await res.json();
+        console.log("User data response:", data);
+        
+        // Yeni API yanıt formatını kontrol et
+        if (data && data.success) {
+          return data.user;
+        }
+        
+        return null;
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        return null;
+      }
+    },
   });
 
   const loginMutation = useMutation({
     mutationFn: async (credentials: LoginData) => {
+      // Değiştirilmiş yanıt formatını ele alacak şekilde güncellendi
       const res = await apiRequest("POST", "/api/login", credentials);
-      // Cookieleri tarayıcıya kaydetmek için credentials: include kullanıldı
-      // İstek tamamlandıktan sonra kullanıcı bilgisini alıp döndür
-      return await res.json();
+      const data = await res.json();
+      
+      // Yanıt kontrolü
+      if (!data.success) {
+        throw new Error(data.message || "Giriş başarısız oldu");
+      }
+      
+      // Başarılı ise kullanıcı nesnesini döndür
+      return data.user;
     },
-    onSuccess: (user: User) => {
+    onSuccess: (userData: any) => {
+      console.log("Login successful, user data:", userData);
+      
       // Kullanıcı verisini queryClient'a kaydedelim
-      queryClient.setQueryData(["/api/user"], user);
-      // Hemen ardından kullanıcı bilgisini güncelleyelim
+      queryClient.setQueryData(["/api/user"], { success: true, user: userData });
+      
+      // Önbellek güncelleme
       queryClient.invalidateQueries({queryKey: ["/api/user"]});
       
       toast({
@@ -63,18 +96,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
       
       // Redirect based on user role
-      if (user.role === 'admin') {
+      if (userData.role === 'admin') {
         window.location.href = "/admin";
-      } else if (user.role === 'officer') {
+      } else if (userData.role === 'officer') {
         window.location.href = "/officer";
       } else {
         window.location.href = "/dashboard";
       }
     },
     onError: (error: Error) => {
+      console.error("Login error:", error);
+      
       toast({
         title: "Giriş başarısız",
-        description: error.message,
+        description: error.message || "Kullanıcı adı veya şifre hatalı",
         variant: "destructive",
       });
     },
@@ -83,10 +118,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const registerMutation = useMutation({
     mutationFn: async (userData: RegisterData) => {
       const res = await apiRequest("POST", "/api/register", userData);
-      return await res.json();
+      const data = await res.json();
+      
+      // Yeni API yanıt formatını kontrol et (ileride güncellenecek)
+      if (data && data.success === false) {
+        throw new Error(data.message || "Kayıt işlemi başarısız oldu");
+      }
+      
+      return data;
     },
-    onSuccess: (user: User) => {
-      queryClient.setQueryData(["/api/user"], user);
+    onSuccess: (data: any) => {
+      // API yanıt formatına göre kullanıcı bilgisini al
+      const userData = data.user || data;
+      
+      console.log("Registration successful, user data:", userData);
+      
+      // Kullanıcı verisini cache'e kaydet
+      queryClient.setQueryData(["/api/user"], userData);
+      
       toast({
         title: "Kayıt başarılı",
         description: "Hesabınız oluşturuldu ve giriş yapıldı!",
@@ -96,9 +145,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       window.location.href = "/dashboard";
     },
     onError: (error: Error) => {
+      console.error("Registration error:", error);
+      
       toast({
         title: "Kayıt başarısız",
-        description: error.message,
+        description: error.message || "Kayıt işlemi sırasında bir hata oluştu.",
         variant: "destructive",
       });
     },
@@ -106,11 +157,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
-      await apiRequest("POST", "/api/logout");
+      try {
+        const res = await apiRequest("POST", "/api/logout");
+        const data = await res.json();
+        return data;
+      } catch (error) {
+        console.error("Logout error:", error);
+        throw error;
+      }
     },
-    onSuccess: () => {
+    onSuccess: (data: any) => {
+      console.log("Logout successful:", data);
+      
       // Kullanıcı verilerini önbelleğe boşalt
       queryClient.setQueryData(["/api/user"], null);
+      
       // Önbelleğin tamamını temizle
       queryClient.clear();
       
@@ -119,15 +180,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         description: "Güvenli bir şekilde çıkış yaptınız.",
       });
       
+      // Tarayıcıdaki tüm çerezleri temizlemek için bir çözüm
+      document.cookie.split(';').forEach(cookie => {
+        const trimmedCookie = cookie.trim();
+        const name = trimmedCookie.split('=')[0];
+        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+      });
+      
       // Çerezleri doğru şekilde temizlemek için bir timeout ile yönlendir
       setTimeout(() => {
         window.location.href = "/";
-      }, 300);
+      }, 500);
     },
     onError: (error: Error) => {
+      console.error("Logout error:", error);
+      
       toast({
         title: "Çıkış başarısız",
-        description: error.message,
+        description: error.message || "Çıkış yapılırken bir hata oluştu",
         variant: "destructive",
       });
     },
@@ -136,7 +206,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return (
     <AuthContext.Provider
       value={{
-        user: user ?? null,
+        user: userData ?? null,
         isLoading,
         error,
         loginMutation,
