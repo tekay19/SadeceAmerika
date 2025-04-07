@@ -110,24 +110,15 @@ export default function AuthVerifyCodePage() {
         localStorage.setItem('userId', userData.userId.toString());
         
         // Kullanıcı rolüne göre doğru sayfaya yönlendir
-        const userData = data.user;
-        if (userData) {
-          console.log("Verification successful, user data:", userData);
-          
-          // Kullanıcı rolüne göre yönlendirme
-          setTimeout(() => {
-            if (userData.role === 'admin') {
-              window.location.href = "/admin";
-            } else if (userData.role === 'officer') {
-              window.location.href = "/officer";
-            } else {
-              window.location.href = "/dashboard";
-            }
-          }, 500);
-        } else {
-          // Eğer kullanıcı verisi bulunamazsa güvenli bir şekilde anasayfaya yönlendir
-          navigate("/");
-        }
+        // Başarılı doğrulama sonrası tarayıcı sayfasını yenile
+        // Bu, backend'in cookie'yi kaydetmesi ve frontend'in yeni oturum ile güncellenmesi için gerekli
+        console.log("Verification successful, refreshing page to update session");
+        
+        // Sayfa yenilemeden önce başarılı durumunu kaydet
+        localStorage.setItem('auth_success', 'true');
+        
+        // Sayfayı yenile - bu, oturum doğrulaması yapacak ve kullanıcı paneline yönlendirecek
+        window.location.reload();
       } else {
         setError(data.message || "Doğrulama kodu geçersiz. Lütfen tekrar deneyin.");
       }

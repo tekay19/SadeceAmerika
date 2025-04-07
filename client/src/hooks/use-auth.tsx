@@ -60,6 +60,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         
         // Yeni API yanıt formatını kontrol et
         if (data && data.success) {
+          // Eğer oturum başarılı ve doğrulama ekranından geldiyse rol bazlı yönlendirme yap
+          const authSuccess = localStorage.getItem('auth_success');
+          if (authSuccess === 'true') {
+            // Bayrak temizleme
+            localStorage.removeItem('auth_success');
+            
+            console.log("Authentication success flag detected, redirecting based on role");
+            // Kullanıcı rolüne göre yönlendirme
+            setTimeout(() => {
+              if (data.user.role === 'admin') {
+                window.location.href = "/admin";
+              } else if (data.user.role === 'officer') {
+                window.location.href = "/officer";
+              } else {
+                window.location.href = "/dashboard";
+              }
+            }, 500);
+          }
+          
           return data.user;
         }
         
