@@ -7,7 +7,8 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { User } from "@shared/schema";
-import { Loader2, UserPlus, Users, Trash2, RefreshCw, Check, X, Edit, EyeOff, Save } from "lucide-react";
+import { Loader2, UserPlus, Users, Trash2, RefreshCw, Check, X, Edit, EyeOff, Save, FileText, Download } from "lucide-react";
+import { exportUsersToExcel } from "@/components/admin/export-utils";
 import { 
   Card, 
   CardContent, 
@@ -280,11 +281,21 @@ export default function AdminUsers() {
           
           {/* User List Card */}
           <Card>
-            <CardHeader>
-              <CardTitle>Kullanıcı Listesi</CardTitle>
-              <CardDescription>
-                Sistemdeki tüm kullanıcılar ve rolleri burada listelenir
-              </CardDescription>
+            <CardHeader className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div>
+                <CardTitle>Kullanıcı Listesi</CardTitle>
+                <CardDescription>
+                  Sistemdeki tüm kullanıcılar ve rolleri burada listelenir
+                </CardDescription>
+              </div>
+              <Button 
+                variant="outline" 
+                onClick={() => users && exportUsersToExcel(users)}
+                disabled={!users || users.length === 0}
+              >
+                <FileText className="mr-2 h-4 w-4" />
+                Excel Olarak İndir
+              </Button>
             </CardHeader>
             <CardContent>
               {isLoadingUsers ? (

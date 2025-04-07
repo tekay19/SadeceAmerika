@@ -3,16 +3,25 @@ import { Sidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
 import { useQuery } from "@tanstack/react-query";
 import { Application } from "@shared/schema";
-import { Loader2, FileText, Plus, Search, Filter } from "lucide-react";
+import { Loader2, FileText, Plus, Search, Filter, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from "wouter";
+import { useState } from "react";
+import { ApplicationFilter } from "@/components/admin/application-filter";
+import { exportApplicationsToExcel } from "@/components/admin/export-utils";
 
 export default function Applications() {
   const { user } = useAuth();
+  const [filteredApplications, setFilteredApplications] = useState<Application[]>([]);
   
   const { data: applications, isLoading } = useQuery<Application[]>({
     queryKey: ["/api/applications"],
+    onSuccess: (data) => {
+      if (data) {
+        setFilteredApplications(data);
+      }
+    }
   });
 
   return (
@@ -37,21 +46,25 @@ export default function Applications() {
             </Link>
           </div>
           
-          {/* Search and Filter */}
-          <div className="mb-6 flex flex-col sm:flex-row gap-4">
-            <div className="relative flex-grow">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-              <Input 
-                placeholder="Başvuru ara..." 
-                className="pl-10"
+          {/* Filtreler ve Arama */}
+          {applications && applications.length > 0 && (
+            <div className="mb-6 flex items-center justify-between">
+              <ApplicationFilter 
+                applications={applications} 
+                onFilterChange={setFilteredApplications} 
               />
+              
+              <Button 
+                variant="outline" 
+                className="flex items-center self-start ml-auto"
+                onClick={() => exportApplicationsToExcel(filteredApplications)}
+                disabled={filteredApplications.length === 0}
+              >
+                <Download className="h-4 w-4 mr-2" />
+                Excel Olarak İndir
+              </Button>
             </div>
-            
-            <Button variant="outline" className="flex items-center">
-              <Filter className="h-4 w-4 mr-2" />
-              Filtrele
-            </Button>
-          </div>
+          )}
           
           {isLoading ? (
             <div className="flex justify-center items-center h-64">
@@ -76,7 +89,7 @@ export default function Applications() {
           ) : (
             <div className="bg-white overflow-hidden sm:rounded-md shadow-sm border border-gray-200">
               <ul className="divide-y divide-gray-200">
-                {applications.map(application => (
+                {filteredApplications.map(application => (
                   <li key={application.id}>
                     <div 
                       className="block hover:bg-gray-50 cursor-pointer"
