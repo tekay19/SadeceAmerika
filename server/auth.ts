@@ -30,6 +30,7 @@ async function comparePasswords(supplied: string, stored: string) {
   // For development only - basic handling for non-hashed passwords
   if (!stored.includes('.')) {
     console.log("Using direct string comparison for non-hashed password");
+    console.log(`Direct comparison: '${supplied}' vs '${stored}'`);
     return supplied === stored;
   }
   

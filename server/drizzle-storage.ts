@@ -42,18 +42,150 @@ export class DrizzleStorage implements IStorage {
 
   // User methods
   async getUser(id: number): Promise<User | undefined> {
-    const result = await db.select().from(users).where(eq(users.id, id));
-    return result[0];
+    try {
+      // Tabloda hangi kolonlar var kontrol et
+      const tableInfo = await pool.query(`
+        SELECT column_name 
+        FROM information_schema.columns 
+        WHERE table_name = 'users'
+      `);
+      const columns = tableInfo.rows.map(row => row.column_name);
+      
+      if (columns.includes('first_name') && columns.includes('last_name')) {
+        // Drizzle şemasıyla uyumlu kullanım
+        const result = await db.select().from(users).where(eq(users.id, id));
+        if (result.length === 0) return undefined;
+        return result[0];
+      } else {
+        // Full_name formatında, manual query ile sorgu yapma
+        const result = await pool.query(`
+          SELECT id, username, password, email, full_name, phone, role, created_at, last_login
+          FROM users WHERE id = $1
+        `, [id]);
+        
+        if (result.rows.length === 0) return undefined;
+        
+        // Sonucu schema.ts'deki User tipine uygun biçimde dönüştür
+        const user = result.rows[0];
+        const nameParts = user.full_name.split(' ');
+        const firstName = nameParts[0];
+        const lastName = nameParts.slice(1).join(' ');
+        
+        return {
+          id: user.id,
+          username: user.username,
+          password: user.password,
+          firstName: firstName,
+          lastName: lastName,
+          email: user.email,
+          phone: user.phone,
+          role: user.role,
+          createdAt: user.created_at,
+          updatedAt: user.last_login || user.created_at
+        };
+      }
+    } catch (error) {
+      console.error('Error in getUser:', error);
+      return undefined;
+    }
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    const result = await db.select().from(users).where(eq(users.username, username));
-    return result[0];
+    try {
+      // Tabloda hangi kolonlar var kontrol et
+      const tableInfo = await pool.query(`
+        SELECT column_name 
+        FROM information_schema.columns 
+        WHERE table_name = 'users'
+      `);
+      const columns = tableInfo.rows.map(row => row.column_name);
+      
+      if (columns.includes('first_name') && columns.includes('last_name')) {
+        // Drizzle şemasıyla uyumlu kullanım
+        const result = await db.select().from(users).where(eq(users.username, username));
+        if (result.length === 0) return undefined;
+        return result[0];
+      } else {
+        // Full_name formatında, manual query ile sorgu yapma
+        const result = await pool.query(`
+          SELECT id, username, password, email, full_name, phone, role, created_at, last_login
+          FROM users WHERE username = $1
+        `, [username]);
+        
+        if (result.rows.length === 0) return undefined;
+        
+        // Sonucu schema.ts'deki User tipine uygun biçimde dönüştür
+        const user = result.rows[0];
+        const nameParts = user.full_name.split(' ');
+        const firstName = nameParts[0];
+        const lastName = nameParts.slice(1).join(' ');
+        
+        return {
+          id: user.id,
+          username: user.username,
+          password: user.password,
+          firstName: firstName,
+          lastName: lastName,
+          email: user.email,
+          phone: user.phone,
+          role: user.role,
+          createdAt: user.created_at,
+          updatedAt: user.last_login || user.created_at
+        };
+      }
+    } catch (error) {
+      console.error('Error in getUserByUsername:', error);
+      return undefined;
+    }
   }
 
   async getUserByEmail(email: string): Promise<User | undefined> {
-    const result = await db.select().from(users).where(eq(users.email, email));
-    return result[0];
+    try {
+      // Tabloda hangi kolonlar var kontrol et
+      const tableInfo = await pool.query(`
+        SELECT column_name 
+        FROM information_schema.columns 
+        WHERE table_name = 'users'
+      `);
+      const columns = tableInfo.rows.map(row => row.column_name);
+      
+      if (columns.includes('first_name') && columns.includes('last_name')) {
+        // Drizzle şemasıyla uyumlu kullanım
+        const result = await db.select().from(users).where(eq(users.email, email));
+        if (result.length === 0) return undefined;
+        return result[0];
+      } else {
+        // Full_name formatında, manual query ile sorgu yapma
+        const result = await pool.query(`
+          SELECT id, username, password, email, full_name, phone, role, created_at, last_login
+          FROM users WHERE email = $1
+        `, [email]);
+        
+        if (result.rows.length === 0) return undefined;
+        
+        // Sonucu schema.ts'deki User tipine uygun biçimde dönüştür
+        const user = result.rows[0];
+        const nameParts = user.full_name.split(' ');
+        const firstName = nameParts[0];
+        const lastName = nameParts.slice(1).join(' ');
+        
+        return {
+          id: user.id,
+          username: user.username,
+          password: user.password,
+          firstName: firstName,
+          lastName: lastName,
+          email: user.email,
+          phone: user.phone,
+          role: user.role,
+          createdAt: user.created_at,
+          updatedAt: user.last_login || user.created_at
+        };
+      }
+    } catch (error) {
+      console.error('Error in getUserByEmail:', error);
+      return undefined;
+    }
   }
 
   async createUser(user: InsertUser): Promise<User> {
@@ -351,31 +483,55 @@ async function initializeData() {
       
       // Kullanıcı hesaplarını oluştur - verilen şifreler zaten hash'lenmiş
       
-      // Admin kullanıcısı oluştur
-      await db.insert(users).values({
-        username: "admin",
-        password: "7ec4fcc11730d89a2376fe7d8a5c3a5cc1f4155f4dd2b7a8b52ea4f3c03cd30ac442bc3666043a1b861789de49cacb8c8e01e4a1de8746b32c0a28d15e7cf533.5f58c240eeaaa0ce91e3e8ece83c4cbf", // admin123
-        firstName: "Admin",
-        lastName: "User",
-        email: "admin@example.com",
-        phone: "+90 555 000 0000",
-        role: "admin",
-        createdAt: now,
-        updatedAt: now
-      });
+      // Önce users tablosunun şemasını kontrol et
+      const checkTableSchema = await pool.query(`
+        SELECT column_name 
+        FROM information_schema.columns 
+        WHERE table_name = 'users'
+      `);
       
-      // Murat kullanıcısı oluştur
-      await db.insert(users).values({
-        username: "murat_",
-        password: "d431dfa6e7a6a5f1064235c36daf09fdbf30bc9b79d3a84e1db4f1de3c0c17db2f9f1f54e9fcf83c35d944e82af4f645ddc72fe7f3c0884fa4a7f4ddc66c0d4e.af02ae15dcc1fb2c", // samet19
-        firstName: "Murat",
-        lastName: "Samet",
-        email: "murat@example.com",
-        phone: "+90 555 111 1111",
-        role: "user",
-        createdAt: now,
-        updatedAt: now
-      });
+      const userColumns = checkTableSchema.rows.map(row => row.column_name);
+      console.log('User table columns:', userColumns);
+      
+      // Kolon isimlerine göre uygun insert yap
+      if (userColumns.includes('first_name') && userColumns.includes('last_name')) {
+        // Admin kullanıcısı oluştur (firstName, lastName formatında)
+        await db.insert(users).values({
+          username: "admin",
+          password: "7ec4fcc11730d89a2376fe7d8a5c3a5cc1f4155f4dd2b7a8b52ea4f3c03cd30ac442bc3666043a1b861789de49cacb8c8e01e4a1de8746b32c0a28d15e7cf533.5f58c240eeaaa0ce91e3e8ece83c4cbf", // admin123
+          firstName: "Admin",
+          lastName: "User",
+          email: "admin@example.com",
+          phone: "+90 555 000 0000",
+          role: "admin",
+          createdAt: now,
+          updatedAt: now
+        });
+        
+        // Murat kullanıcısı oluştur
+        await db.insert(users).values({
+          username: "murat_",
+          password: "d431dfa6e7a6a5f1064235c36daf09fdbf30bc9b79d3a84e1db4f1de3c0c17db2f9f1f54e9fcf83c35d944e82af4f645ddc72fe7f3c0884fa4a7f4ddc66c0d4e.af02ae15dcc1fb2c", // samet19
+          firstName: "Murat",
+          lastName: "Samet",
+          email: "murat@example.com",
+          phone: "+90 555 111 1111",
+          role: "user",
+          createdAt: now,
+          updatedAt: now
+        });
+      } else if (userColumns.includes('full_name')) {
+        // SQL olarak direkt ekle (full_name formatında)
+        await pool.query(`
+          INSERT INTO users (username, password, email, full_name, phone, role, created_at) 
+          VALUES ('admin', '7ec4fcc11730d89a2376fe7d8a5c3a5cc1f4155f4dd2b7a8b52ea4f3c03cd30ac442bc3666043a1b861789de49cacb8c8e01e4a1de8746b32c0a28d15e7cf533.5f58c240eeaaa0ce91e3e8ece83c4cbf', 'admin@example.com', 'Admin User', '+90 555 000 0000', 'admin', NOW())
+        `);
+        
+        await pool.query(`
+          INSERT INTO users (username, password, email, full_name, phone, role, created_at) 
+          VALUES ('murat_', 'd431dfa6e7a6a5f1064235c36daf09fdbf30bc9b79d3a84e1db4f1de3c0c17db2f9f1f54e9fcf83c35d944e82af4f645ddc72fe7f3c0884fa4a7f4ddc66c0d4e.af02ae15dcc1fb2c', 'murat@example.com', 'Murat Samet', '+90 555 111 1111', 'user', NOW())
+        `);
+      }
       console.log('Added default admin user');
     }
     

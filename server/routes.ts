@@ -1,6 +1,6 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage"; // Hafıza tabanlı depolamayı içe aktarıyoruz
+import { storage as memStorage } from "./storage"; // Hafıza tabanlı depolamayı içe aktarıyoruz
 import { initializeDrizzleStorage } from "./drizzle-storage"; // Drizzle tabanlı depolamayı içe aktarıyoruz
 import { setupAuth, generateHashForPassword } from "./auth";
 import { IStorage } from "./storage";
@@ -87,14 +87,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       global.storage = activeStorage;
     } else {
       console.log('PostgreSQL connection variables not found, using in-memory storage');
-      activeStorage = storage;
-      global.storage = storage;
+      activeStorage = memStorage;
+      global.storage = memStorage;
     }
   } catch (error) {
     console.error('Failed to initialize database:', error);
     console.log('Falling back to in-memory storage');
-    activeStorage = storage;
-    global.storage = storage;
+    activeStorage = memStorage;
+    global.storage = memStorage;
   }
   
   // Make sure to verify which storage is actually being used
@@ -163,7 +163,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // VisaType routes
   app.get("/api/visa-types", async (req, res, next) => {
     try {
-      const visaTypes = await storage.getAllVisaTypes();
+      const visaTypes = await activeStorage.getAllVisaTypes();
       res.json(visaTypes);
     } catch (err) {
       next(err);
@@ -491,7 +491,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Admin kullanıcıları getir
   app.get("/api/admin/users", isAdmin, async (req, res, next) => {
     try {
-      const users = await storage.getAllUsers();
+      const users = await activeStorage.getAllUsers();
       res.json(users);
     } catch (err) {
       next(err);
@@ -651,7 +651,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // User management routes
   app.get("/api/users", isAdmin, async (req, res, next) => {
     try {
-      const users = await storage.getAllUsers();
+      const users = await activeStorage.getAllUsers();
       res.json(users);
     } catch (err) {
       next(err);
