@@ -36,17 +36,21 @@ class EmailService {
         return acc;
       }, {} as Record<string, string>);
 
+      // Sabit e-posta bilgileri (sağlanan değerleri kullan)
+      const emailUser = "info@mese.us";
+      const emailPass = "xctp iqoa httu nupq";
+
       // Nodemailer transport oluştur
       this.transporter = nodemailer.createTransport({
-        host: config.smtpHost,
-        port: parseInt(config.smtpPort, 10),
-        secure: parseInt(config.smtpPort, 10) === 465, // true for 465, false for other ports
+        host: config.smtpHost || "smtp.office365.com",
+        port: parseInt(config.smtpPort, 10) || 587,
+        secure: false, // true for 465, false for other ports
         auth: {
-          user: config.emailUser,
-          pass: config.emailPass,
+          user: emailUser,
+          pass: emailPass,
         },
         tls: {
-          // Office 365 için gerekebilir
+          // Office 365 için gerekli ayarlar
           ciphers: 'SSLv3',
           rejectUnauthorized: false
         }
@@ -82,18 +86,12 @@ class EmailService {
         return false;
       }
 
-      // E-posta ayarlarını al
-      const emailSettings = await db.select().from(settings)
-        .where(eq(settings.category, 'email'));
-      
-      const config = emailSettings.reduce((acc, setting) => {
-        acc[setting.key] = setting.value;
-        return acc;
-      }, {} as Record<string, string>);
+      // Sabit e-posta bilgileri (sağlanan değerleri kullan)
+      const emailUser = "info@mese.us";
 
       // E-posta gönder
       const result = await this.transporter.sendMail({
-        from: `"Sadece Amerika" <${config.emailUser}>`,
+        from: `"Sadece Amerika" <${emailUser}>`,
         to: options.to,
         subject: options.subject,
         text: options.text || '',
