@@ -63,15 +63,16 @@ export async function generateHashForPassword(password: string) {
 export function setupAuth(app: Express) {
   const sessionSettings: session.SessionOptions = {
     secret: process.env.SESSION_SECRET || "visa-application-secret",
-    resave: false,
-    saveUninitialized: false,
+    resave: true, // Oturum her istekte yeniden kaydedilsin
+    saveUninitialized: true, // Başlatılmamış oturumları da kaydet
     store: storage.sessionStore,
+    name: 'visa_session', // Cookie adını belirtelim
     cookie: {
       maxAge: 1000 * 60 * 60 * 24, // 1 day
       httpOnly: true,
-      secure: false, // development ortamı için false, production için true olmalı
-      sameSite: "lax", // Cross-site request forgery (CSRF) saldırılarına karşı koruma
-      path: '/' // tüm yollar için cookie erişimi
+      secure: false, // development ortamı için false
+      sameSite: "lax",
+      path: '/'
     }
   };
 

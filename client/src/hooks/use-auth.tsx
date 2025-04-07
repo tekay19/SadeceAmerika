@@ -47,10 +47,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const loginMutation = useMutation({
     mutationFn: async (credentials: LoginData) => {
       const res = await apiRequest("POST", "/api/login", credentials);
+      // Cookieleri tarayıcıya kaydetmek için credentials: include kullanıldı
+      // İstek tamamlandıktan sonra kullanıcı bilgisini alıp döndür
       return await res.json();
     },
     onSuccess: (user: User) => {
+      // Kullanıcı verisini queryClient'a kaydedelim
       queryClient.setQueryData(["/api/user"], user);
+      // Hemen ardından kullanıcı bilgisini güncelleyelim
+      queryClient.invalidateQueries({queryKey: ["/api/user"]});
+      
       toast({
         title: "Giriş başarılı",
         description: "Hoş geldiniz!",
@@ -103,14 +109,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await apiRequest("POST", "/api/logout");
     },
     onSuccess: () => {
+      // Kullanıcı verilerini önbelleğe boşalt
       queryClient.setQueryData(["/api/user"], null);
+      // Önbelleğin tamamını temizle
+      queryClient.clear();
+      
       toast({
         title: "Çıkış yapıldı",
         description: "Güvenli bir şekilde çıkış yaptınız.",
       });
       
-      // Redirect to home page after logout
-      window.location.href = "/";
+      // Çerezleri doğru şekilde temizlemek için bir timeout ile yönlendir
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 300);
     },
     onError: (error: Error) => {
       toast({
