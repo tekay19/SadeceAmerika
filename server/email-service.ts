@@ -103,6 +103,53 @@ class EmailService {
   }
 
   /**
+   * Login verification code gönderir (2FA için)
+   */
+  async sendVerificationCode(email: string, code: string, username: string): Promise<boolean> {
+    const subject = 'Giriş Doğrulama Kodu - Sadece Amerika';
+    const html = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background-color: #003366; padding: 20px; text-align: center;">
+          <h1 style="color: white; margin: 0;">Sadece Amerika</h1>
+        </div>
+        <div style="padding: 20px; border: 1px solid #ddd; border-top: none;">
+          <p>Merhaba ${username},</p>
+          <p>Hesabınıza giriş yapmak için doğrulama kodunuz:</p>
+          <div style="padding: 10px; background-color: #f5f5f5; text-align: center; font-size: 24px; letter-spacing: 5px; font-weight: bold; margin: 15px 0;">
+            ${code}
+          </div>
+          <p>Bu kod 10 dakika süreyle geçerlidir.</p>
+          <p>Eğer giriş yapmaya çalışmıyorsanız, lütfen bu e-postayı dikkate almayın ve şifrenizi değiştirin.</p>
+          <p>Saygılarımızla,<br>Sadece Amerika Ekibi</p>
+        </div>
+        <div style="background-color: #f5f5f5; padding: 15px; text-align: center; font-size: 12px; color: #666;">
+          <p>Bu e-posta otomatik olarak gönderilmiştir, lütfen yanıtlamayınız.</p>
+        </div>
+      </div>
+    `;
+    
+    const text = `
+      Merhaba ${username},
+      
+      Hesabınıza giriş yapmak için doğrulama kodunuz: ${code}
+      
+      Bu kod 10 dakika süreyle geçerlidir.
+      
+      Eğer giriş yapmaya çalışmıyorsanız, lütfen bu e-postayı dikkate almayın ve şifrenizi değiştirin.
+      
+      Saygılarımızla,
+      Sadece Amerika Ekibi
+    `;
+    
+    return this.sendEmail({
+      to: email,
+      subject,
+      text,
+      html
+    });
+  }
+
+  /**
    * Şifre sıfırlama e-postası gönderir
    */
   async sendPasswordResetEmail(email: string, resetToken: string, username: string): Promise<boolean> {

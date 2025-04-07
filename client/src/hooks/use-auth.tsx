@@ -81,6 +81,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const res = await apiRequest("POST", "/api/login", credentials);
       const data = await res.json();
       
+      // İki faktörlü doğrulama gerekiyorsa
+      if (data.success && data.requireVerification) {
+        window.location.href = `/auth-verify-code?userId=${data.userId}&email=${encodeURIComponent(data.email)}`;
+        // İki faktörlü doğrulama durumunda null döndürüyoruz
+        // Bu sayede onSuccess tetiklenmez ve mevcut sayfa değişmez
+        return null;
+      }
+      
       // Yanıt kontrolü
       if (!data.success) {
         throw new Error(data.message || "Giriş başarısız oldu");
@@ -90,6 +98,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return data.user;
     },
     onSuccess: (userData: any) => {
+      // Eğer userData null ise (iki faktörlü doğrulama gerekiyorsa) işlem yapma
+      if (!userData) return;
+      
       console.log("Login successful, user data:", userData);
       
       // Kullanıcı verisini queryClient'a kaydedelim

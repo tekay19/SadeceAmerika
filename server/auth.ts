@@ -211,42 +211,80 @@ export function setupAuth(app: Express) {
   });
 
   // Gelişmiş giriş yönetimi
-  const loginHandler = (req, res, next) => {
-    passport.authenticate("local", (err, user, info) => {
-      if (err) {
-        console.error("Passport authentication error:", err);
-        return next(err);
-      }
-      
-      if (!user) {
-        console.log("Authentication failed: Invalid username or password");
-        return res.status(401).json({ 
-          success: false, 
-          message: "Invalid username or password" 
-        });
-      }
-      
-      // Kullanıcıyı oturuma ekle
-      req.login(user, (err) => {
+  const loginHandler = async (req, res, next) => {
+    try {
+      // İlk aşama: Kullanıcı adı ve şifre doğrulama
+      passport.authenticate("local", async (err, user, info) => {
         if (err) {
-          console.error("Login session error:", err);
+          console.error("Passport authentication error:", err);
           return next(err);
         }
         
-        console.log(`User logged in successfully: ${user.username} (ID: ${user.id})`);
-        console.log("Session ID:", req.sessionID);
+        if (!user) {
+          console.log("Authentication failed: Invalid username or password");
+          return res.status(401).json({ 
+            success: false, 
+            message: "Invalid username or password" 
+          });
+        }
         
-        // Hassas bilgileri yanıttan çıkar
+        // İki faktörlü kimlik doğrulama gerekli mi? (2FA)
+        const { emailService } = await import('./email-service');
+
+        // Kullanıcı için önceki kodu kontrol et ve varsa sil
+        const existingCode = await storage.getLoginVerificationCodeByUserId(user.id);
+        if (existingCode) {
+          await storage.deleteLoginVerificationCode(existingCode.id);
+        }
+        
+        // Rastgele 6 haneli kod oluştur
+        const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+        console.log(`Generated verification code for ${user.username}: ${verificationCode}`);
+        
+        // Kodu veritabanına kaydet
+        const expiresAt = new Date();
+        expiresAt.setMinutes(expiresAt.getMinutes() + 10); // 10 dakika geçerli
+        
+        await storage.createLoginVerificationCode({
+          userId: user.id,
+          email: user.email,
+          code: verificationCode,
+          isUsed: false,
+          expiresAt,
+          createdAt: new Date()
+        });
+        
+        // Kodu e-posta ile gönder
+        const sent = await emailService.sendVerificationCode(
+          user.email, 
+          verificationCode, 
+          user.username
+        );
+        
+        if (!sent) {
+          console.error(`Failed to send verification code to ${user.email}`);
+          return res.status(500).json({
+            success: false,
+            message: "Failed to send verification code via email."
+          });
+        }
+        
+        // Kullanıcı bilgilerini güvenli bir şekilde gönder, 2FA gerektiğini belirt
         const { password, ...userWithoutPassword } = user;
-        
-        // Başarılı yanıt (istemci tarafında kullanılacak yeni format)
         return res.status(200).json({
           success: true,
-          message: "Login successful",
-          user: userWithoutPassword
+          message: "Verification code sent",
+          user: userWithoutPassword,
+          requireVerification: true
         });
+      })(req, res, next);
+    } catch (error) {
+      console.error("Login handler error:", error);
+      return res.status(500).json({
+        success: false,
+        message: "An error occurred during login process"
       });
-    })(req, res, next);
+    }
   };
   
   app.post("/api/login", loginHandler);

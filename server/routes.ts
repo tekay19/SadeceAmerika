@@ -11,6 +11,9 @@ import path from "path";
 import fs from "fs";
 import { randomUUID } from "crypto";
 
+// Import verification code route
+import verifyCodeRouter from "./routes/verify-code";
+
 // Create uploads directory if it doesn't exist
 const uploadsDir = path.join(process.cwd(), "uploads");
 if (!fs.existsSync(uploadsDir)) {
@@ -1062,6 +1065,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
+  
+  // Login verification code endpoint'ini uygulama rotalarına ekle
+  app.use('/api/auth', verifyCodeRouter);
 
   const httpServer = createServer(app);
   return httpServer;

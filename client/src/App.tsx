@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
 import AuthPage from "@/pages/auth-page";
+import AuthVerifyCode from "@/pages/auth-verify-code";
 import { ProtectedRoute } from "./lib/protected-route";
 import { AuthProvider } from "./hooks/use-auth";
 import Dashboard from "@/pages/dashboard";
@@ -75,6 +76,11 @@ function Router() {
         <Route path="/reset-password">
           <AnimatePresence mode="sync" initial={false}>
             <ResetPassword key="reset-password" />
+          </AnimatePresence>
+        </Route>
+        <Route path="/auth-verify-code">
+          <AnimatePresence mode="sync" initial={false}>
+            <AuthVerifyCode key="auth-verify-code" />
           </AnimatePresence>
         </Route>
         
