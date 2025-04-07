@@ -30,20 +30,53 @@ import ContactPage from "./pages/public/contact";
 function Router() {
   const [location] = useLocation();
   
+  // Tüm rotaları tek bir bileşene koymak yerine, yalnızca gösterilen rotayı gösteriyoruz
   return (
     <>
-      <AnimatePresence initial={false}>
+      <Switch>
         {/* Public Routes */}
-        <Route path="/" component={HomePage} />
-        <Route path="/services" component={ServicesPage} />
-        <Route path="/about" component={AboutPage} />
-        <Route path="/contact" component={ContactPage} />
-        <Route path="/privacy-policy" component={PrivacyPolicy} />
+        <Route path="/">
+          <AnimatePresence mode="sync" initial={false}>
+            <HomePage key="home" />
+          </AnimatePresence>
+        </Route>
+        <Route path="/services">
+          <AnimatePresence mode="sync" initial={false}>
+            <ServicesPage key="services" />
+          </AnimatePresence>
+        </Route>
+        <Route path="/about">
+          <AnimatePresence mode="sync" initial={false}>
+            <AboutPage key="about" />
+          </AnimatePresence>
+        </Route>
+        <Route path="/contact">
+          <AnimatePresence mode="sync" initial={false}>
+            <ContactPage key="contact" />
+          </AnimatePresence>
+        </Route>
+        <Route path="/privacy-policy">
+          <AnimatePresence mode="sync" initial={false}>
+            <PrivacyPolicy key="privacy" />
+          </AnimatePresence>
+        </Route>
         
         {/* Auth Routes */}
-        <Route path="/auth" component={AuthPage} />
-        <Route path="/forgot-password" component={ForgotPassword} />
-        <Route path="/reset-password" component={ResetPassword} />
+        <Route path="/auth">
+          <AnimatePresence mode="sync" initial={false}>
+            <AuthPage key="auth" />
+          </AnimatePresence>
+        </Route>
+        <Route path="/forgot-password">
+          <AnimatePresence mode="sync" initial={false}>
+            <ForgotPassword key="forgot-password" />
+          </AnimatePresence>
+        </Route>
+        <Route path="/reset-password">
+          <AnimatePresence mode="sync" initial={false}>
+            <ResetPassword key="reset-password" />
+          </AnimatePresence>
+        </Route>
         
         {/* Protected Routes */}
         <ProtectedRoute path="/dashboard" component={Dashboard} />
@@ -57,7 +90,7 @@ function Router() {
         <ProtectedRoute path="/admin/users" component={AdminUsers} />
         <ProtectedRoute path="/officer" component={OfficerDashboard} />
         <Route path="/:rest*" component={NotFound} />
-      </AnimatePresence>
+      </Switch>
     </>
   );
 }

@@ -68,6 +68,10 @@ export function setupAuth(app: Express) {
     store: storage.sessionStore,
     cookie: {
       maxAge: 1000 * 60 * 60 * 24, // 1 day
+      httpOnly: true,
+      secure: false, // development ortamı için false, production için true olmalı
+      sameSite: "lax", // Cross-site request forgery (CSRF) saldırılarına karşı koruma
+      path: '/' // tüm yollar için cookie erişimi
     }
   };
 
