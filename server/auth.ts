@@ -115,27 +115,98 @@ export function setupAuth(app: Express) {
 
   app.post("/api/register", async (req, res, next) => {
     try {
-      const existingUser = await storage.getUserByUsername(req.body.username);
+      const { username, firstName, lastName, email, password, phone } = req.body;
+      
+      // Kullanıcı adı ve e-posta kontrolü
+      const existingUser = await storage.getUserByUsername(username);
       if (existingUser) {
-        return res.status(400).json({ message: "Username already exists" });
+        return res.status(400).json({ 
+          success: false, 
+          message: "Bu kullanıcı adı zaten kullanılıyor." 
+        });
       }
-
-      const existingEmail = await storage.getUserByEmail(req.body.email);
+      
+      const existingEmail = await storage.getUserByEmail(email);
       if (existingEmail) {
-        return res.status(400).json({ message: "Email already in use" });
+        return res.status(400).json({ 
+          success: false, 
+          message: "Bu e-posta adresi zaten kullanılıyor." 
+        });
       }
-
+      
+      // Şifreyi hashle
+      const hashedPassword = await hashPassword(password);
+      
+      // Kullanıcıyı oluştur
       const user = await storage.createUser({
-        ...req.body,
-        password: await hashPassword(req.body.password),
+        username,
+        firstName,
+        lastName,
+        email,
+        password: hashedPassword,
+        phone,
+        role: 'user'
       });
-
+      
+      // Hoşgeldin e-postası gönder
+      try {
+        const { emailService } = await import('./email-service');
+        await emailService.sendRegistrationEmail(email, username);
+        
+        // Admin log ekle
+        await storage.createAdminLog({
+          userId: user.id,
+          action: "User Registration",
+          details: `New user registered: ${username} (${email}), welcome email sent`
+        });
+      } catch (emailError) {
+        console.error("Kayıt e-postası gönderme hatası:", emailError);
+        
+        // E-posta gönderilemese bile kayda devam et, sadece loga ekle
+        await storage.createAdminLog({
+          userId: user.id,
+          action: "User Registration",
+          details: `New user registered: ${username} (${email}), but welcome email failed`
+        });
+      }
+      
+      // Kullanıcıyı otomatik olarak giriş yap
       req.login(user, (err) => {
-        if (err) return next(err);
-        res.status(201).json(user);
+        if (err) {
+          console.error('Otomatik giriş hatası:', err);
+          return res.json({ 
+            success: true, 
+            message: "Kayıt başarılı! Lütfen giriş yapın.",
+            user: {
+              id: user.id,
+              username: user.username,
+              firstName: user.firstName,
+              lastName: user.lastName,
+              email: user.email,
+              role: user.role
+            }
+          });
+        }
+        
+        return res.json({ 
+          success: true, 
+          message: "Kayıt başarılı ve giriş yapıldı!",
+          user: {
+            id: user.id,
+            username: user.username,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            role: user.role
+          }
+        });
       });
     } catch (err) {
-      next(err);
+      console.error("Kayıt hatası:", err);
+      res.status(500).json({ 
+        success: false, 
+        message: "Kayıt işlemi sırasında bir hata oluştu." 
+      });
     }
   });
 
@@ -239,28 +310,61 @@ export function setupAuth(app: Express) {
     try {
       const { email } = req.body;
       if (!email) {
-        return res.status(400).json({ message: "E-posta adresi gereklidir." });
+        return res.status(400).json({ 
+          success: false, 
+          message: "E-posta adresi gereklidir." 
+        });
       }
 
       // Kullanıcıyı e-posta ile bul
       const user = await storage.getUserByEmail(email);
       if (!user) {
-        return res.status(404).json({ message: "Bu e-posta adresine sahip bir kullanıcı bulunamadı." });
+        return res.status(404).json({ 
+          success: false, 
+          message: "Bu e-posta adresine sahip bir kullanıcı bulunamadı." 
+        });
       }
       
-      // TODO: Gerçek uygulamada, token oluştur ve e-posta gönder
-      // Burada şimdilik sadece başarılı yanıt dönüyoruz
+      // Token oluştur
+      const { generatePasswordResetToken } = await import('./utils/token-utils');
+      const token = await generatePasswordResetToken(user.id);
+      
+      // E-posta gönder
+      const { emailService } = await import('./email-service');
+      const emailSent = await emailService.sendPasswordResetEmail(
+        user.email, 
+        token, 
+        user.username
+      );
       
       // Loglama
-      console.log(`Şifre sıfırlama isteği: ${email} için token gönderildi.`);
-      
-      res.json({ 
-        success: true, 
-        message: "Şifre sıfırlama talimatları e-posta adresinize gönderildi." 
-      });
+      if (emailSent) {
+        console.log(`Şifre sıfırlama e-postası gönderildi: ${email}`);
+        
+        // Admin log ekle
+        await storage.createAdminLog({
+          userId: user.id,
+          action: "Password Reset Request",
+          details: `Password reset email sent to ${user.email}`
+        });
+        
+        res.json({ 
+          success: true, 
+          message: "Şifre sıfırlama talimatları e-posta adresinize gönderildi." 
+        });
+      } else {
+        console.error(`Şifre sıfırlama e-postası gönderme hatası: ${email}`);
+        res.status(500).json({ 
+          success: false, 
+          message: "E-posta gönderilirken bir hata oluştu, lütfen daha sonra tekrar deneyin." 
+        });
+      }
     } catch (error) {
       console.error("Şifre sıfırlama hatası:", error);
-      res.status(500).json({ message: "Şifre sıfırlama işlemi sırasında bir hata oluştu." });
+      res.status(500).json({ 
+        success: false, 
+        message: "Şifre sıfırlama işlemi sırasında bir hata oluştu." 
+      });
     }
   });
   
@@ -268,26 +372,59 @@ export function setupAuth(app: Express) {
     try {
       const { token, newPassword } = req.body;
       if (!token || !newPassword) {
-        return res.status(400).json({ message: "Token ve yeni şifre gereklidir." });
+        return res.status(400).json({ 
+          success: false, 
+          message: "Token ve yeni şifre gereklidir." 
+        });
       }
       
-      // TODO: Gerçek uygulamada, token'ı doğrula ve kullanıcıyı bul
-      // Burada şimdilik sadece başarılı yanıt dönüyoruz
+      // Token'ı doğrula ve kullanıcı ID'sini al
+      const { verifyPasswordResetToken, deletePasswordResetToken } = await import('./utils/token-utils');
+      const userId = await verifyPasswordResetToken(token);
       
-      // Gerçek uygulamada aşağıdaki gibi şifre güncellemesi yapılacak:
-      // const hashedPassword = await hashPassword(newPassword);
-      // await storage.updateUser(userId, { password: hashedPassword });
+      if (!userId) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Geçersiz veya süresi dolmuş token. Lütfen tekrar şifre sıfırlama talep edin." 
+        });
+      }
+      
+      // Kullanıcıyı bul
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ 
+          success: false, 
+          message: "Kullanıcı bulunamadı." 
+        });
+      }
+      
+      // Şifreyi hashle ve güncelle
+      const hashedPassword = await hashPassword(newPassword);
+      await storage.updateUser(userId, { password: hashedPassword });
+      
+      // Kullanılan token'ı sil
+      await deletePasswordResetToken(token);
+      
+      // Admin log ekle
+      await storage.createAdminLog({
+        userId,
+        action: "Password Reset",
+        details: `Password reset completed for user ${user.username}`
+      });
       
       // Loglama
-      console.log(`Şifre sıfırlama başarılı: Token: ${token.substring(0, 10)}...`);
+      console.log(`Şifre başarıyla sıfırlandı. Kullanıcı: ${user.username}`);
       
       res.json({ 
         success: true, 
-        message: "Şifreniz başarıyla güncellendi." 
+        message: "Şifreniz başarıyla sıfırlandı. Yeni şifrenizle giriş yapabilirsiniz." 
       });
     } catch (error) {
-      console.error("Şifre güncelleme hatası:", error);
-      res.status(500).json({ message: "Şifre güncelleme işlemi sırasında bir hata oluştu." });
+      console.error("Şifre sıfırlama hatası:", error);
+      res.status(500).json({ 
+        success: false, 
+        message: "Şifre sıfırlama işlemi sırasında bir hata oluştu." 
+      });
     }
   });
 }

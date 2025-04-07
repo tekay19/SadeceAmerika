@@ -617,7 +617,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // For each key-value pair in the category
       for (const [key, value] of Object.entries(settingsData)) {
         // Find the existing setting
-        const existingSetting = await storage.getSettingByKey(category, key);
+        const existingSetting = await activeStorage.getSettingByKey(category, key);
         
         if (existingSetting) {
           // Update existing setting
@@ -949,6 +949,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (err) {
       next(err);
+    }
+  });
+
+  // Aylık e-posta test endpoint (Admin)
+  app.post('/api/admin/send-test-monthly-email', isAdmin, async (req, res) => {
+    try {
+      const { userId } = req.body;
+      
+      if (!userId) {
+        return res.status(400).json({ 
+          success: false, 
+          message: 'Kullanıcı ID gereklidir' 
+        });
+      }
+      
+      const { sendTestMonthlyUpdate } = await import('./monthly-update');
+      const success = await sendTestMonthlyUpdate(userId);
+      
+      if (success) {
+        res.json({ 
+          success: true, 
+          message: 'Test aylık e-postası başarıyla gönderildi' 
+        });
+      } else {
+        res.status(500).json({ 
+          success: false, 
+          message: 'Test aylık e-postası gönderilirken bir hata oluştu' 
+        });
+      }
+    } catch (error) {
+      console.error('Test aylık e-posta gönderme hatası:', error);
+      res.status(500).json({ 
+        success: false, 
+        message: 'E-posta gönderilirken bir hata oluştu' 
+      });
+    }
+  });
+  
+  // Tüm kullanıcılara aylık güncellemeleri gönder (Admin)
+  app.post('/api/admin/send-monthly-emails', isAdmin, async (req, res) => {
+    try {
+      const { sendMonthlyUpdates } = await import('./monthly-update');
+      const result = await sendMonthlyUpdates();
+      
+      res.json({ 
+        success: true, 
+        message: `Aylık e-postalar gönderildi: ${result.success} başarılı, ${result.fail} başarısız`, 
+        result 
+      });
+    } catch (error) {
+      console.error('Aylık e-posta gönderme hatası:', error);
+      res.status(500).json({ 
+        success: false, 
+        message: 'Aylık e-postalar gönderilirken bir hata oluştu' 
+      });
     }
   });
 
