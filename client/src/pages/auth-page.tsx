@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Redirect, useLocation, Link } from "wouter";
-import { Loader2 } from "lucide-react";
+import { Loader2, ArrowLeft } from "lucide-react";
 
 const loginSchema = z.object({
   username: z.string().min(3, "Kullanıcı adı en az 3 karakter olmalıdır."),
@@ -86,6 +86,11 @@ export default function AuthPage() {
             />
             <h1 className="text-2xl font-bold text-gray-800">ABD Vize Başvuru Sistemi</h1>
           </div>
+          
+          <Link href="/" className="flex items-center text-blue-600 hover:text-blue-800 mb-6">
+            <ArrowLeft className="w-4 h-4 mr-1" />
+            <span>Ana Sayfaya Dön</span>
+          </Link>
           
           <Tabs defaultValue="login" className="w-full">
             <TabsList className="grid w-full grid-cols-2 mb-8">

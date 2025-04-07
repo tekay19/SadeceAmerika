@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useLocation, Redirect } from "wouter";
+import { useLocation, Redirect, Link } from "wouter";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Key } from "lucide-react";
+import { Loader2, Key, ArrowLeft } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -76,67 +76,76 @@ export default function ResetPassword() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">
-            <div className="flex items-center justify-center mb-2">
-              <Key className="w-8 h-8 text-primary mr-2" />
-            </div>
-            Şifre Yenileme
-          </CardTitle>
-          <CardDescription className="text-center">
-            Lütfen yeni şifrenizi girin
-          </CardDescription>
-        </CardHeader>
-        <form onSubmit={handleSubmit}>
-          <CardContent className="grid gap-4">
-            {error && (
-              <div className="bg-red-50 text-red-600 px-4 py-2 rounded-md text-sm">
-                {error}
+      <div className="w-full max-w-md">
+        <div className="mb-6">
+          <Link href="/" className="flex items-center text-blue-600 hover:text-blue-800">
+            <ArrowLeft className="w-4 h-4 mr-1" />
+            <span>Ana Sayfaya Dön</span>
+          </Link>
+        </div>
+        
+        <Card className="w-full">
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl font-bold text-center">
+              <div className="flex items-center justify-center mb-2">
+                <Key className="w-8 h-8 text-primary mr-2" />
               </div>
-            )}
-            <div className="grid gap-2">
-              <Label htmlFor="newPassword">Yeni Şifre</Label>
-              <Input
-                id="newPassword"
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                required
-                placeholder="********"
-                minLength={8}
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="confirmPassword">Şifreyi Tekrar Girin</Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                placeholder="********"
-                minLength={8}
-              />
-            </div>
-          </CardContent>
-          <CardFooter>
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={resetPasswordMutation.isPending}
-            >
-              {resetPasswordMutation.isPending ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Şifre Yenileniyor...
-                </>
-              ) : (
-                "Şifreyi Güncelle"
+              Şifre Yenileme
+            </CardTitle>
+            <CardDescription className="text-center">
+              Lütfen yeni şifrenizi girin
+            </CardDescription>
+          </CardHeader>
+          <form onSubmit={handleSubmit}>
+            <CardContent className="grid gap-4">
+              {error && (
+                <div className="bg-red-50 text-red-600 px-4 py-2 rounded-md text-sm">
+                  {error}
+                </div>
               )}
-            </Button>
-          </CardFooter>
-        </form>
-      </Card>
+              <div className="grid gap-2">
+                <Label htmlFor="newPassword">Yeni Şifre</Label>
+                <Input
+                  id="newPassword"
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  required
+                  placeholder="********"
+                  minLength={8}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="confirmPassword">Şifreyi Tekrar Girin</Label>
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  placeholder="********"
+                  minLength={8}
+                />
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={resetPasswordMutation.isPending}
+              >
+                {resetPasswordMutation.isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Şifre Yenileniyor...
+                  </>
+                ) : (
+                  "Şifreyi Güncelle"
+                )}
+              </Button>
+            </CardFooter>
+          </form>
+        </Card>
+      </div>
     </div>
   );
 }
