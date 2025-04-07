@@ -5,8 +5,38 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
   
   return (
-    <footer className="bg-white border-t border-gray-200 py-10">
-      <div className="container mx-auto px-4">
+    <footer className="bg-white border-t border-gray-200 py-10 relative overflow-hidden">
+      {/* Dünya görseli (soluk, arka planda) */}
+      <div className="absolute opacity-5 right-0 bottom-0">
+        <svg
+          width="400"
+          height="400"
+          viewBox="0 0 100 100"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle cx="50" cy="50" r="45" fill="#4299e1" opacity="0.7" />
+          <path
+            d="M50 5 C55 15, 80 15, 85 25 C90 35, 85 45, 90 55 C95 65, 85 70, 80 80 C75 90, 60 95, 50 90 C40 85, 30 90, 20 80 C10 70, 5 60, 10 50 C15 40, 10 30, 15 20 C20 10, 45 5, 50 5"
+            fill="none"
+            stroke="#fff"
+            strokeWidth="0.5"
+          />
+          <path
+            d="M30 20 C40 20, 45 15, 55 20 C65 25, 70 35, 65 45 C60 55, 65 65, 60 75 C55 85, 45 80, 35 75 C25 70, 15 60, 20 50 C25 40, 20 30, 30 20"
+            fill="none"
+            stroke="#fff"
+            strokeWidth="0.5"
+          />
+          <path
+            d="M40 15 C50 25, 60 15, 70 25 C80 35, 75 50, 70 60 C65 70, 75 80, 60 85 C45 90, 35 80, 30 70 C25 60, 15 50, 20 40 C25 30, 30 5, 40 15"
+            fill="none"
+            stroke="#fff"
+            strokeWidth="0.5"
+          />
+        </svg>
+      </div>
+      
+      <div className="container mx-auto px-4 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="col-span-1">
             <div className="flex items-center">
