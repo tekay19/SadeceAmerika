@@ -42,8 +42,20 @@ export default function ResetPassword() {
   // Şifre sıfırlama mutasyonu
   const resetPasswordMutation = useMutation({
     mutationFn: async (credentials: { token: string; newPassword: string }) => {
-      const response = await apiRequest("POST", "/api/auth/reset-password", credentials);
-      return response;
+      try {
+        const response = await apiRequest("POST", "/api/auth/reset-password", credentials);
+        const data = await response.json();
+        
+        // API yanıtını kontrol et
+        if (!data.success) {
+          throw new Error(data.message || "Şifre sıfırlama işlemi başarısız oldu");
+        }
+        
+        return data;
+      } catch (error) {
+        console.error("Şifre sıfırlama hatası:", error);
+        throw error;
+      }
     },
     onSuccess: () => {
       toast({

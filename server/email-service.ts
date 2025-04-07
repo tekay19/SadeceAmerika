@@ -155,7 +155,17 @@ class EmailService {
   async sendPasswordResetEmail(email: string, resetToken: string, username: string): Promise<boolean> {
     // Sunucu URL'si yerine doğrudan çalışan sunucunun adresini kullanmak için
     // Replit tarafından otomatik oluşturulan adresi kullan
-    const resetUrl = `https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co/reset-password?token=${resetToken}`;
+    // Replit URL formatını kontrol et
+    let resetDomain = '';
+    if (process.env.REPL_SLUG && process.env.REPL_OWNER) {
+      resetDomain = `https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co`;
+    } else {
+      // Geliştirme ortamı için
+      resetDomain = 'http://localhost:5000';
+    }
+    
+    const resetUrl = `${resetDomain}/reset-password?token=${resetToken}`;
+    console.log(`Generated reset URL: ${resetUrl}`);
     
     const subject = 'Şifre Sıfırlama Talebi - Sadece Amerika';
     const html = `
