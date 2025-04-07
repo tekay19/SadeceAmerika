@@ -7,7 +7,8 @@ import {
   AdminLog, InsertAdminLog,
   Setting, InsertSetting,
   VisaType, InsertVisaType,
-  users, applications, documents, appointments, feedback, adminLogs, settings, visaTypes
+  Contact, InsertContact,
+  users, applications, documents, appointments, feedback, adminLogs, settings, visaTypes, contacts
 } from '@shared/schema';
 import { eq, and } from 'drizzle-orm';
 import { db } from './db';
@@ -249,6 +250,37 @@ export class DrizzleStorage implements IStorage {
     
     if (result.length === 0) {
       throw new Error(`Setting with ID ${id} not found`);
+    }
+    
+    return result[0];
+  }
+  
+  // Contact methods
+  async createContact(contact: InsertContact): Promise<Contact> {
+    const result = await db.insert(contacts).values(contact).returning();
+    return result[0];
+  }
+  
+  async getContact(id: number): Promise<Contact | undefined> {
+    const result = await db.select().from(contacts).where(eq(contacts.id, id));
+    return result[0];
+  }
+  
+  async getAllContacts(): Promise<Contact[]> {
+    return await db.select().from(contacts);
+  }
+  
+  async updateContact(id: number, updates: Partial<Contact>): Promise<Contact> {
+    const result = await db.update(contacts)
+      .set({
+        ...updates,
+        updatedAt: new Date()
+      })
+      .where(eq(contacts.id, id))
+      .returning();
+    
+    if (result.length === 0) {
+      throw new Error(`Contact with ID ${id} not found`);
     }
     
     return result[0];

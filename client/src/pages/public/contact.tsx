@@ -15,6 +15,8 @@ import {
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 
 const contactFormSchema = z.object({
   name: z.string().min(3, { message: "Ad Soyad en az 3 karakter olmalıdır" }),
@@ -40,19 +42,36 @@ export default function ContactPage() {
     },
   });
   
+  // Contact form submission mutation
+  const contactMutation = useMutation({
+    mutationFn: (formData: ContactFormValues) => {
+      return apiRequest('POST', '/api/contacts', formData);
+    },
+    onSuccess: () => {
+      // Show success toast
+      toast({
+        title: "Mesajınız alındı",
+        description: "En kısa sürede sizinle iletişime geçeceğiz.",
+        variant: "default",
+      });
+      
+      // Reset form
+      form.reset();
+    },
+    onError: (error: any) => {
+      console.error('Form submission error:', error);
+      
+      toast({
+        title: "Bir hata oluştu",
+        description: "Mesajınız gönderilemedi. Lütfen daha sonra tekrar deneyiniz.",
+        variant: "destructive"
+      });
+    }
+  });
+  
   function onSubmit(values: ContactFormValues) {
-    // Here you would normally send the form data to your backend
-    console.log(values);
-    
-    // Show success toast
-    toast({
-      title: "Mesajınız alındı",
-      description: "En kısa sürede sizinle iletişime geçeceğiz.",
-      variant: "default",
-    });
-    
-    // Reset form
-    form.reset();
+    // Send form data to backend
+    contactMutation.mutate(values);
   }
 
   // WhatsApp URL için helper fonksiyon
@@ -234,9 +253,9 @@ export default function ContactPage() {
                       <div className="text-right">
                         <Button 
                           type="submit" 
-                          disabled={form.formState.isSubmitting}
+                          disabled={contactMutation.isPending || form.formState.isSubmitting}
                         >
-                          {form.formState.isSubmitting ? "Gönderiliyor..." : "Mesaj Gönder"}
+                          {contactMutation.isPending ? "Gönderiliyor..." : "Mesaj Gönder"}
                         </Button>
                       </div>
                     </form>

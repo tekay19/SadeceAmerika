@@ -6,7 +6,8 @@ import {
   feedback, Feedback, InsertFeedback,
   adminLogs, AdminLog, InsertAdminLog,
   settings, Setting, InsertSetting,
-  visaTypes, VisaType, InsertVisaType
+  visaTypes, VisaType, InsertVisaType,
+  contacts, Contact, InsertContact
 } from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
@@ -61,6 +62,12 @@ export interface IStorage {
   createSetting(setting: InsertSetting): Promise<Setting>;
   updateSetting(id: number, updates: Partial<Setting>): Promise<Setting>;
   
+  // Contact methods
+  createContact(contact: InsertContact): Promise<Contact>;
+  getContact(id: number): Promise<Contact | undefined>;
+  getAllContacts(): Promise<Contact[]>;
+  updateContact(id: number, updates: Partial<Contact>): Promise<Contact>;
+  
   // Session store
   sessionStore: any; // Using any type to avoid SessionStore error
 }
@@ -74,6 +81,7 @@ export class MemStorage implements IStorage {
   private feedbacks: Map<number, Feedback>;
   private adminLogs: Map<number, AdminLog>;
   private settings: Map<number, Setting>;
+  private contacts: Map<number, Contact>;
   sessionStore: any; // Using any type to avoid SessionStore error
   
   private userCurrentId: number;
@@ -84,6 +92,7 @@ export class MemStorage implements IStorage {
   private feedbackCurrentId: number;
   private adminLogCurrentId: number;
   private settingCurrentId: number;
+  private contactCurrentId: number;
 
   constructor() {
     this.users = new Map();
@@ -94,6 +103,7 @@ export class MemStorage implements IStorage {
     this.feedbacks = new Map();
     this.adminLogs = new Map();
     this.settings = new Map();
+    this.contacts = new Map();
     
     this.userCurrentId = 1;
     this.visaTypeCurrentId = 1;
@@ -103,6 +113,7 @@ export class MemStorage implements IStorage {
     this.feedbackCurrentId = 1;
     this.adminLogCurrentId = 1;
     this.settingCurrentId = 1;
+    this.contactCurrentId = 1;
     
     this.sessionStore = new MemoryStore({
       checkPeriod: 86400000 // 24 hours
@@ -637,6 +648,44 @@ export class MemStorage implements IStorage {
     };
     this.settings.set(id, updatedSetting);
     return updatedSetting;
+  }
+  
+  // Contact methods
+  async createContact(insertContact: InsertContact): Promise<Contact> {
+    const id = this.contactCurrentId++;
+    const now = new Date();
+    const contact: Contact = { 
+      ...insertContact, 
+      id,
+      status: insertContact.status || 'new',
+      phone: insertContact.phone || null,
+      assignedToId: insertContact.assignedToId || null,
+      responseNotes: insertContact.responseNotes || null,
+      createdAt: now,
+      updatedAt: now
+    };
+    this.contacts.set(id, contact);
+    return contact;
+  }
+  
+  async getContact(id: number): Promise<Contact | undefined> {
+    return this.contacts.get(id);
+  }
+  
+  async getAllContacts(): Promise<Contact[]> {
+    return Array.from(this.contacts.values());
+  }
+  
+  async updateContact(id: number, updates: Partial<Contact>): Promise<Contact> {
+    const contact = this.contacts.get(id);
+    if (!contact) {
+      throw new Error(`Contact with ID ${id} not found`);
+    }
+    
+    const updatedContact = { ...contact, ...updates };
+    updatedContact.updatedAt = new Date();
+    this.contacts.set(id, updatedContact);
+    return updatedContact;
   }
 }
 

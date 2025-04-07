@@ -36,6 +36,13 @@ export const settingsCategoryEnum = pgEnum('settings_category', [
   'logging'
 ]);
 
+// Contact status enum
+export const contactStatusEnum = pgEnum('contact_status', [
+  'new',
+  'in_progress',
+  'completed'
+]);
+
 // Users table
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
@@ -119,6 +126,21 @@ export const settings = pgTable("settings", {
   description: text("description"),
 });
 
+// Contact table
+export const contacts = pgTable("contacts", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone"),
+  subject: text("subject").notNull(),
+  message: text("message").notNull(),
+  status: contactStatusEnum("status").notNull().default('new'),
+  assignedToId: integer("assigned_to_id").references(() => users.id),
+  responseNotes: text("response_notes"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow()
+});
+
 // Schema for user insert
 export const insertUserSchema = createInsertSchema(users, {
   username: z.string(),
@@ -188,6 +210,18 @@ export const insertSettingSchema = createInsertSchema(settings, {
   description: z.string().optional()
 });
 
+// Schema for contact insert
+export const insertContactSchema = createInsertSchema(contacts, {
+  name: z.string().min(3, { message: "Ad Soyad en az 3 karakter olmalıdır" }),
+  email: z.string().email({ message: "Geçerli bir e-posta adresi giriniz" }),
+  phone: z.string().min(10, { message: "Geçerli bir telefon numarası giriniz" }).optional(),
+  subject: z.string().min(5, { message: "Konu en az 5 karakter olmalıdır" }),
+  message: z.string().min(20, { message: "Mesajınız en az 20 karakter olmalıdır" }),
+  status: z.enum(['new', 'in_progress', 'completed']).default('new'),
+  assignedToId: z.number().optional(),
+  responseNotes: z.string().optional()
+});
+
 // Types
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -212,3 +246,6 @@ export type AdminLog = typeof adminLogs.$inferSelect;
 
 export type InsertSetting = z.infer<typeof insertSettingSchema>;
 export type Setting = typeof settings.$inferSelect;
+
+export type InsertContact = z.infer<typeof insertContactSchema>;
+export type Contact = typeof contacts.$inferSelect;

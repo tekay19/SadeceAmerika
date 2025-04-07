@@ -795,6 +795,127 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Contact form routes - public endpoint for submissions
+  app.post("/api/contacts", async (req, res, next) => {
+    try {
+      const contactData = {
+        name: req.body.name,
+        email: req.body.email,
+        phone: req.body.phone || null,
+        subject: req.body.subject,
+        message: req.body.message,
+        status: "new", // contactStatusEnum değerlerine uygun olmalı
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      
+      const contact = await storage.createContact(contactData);
+      res.status(201).json({ 
+        success: true, 
+        message: "Contact form submitted successfully",
+        id: contact.id 
+      });
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  // Get all contacts - admins and officers only
+  app.get("/api/contacts", isAuthenticated, async (req, res, next) => {
+    try {
+      // Only allow admins and officers to access all contacts
+      if (req.user.role !== 'admin' && req.user.role !== 'officer') {
+        return res.status(403).json({ 
+          success: false, 
+          message: "Access denied" 
+        });
+      }
+      
+      const contacts = await storage.getAllContacts();
+      res.json(contacts);
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  // Get single contact by ID - admins and officers only
+  app.get("/api/contacts/:id", isAuthenticated, async (req, res, next) => {
+    try {
+      // Only allow admins and officers to access contact details
+      if (req.user.role !== 'admin' && req.user.role !== 'officer') {
+        return res.status(403).json({ 
+          success: false, 
+          message: "Access denied" 
+        });
+      }
+      
+      const contactId = parseInt(req.params.id);
+      const contact = await storage.getContact(contactId);
+      
+      if (!contact) {
+        return res.status(404).json({ 
+          success: false, 
+          message: "Contact not found" 
+        });
+      }
+      
+      res.json(contact);
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  // Update contact status - admins and officers only
+  app.put("/api/contacts/:id", isAuthenticated, async (req, res, next) => {
+    try {
+      // Only allow admins and officers to update contact status
+      if (req.user.role !== 'admin' && req.user.role !== 'officer') {
+        return res.status(403).json({ 
+          success: false, 
+          message: "Access denied" 
+        });
+      }
+      
+      const contactId = parseInt(req.params.id);
+      const contact = await storage.getContact(contactId);
+      
+      if (!contact) {
+        return res.status(404).json({ 
+          success: false, 
+          message: "Contact not found" 
+        });
+      }
+      
+      // Update contact with provided fields
+      const updates = {
+        status: req.body.status || contact.status,
+        assignedToId: req.body.assignedToId !== undefined ? req.body.assignedToId : contact.assignedToId,
+        responseNotes: req.body.responseNotes || contact.responseNotes,
+        updatedAt: new Date()
+      };
+      
+      const updatedContact = await storage.updateContact(contactId, updates);
+      
+      // Log admin action
+      if (req.user.role === 'admin') {
+        await storage.createAdminLog({
+          userId: req.user.id,
+          action: 'update_contact',
+          details: `Updated contact #${contactId} status to ${updates.status}`,
+          timestamp: new Date()
+        });
+      }
+      
+      res.json({
+        success: true,
+        message: "Contact updated successfully",
+        contact: updatedContact
+      });
+    } catch (err) {
+      next(err);
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
