@@ -4,6 +4,7 @@ import * as schema from '@shared/schema';
 
 const { Pool } = pg;
 
+// Replit'in yerleşik veritabanı bağlantısını kullan
 // Check if DATABASE_URL is defined
 if (!process.env.DATABASE_URL) {
   console.error('DATABASE_URL environment variable is not defined');
@@ -15,8 +16,7 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   max: 10, // Maximum number of clients in the pool
   idleTimeoutMillis: 30000, // How long a client is allowed to remain idle before being closed
-  connectionTimeoutMillis: 2000, // How long to wait for a connection
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+  connectionTimeoutMillis: 5000 // How long to wait for a connection
 });
 
 // Log when pool connects or has an error
