@@ -83,7 +83,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       // İki faktörlü doğrulama gerekiyorsa
       if (data.success && data.requireVerification) {
-        window.location.href = `/auth-verify-code?userId=${data.userId}&email=${encodeURIComponent(data.email)}`;
+        // Kullanıcı ID'si user.id içinde gelir, doğrudan data.userId olarak değil
+        const userId = data.user?.id;
+        const email = data.user?.email;
+        
+        if (userId && email) {
+          console.log(`Redirecting to verification page for user ${userId} with email ${email}`);
+          window.location.href = `/auth-verify-code?userId=${userId}&email=${encodeURIComponent(email)}`;
+        } else {
+          console.error("Missing user ID or email in verification response", data);
+          throw new Error("Doğrulama kodu oluşturulurken bir hata oluştu");
+        }
+        
         // İki faktörlü doğrulama durumunda null döndürüyoruz
         // Bu sayede onSuccess tetiklenmez ve mevcut sayfa değişmez
         return null;
