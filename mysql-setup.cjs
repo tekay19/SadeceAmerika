@@ -1,8 +1,6 @@
 // MySQL kurulum betiği
-import mysql from 'mysql2/promise';
-import dotenv from 'dotenv';
-
-dotenv.config();
+const mysql = require('mysql2/promise');
+require('dotenv').config();
 
 async function main() {
   const pool = await mysql.createPool({

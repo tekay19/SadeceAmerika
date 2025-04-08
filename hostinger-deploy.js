@@ -47,8 +47,8 @@ function setupMySQLDatabase() {
   log('MySQL veritabanı yapılandırılıyor...');
   
   try {
-    log('mysql-setup.js çalıştırılıyor...');
-    execSync('node mysql-setup.js', { stdio: 'inherit' });
+    log('mysql-setup.cjs çalıştırılıyor...');
+    execSync('node mysql-setup.cjs', { stdio: 'inherit' });
     log('MySQL veritabanı başarıyla kuruldu.');
   } catch (error) {
     log('MySQL kurulumu sırasında hata oluştu:');

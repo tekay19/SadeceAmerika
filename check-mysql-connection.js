@@ -17,7 +17,9 @@ async function testMySQLConnection() {
     database: process.env.DB_NAME || 'visa_app',
     waitForConnections: true,
     connectionLimit: 2,
-    queueLimit: 0
+    queueLimit: 0,
+    connectTimeout: 10000, // 10 saniye bağlantı zaman aşımı
+    charset: 'utf8mb4' // Türkçe karakter desteği
   });
   
   try {

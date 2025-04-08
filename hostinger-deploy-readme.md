@@ -41,7 +41,7 @@ EMAIL_FROM=<gonderen_email>
 1. Hostinger'da veritabanını kurmak için aşağıdaki komutu çalıştırın:
 
 ```bash
-node mysql-setup.js
+node mysql-setup.cjs
 ```
 
 Bu komut MySQL şemasını ve gerekli tabloları oluşturacaktır.
