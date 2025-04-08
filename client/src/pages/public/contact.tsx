@@ -89,13 +89,33 @@ export default function ContactPage() {
     <PublicLayout>
       <PageTransition>
         {/* Hero */}
-        <section className="bg-gray-50 py-16">
-          <div className="container mx-auto px-4">
+        <section className="bg-gradient-to-r from-blue-50 to-indigo-50 py-20 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500"></div>
+          <div className="absolute bottom-0 right-0 transform translate-x-1/4 translate-y-1/4 w-64 h-64 bg-blue-400 rounded-full opacity-10 blur-3xl"></div>
+          <div className="absolute top-20 left-10 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40 bg-indigo-400 rounded-full opacity-10 blur-3xl"></div>
+          
+          <div className="container mx-auto px-4 relative">
             <div className="max-w-3xl mx-auto text-center">
-              <h1 className="text-4xl font-bold text-gray-900 mb-6">İletişim</h1>
-              <p className="text-xl text-gray-600">
+              <div className="inline-block mb-4">
+                <div className="flex items-center justify-center w-16 h-16 mx-auto bg-blue-100 text-blue-600 rounded-full mb-4">
+                  <Mail size={28} />
+                </div>
+              </div>
+              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">İletişim</h1>
+              <p className="text-xl text-gray-600 leading-relaxed mb-8">
                 Sorularınız mı var? Bize ulaşın, ABD vize sürecinizle ilgili her konuda yardımcı olmaktan mutluluk duyarız.
               </p>
+              
+              <div className="flex flex-wrap justify-center gap-4 mb-8">
+                <div className="flex items-center bg-white py-2 px-4 rounded-full shadow-sm">
+                  <Phone className="text-blue-500 mr-2" size={16} />
+                  <span className="text-gray-700">+90 532 139 34 59</span>
+                </div>
+                <div className="flex items-center bg-white py-2 px-4 rounded-full shadow-sm">
+                  <Mail className="text-blue-500 mr-2" size={16} />
+                  <span className="text-gray-700">can@mese.us</span>
+                </div>
+              </div>
             </div>
           </div>
         </section>
