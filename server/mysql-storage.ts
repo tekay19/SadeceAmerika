@@ -25,27 +25,49 @@ export class MySQLStorage implements IStorage {
   sessionStore: any;
 
   constructor() {
-    // Her ortamda MySQL session store kullan (Hostinger deployment için)
-    const MySQLStoreConstructor = MySQLStore(session);
+    // Replit ortamında mı çalışıyoruz?
+    const isReplitEnv = process.env.REPL_ID || process.env.REPL_SLUG;
+    const isProduction = process.env.NODE_ENV === 'production';
     
-    const options = {
-      clearExpired: true,
-      checkExpirationInterval: 86400000, // 24 saat (milisaniye) 
-      expiration: 86400000, // 24 saat (milisaniye)
-      createDatabaseTable: true,
-      schema: {
-        tableName: 'sessions',
-        columnNames: {
-          session_id: 'sid',
-          expires: 'expires',
-          data: 'data'
-        }
+    if (isReplitEnv) {
+      // Replit ortamında memory store kullan
+      console.log('📦 Replit ortamında MemoryStore kullanılıyor');
+      this.sessionStore = new MemoryStore({
+        checkPeriod: 86400000 // 24 saat
+      });
+    } else {
+      // Üretim veya lokal geliştirme - MySQL session store dene
+      try {
+        const MySQLStoreConstructor = MySQLStore(session);
+        
+        const options = {
+          clearExpired: true,
+          checkExpirationInterval: 86400000, // 24 saat (milisaniye) 
+          expiration: 86400000, // 24 saat (milisaniye)
+          createDatabaseTable: true,
+          schema: {
+            tableName: 'sessions',
+            columnNames: {
+              session_id: 'sid',
+              expires: 'expires',
+              data: 'data'
+            }
+          }
+        };
+        
+        // @ts-ignore - MySQL2 connection havuzunu doğrudan kullan
+        this.sessionStore = new MySQLStoreConstructor(options, pool);
+        console.log('📦 MySQL session store başarıyla başlatıldı');
+      } catch (err) {
+        console.error('⚠️ MySQL session store hatası:', err);
+        console.log('📦 Yedek olarak memory store kullanılıyor');
+        
+        // Yedek olarak memory store kullan
+        this.sessionStore = new MemoryStore({
+          checkPeriod: 86400000 // 24 saat
+        });
       }
-    };
-
-    // @ts-ignore - MySQL2 connection havuzunu doğrudan kullan
-    this.sessionStore = new MySQLStoreConstructor(options, pool);
-    console.log('MySQL session store aktif');
+    }
   }
 
   // User methods

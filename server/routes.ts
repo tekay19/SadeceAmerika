@@ -88,39 +88,57 @@ export async function registerRoutes(app: Express): Promise<Server> {
     next();
   });
   
-  // Depolama seçimi: PostgreSQL, MySQL veya MemStorage
+  // Depolama seçimi: MySQL veya MemStorage
   let activeStorage: IStorage;
   
   try {
-    // Geliştirme ortamında mı, yoksa üretim ortamında mı olduğumuzu kontrol et
+    // Üretim ortamında mı, yoksa geliştirme ortamında mı olduğumuzu kontrol et
     const isProduction = process.env.NODE_ENV === 'production';
+    // Replit ortamında mı çalışıyoruz?
+    const isReplitEnv = process.env.REPL_ID || process.env.REPL_SLUG;
     
+    // Üretim modu - MySQL'e bağlanmaya çalış (Hostinger)
     if (isProduction) {
-      // Üretim modu (Hostinger) - MySQL kullan
       if (process.env.DB_HOST && process.env.DB_USER && process.env.DB_PASSWORD && process.env.DB_NAME) {
-        console.log('Using MySQL database (production mode)');
+        console.log('💾 Üretim modu - MySQL veritabanı kullanılıyor');
         activeStorage = await initializeMySQLStorage();
       } else {
-        throw new Error('MySQL environment variables not defined in production mode');
+        throw new Error('Üretim modunda MySQL bağlantı bilgileri tanımlanmamış. DB_HOST, DB_USER, DB_PASSWORD, DB_NAME gerekli.');
       }
-    } else {
-      // Geliştirme modu (Replit) - MemStorage kullan
-      console.log('Using in-memory storage (development mode)');
+    } 
+    // Replit geliştirme ortamı - In-memory storage kullan
+    else if (isReplitEnv) {
+      console.log('💾 Replit geliştirme modu - In-memory depolama kullanılıyor');
       activeStorage = memStorage;
+    }
+    // Lokal geliştirme ortamı - Varsa MySQL'e bağlanmaya çalış, yoksa in-memory kullan
+    else {
+      if (process.env.DB_HOST && process.env.DB_USER && process.env.DB_PASSWORD && process.env.DB_NAME) {
+        console.log('💾 Lokal geliştirme - MySQL veritabanı kullanılıyor');
+        try {
+          activeStorage = await initializeMySQLStorage();
+        } catch (dbError) {
+          console.warn('⚠️ MySQL veritabanına bağlanılamadı, in-memory depolama kullanılacak:', dbError);
+          activeStorage = memStorage;
+        }
+      } else {
+        console.log('💾 Lokal geliştirme - In-memory depolama kullanılıyor (MySQL bağlantı bilgileri eksik)');
+        activeStorage = memStorage;
+      }
     }
     
     // Global olarak depolamayı ayarla
     global.storage = activeStorage;
   } catch (error) {
-    console.error('Failed to initialize database:', error);
-    console.log('Falling back to in-memory storage');
+    console.error('❌ Veritabanı başlatma hatası:', error);
+    console.log('⚠️ In-memory depolamaya geçiliyor (yedek)');
     activeStorage = memStorage;
     global.storage = memStorage;
   }
   
-  // Make sure to verify which storage is actually being used
-  console.log('Active storage type:', activeStorage.constructor.name);
-  console.log('Global storage type:', global.storage.constructor.name);
+  // Hangi depolama türünün kullanıldığını doğrula
+  console.log('🔹 Aktif depolama türü:', activeStorage.constructor.name);
+  console.log('🔹 Global depolama türü:', global.storage.constructor.name);
   
   // Setup authentication routes with the active storage
   setupAuth(app);
