@@ -315,12 +315,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "No file uploaded" });
       }
       
+      // Store the document type as the name field since it's what we use to identify document types
       const document = await storage.createDocument({
         applicationId: parseInt(req.body.applicationId),
-        type: req.body.type,
-        fileName: req.file.originalname,
+        name: req.body.type, // Using type as name since this is what our schema expects
         filePath: req.file.path,
-        uploadedAt: new Date(),
+        uploadDate: new Date(), // Using uploadDate from schema
         status: "pending",
         notes: req.body.notes || null,
       });

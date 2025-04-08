@@ -132,7 +132,7 @@ export default function Documents() {
                         <option value="">Başvuru Seçin</option>
                         {applications.map(app => (
                           <option key={app.id} value={app.id}>
-                            {app.applicationNumber} - {app.status === 'draft' ? 'Taslak' : 'Gönderildi'}
+                            Başvuru #{app.id} - {app.status}
                           </option>
                         ))}
                       </select>
@@ -234,16 +234,16 @@ export default function Documents() {
                               </div>
                               <div className="ml-3">
                                 <p className="text-sm font-medium text-gray-800">
-                                  {doc.type === 'passport' ? 'Pasaport' :
-                                   doc.type === 'photo' ? 'Fotoğraf' :
-                                   doc.type === 'employment_letter' ? 'İş Belgesi' :
-                                   doc.type === 'invitation_letter' ? 'Davet Mektubu' :
-                                   doc.type === 'travel_itinerary' ? 'Seyahat Planı' :
-                                   doc.type === 'bank_statement' ? 'Banka Hesap Dökümü' :
-                                   doc.type}
+                                  {doc.name === 'passport' ? 'Pasaport' :
+                                   doc.name === 'photo' ? 'Fotoğraf' :
+                                   doc.name === 'employment_letter' ? 'İş Belgesi' :
+                                   doc.name === 'invitation_letter' ? 'Davet Mektubu' :
+                                   doc.name === 'travel_itinerary' ? 'Seyahat Planı' :
+                                   doc.name === 'bank_statement' ? 'Banka Hesap Dökümü' :
+                                   doc.name}
                                 </p>
                                 <p className="text-xs text-gray-500">
-                                  {doc.uploadedAt ? new Date(doc.uploadedAt).toLocaleString('tr-TR') : '-'}
+                                  {doc.uploadDate ? new Date(doc.uploadDate).toLocaleString('tr-TR') : '-'}
                                 </p>
                                 {doc.notes && (
                                   <p className="text-xs text-gray-700 italic mt-1">
