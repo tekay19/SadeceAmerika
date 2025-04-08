@@ -11,9 +11,7 @@ import {
   MessagesSquare, 
   Plane, 
   Landmark,
-  Building2,
-  ArrowRight,
-  CheckSquare
+  Building2
 } from "lucide-react";
 import { RemoteImage } from "@/components/ui/remote-image";
 
@@ -43,46 +41,26 @@ export default function ServicesPage() {
     <PublicLayout>
       <PageTransition>
         {/* Hero */}
-        <section className="relative py-28 overflow-hidden">
+        <section className="relative py-24 overflow-hidden">
           <div className="absolute inset-0 z-0">
-            <img 
-              src="/src/assets/images/statue_of_liberty.jpg"
-              alt="Amerika Vize Hizmetleri"
-              className="w-full h-full object-cover opacity-20"
+            <RemoteImage 
+              src={STATUE_OF_LIBERTY_URL}
+              fallbackUrl={NEW_YORK_URL}
+              altText="Amerika Vize Hizmetleri"
+              className="w-full h-full object-cover opacity-25"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-900/70 to-indigo-900/70"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-900/60 to-indigo-900/60"></div>
           </div>
           
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-3xl mx-auto text-center">
-              <div className="inline-block bg-white/10 p-2 rounded-lg backdrop-blur-sm mb-6 text-white/90">
-                <div className="flex items-center gap-2">
-                  <CheckSquare className="h-5 w-5" />
-                  <span className="text-sm font-medium">Amerika Vize Uzmanları</span>
-                </div>
-              </div>
-              <h1 className="text-4xl md:text-5xl font-bold text-white mb-6 text-shadow-lg">
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-200">Vize Hizmetlerimiz</span>
-              </h1>
-              <p className="text-xl text-white/90 mb-8 leading-relaxed">
+              <h1 className="text-4xl font-bold text-white mb-6">Vize Hizmetlerimiz</h1>
+              <p className="text-xl text-white/90">
                 Sadece Amerika olarak, ABD vize başvuru süreçlerinizde size destek oluyoruz. 
                 Amerika merkezli Mese Consultancy'nin Türkiye uzantısı olarak, göçmenlik hukuku alanındaki tecrübemizle vize başvurunuzu başarıyla tamamlamanıza yardımcı oluyoruz.
               </p>
-              <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-                <Link href="/auth?mode=register">
-                  <Button size="lg" className="bg-white text-blue-700 hover:bg-yellow-100 shadow-lg transition-all duration-300 transform hover:-translate-y-1">
-                    <ArrowRight className="mr-2 h-5 w-5" /> Hemen Başvur
-                  </Button>
-                </Link>
-                <Link href="/contact">
-                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 transition-all duration-300">
-                    İletişime Geç
-                  </Button>
-                </Link>
-              </div>
             </div>
           </div>
-          <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white to-transparent"></div>
         </section>
 
         {/* Visa Services */}

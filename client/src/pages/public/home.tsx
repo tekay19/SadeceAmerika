@@ -42,58 +42,40 @@ export default function HomePage() {
     <PublicLayout>
       <PageTransition>
         {/* Hero Section */}
-        <section className="relative bg-gradient-to-r from-blue-700 to-indigo-800 text-white overflow-hidden">
-          <div className="absolute inset-0 opacity-20">
-            <img 
-              src="/src/assets/images/statue_of_liberty.jpg"
-              alt="Amerika'da Özgürlük Anıtı" 
+        <section className="relative bg-gradient-to-r from-blue-600 to-indigo-700 text-white overflow-hidden">
+          <div className="absolute inset-0 opacity-30">
+            <RemoteImage 
+              src={STATUE_OF_LIBERTY_URL} 
+              fallbackUrl={NEW_YORK_URL}
+              altText="Amerika'da Özgürlük Anıtı" 
               className="w-full h-full object-cover" 
             />
           </div>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
-          <div className="container mx-auto px-4 py-24 md:py-32 relative z-10">
-            <div className="flex flex-col md:flex-row items-center max-w-6xl mx-auto">
-              <div className="md:w-3/5 md:pr-12 text-center md:text-left mb-12 md:mb-0">
-                <div className="bg-white/10 inline-block p-2 rounded-lg backdrop-blur-sm mb-6">
-                  <h4 className="text-sm uppercase font-semibold tracking-wide">Amerika Vizesi Uzmanı</h4>
-                </div>
-                <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-                  ABD Vize Başvurunuzu <span className="text-yellow-300">Kolaylaştırıyoruz</span>
-                </h1>
-                <p className="text-xl mb-8 opacity-90 leading-relaxed">
-                  Amerika vizesi için başvuru sürecinizi "Sadece Amerika" ile 
-                  hızlandırın ve göçmenlik hukuku alanında uzman ekibimizle
-                  endişesiz bir şekilde ABD'ye adım atın.
-                </p>
-                <div className="flex flex-col sm:flex-row justify-center md:justify-start space-y-4 sm:space-y-0 sm:space-x-4">
-                  <Link href="/auth?mode=register">
-                    <Button size="lg" className="bg-white text-blue-700 hover:bg-yellow-100 shadow-lg transition-all duration-300 transform hover:-translate-y-1">
-                      <ArrowRight className="mr-2 h-5 w-5" /> Hemen Başvur
-                    </Button>
-                  </Link>
-                  <Link href="/services">
-                    <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/20 transition-all duration-300">
-                      Hizmetlerimiz
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-              <div className="md:w-2/5 flex justify-center">
-                <div className="relative">
-                  <div className="absolute -inset-4 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 opacity-30 blur-xl"></div>
-                  <div className="relative rounded-3xl overflow-hidden border-4 border-white/20 shadow-2xl transform md:rotate-3 transition-all duration-300 hover:rotate-0">
-                    <RemoteImage 
-                      src={PASSPORT_WITH_FLAG_URL} 
-                      fallbackUrl={PASSPORT_DOCUMENTS_URL}
-                      altText="Amerika Pasaportu" 
-                      className="w-full h-full object-cover" 
-                    />
-                  </div>
-                </div>
+          <div className="container mx-auto px-4 py-20 md:py-28 relative z-10">
+            <div className="max-w-3xl mx-auto text-center">
+
+              <h1 className="text-4xl md:text-5xl font-bold mb-6">
+                ABD Vize Başvurunuzu Kolaylaştırıyoruz
+              </h1>
+              <p className="text-xl md:text-2xl mb-8 opacity-90">
+                Amerika vizesi için başvuru sürecinizi "Sadece Amerika" ile 
+                hızlandırın ve göçmenlik hukuku alanında uzman ekibimizle
+                endişesiz bir şekilde ABD'ye adım atın.
+              </p>
+              <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                <Link href="/auth?mode=register">
+                  <Button size="lg" className="bg-white text-blue-700 hover:bg-gray-100">
+                    Hemen Başvur
+                  </Button>
+                </Link>
+                <Link href="/services">
+                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+                    Hizmetlerimiz
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
-          <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent"></div>
         </section>
 
         {/* About Summary */}
@@ -101,9 +83,10 @@ export default function HomePage() {
           <div className="container mx-auto px-4">
             <div className="grid md:grid-cols-2 gap-8 items-center max-w-5xl mx-auto">
               <div className="relative rounded-xl overflow-hidden shadow-lg h-80">
-                <img 
-                  src="/src/assets/images/usa-everyday.jpg" 
-                  alt="Green Card Profesyoneller" 
+                <RemoteImage 
+                  src={DIVERSE_PEOPLE_URL} 
+                  fallbackUrl={GOLDEN_GATE_URL}
+                  altText="Green Card Profesyoneller" 
                   className="w-full h-full object-cover" 
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
@@ -390,9 +373,10 @@ export default function HomePage() {
         {/* CTA Section */}
         <section className="py-16 bg-blue-700 text-white relative overflow-hidden">
           <div className="absolute inset-0 opacity-20">
-            <img 
-              src="/src/assets/images/usa-everyday.jpg"
-              alt="ABD Vize Başvurusu" 
+            <RemoteImage 
+              src={AIRPLANE_URL}
+              fallbackUrl={AIRPORT_URL} 
+              altText="ABD Vize Başvurusu" 
               className="w-full h-full object-cover" 
             />
           </div>

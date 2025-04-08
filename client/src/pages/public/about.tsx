@@ -24,21 +24,19 @@ export default function AboutPage() {
     <PublicLayout>
       <PageTransition>
         {/* Hero */}
-        <section className="py-20 bg-gradient-to-r from-blue-700 to-indigo-800 text-white relative overflow-hidden">
+        <section className="py-16 bg-gradient-to-r from-blue-600 to-indigo-700 text-white relative overflow-hidden">
           <div className="absolute inset-0 opacity-15">
             <img src={usaFlagImg} alt="ABD Bayrağı" className="w-full h-full object-cover" />
           </div>
-          <div className="absolute inset-0 bg-blue-900/40 backdrop-filter backdrop-blur-[2px]"></div>
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-3xl mx-auto text-center">
-              <div className="inline-block bg-white/20 p-3 rounded-xl backdrop-blur-sm mb-6 shadow-xl transform transition-all duration-300 hover:scale-105">
+              <div className="inline-block bg-white/20 p-2 rounded-full backdrop-blur-sm mb-6">
                 <img src={logoImg} alt="Sadece Amerika Logo" className="h-16 w-auto" />
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-200">Hakkımızda</h1>
-              <p className="text-xl opacity-90 mb-6 leading-relaxed">
+              <h1 className="text-4xl font-bold mb-6">Hakkımızda</h1>
+              <p className="text-xl opacity-90">
                 Sadece Amerika, Amerika merkezli "Mese Consultancy"nin Türkiye uzantısı olarak 2025 yılında Ankara'da kurulmuştur.
               </p>
-              <div className="inline-block border-b-2 w-20 border-yellow-400 mb-8 opacity-80"></div>
             </div>
           </div>
         </section>
