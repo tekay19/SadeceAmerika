@@ -17,6 +17,7 @@ import { IStorage } from './storage';
 import session from 'express-session';
 import createMemoryStore from 'memorystore';
 import MySQLStore from 'express-mysql-session';
+import { MySqlRawQueryResult } from 'drizzle-orm/mysql2';
 
 const MemoryStore = createMemoryStore(session);
 
@@ -82,9 +83,13 @@ export class MySQLStorage implements IStorage {
   }
 
   async createUser(user: InsertUser): Promise<User> {
-    const result = await db.insert(users).values(user);
+    const result = await db.insert(users).values(user) as { insertId: number } & MySqlRawQueryResult;
     const insertedId = Number(result.insertId);
-    return await this.getUser(insertedId);
+    const newUser = await this.getUser(insertedId);
+    if (!newUser) {
+      throw new Error('User could not be created');
+    }
+    return newUser;
   }
 
   async getAllUsers(): Promise<User[]> {
@@ -146,16 +151,24 @@ export class MySQLStorage implements IStorage {
   }
 
   async createVisaType(visaType: InsertVisaType): Promise<VisaType> {
-    const result = await db.insert(visaTypes).values(visaType);
+    const result = await db.insert(visaTypes).values(visaType) as { insertId: number } & MySqlRawQueryResult;
     const insertedId = Number(result.insertId);
-    return await this.getVisaType(insertedId);
+    const newVisaType = await this.getVisaType(insertedId);
+    if (!newVisaType) {
+      throw new Error('Visa type could not be created');
+    }
+    return newVisaType;
   }
 
   // Application methods
   async createApplication(application: InsertApplication): Promise<Application> {
-    const result = await db.insert(applications).values(application);
+    const result = await db.insert(applications).values(application) as { insertId: number } & MySqlRawQueryResult;
     const insertedId = Number(result.insertId);
-    return await this.getApplication(insertedId);
+    const newApplication = await this.getApplication(insertedId);
+    if (!newApplication) {
+      throw new Error('Application could not be created');
+    }
+    return newApplication;
   }
 
   async getApplication(id: number): Promise<Application | undefined> {
@@ -186,9 +199,13 @@ export class MySQLStorage implements IStorage {
 
   // Document methods
   async createDocument(document: InsertDocument): Promise<Document> {
-    const result = await db.insert(documents).values(document);
+    const result = await db.insert(documents).values(document) as { insertId: number } & MySqlRawQueryResult;
     const insertedId = Number(result.insertId);
-    return await this.getDocument(insertedId);
+    const newDocument = await this.getDocument(insertedId);
+    if (!newDocument) {
+      throw new Error('Document could not be created');
+    }
+    return newDocument;
   }
 
   async getDocument(id: number): Promise<Document | undefined> {
@@ -215,7 +232,7 @@ export class MySQLStorage implements IStorage {
 
   // Appointment methods
   async createAppointment(appointment: InsertAppointment): Promise<Appointment> {
-    const result = await db.insert(appointments).values(appointment);
+    const result = await db.insert(appointments).values(appointment) as { insertId: number } & MySqlRawQueryResult;
     const insertedId = Number(result.insertId);
     
     // Eklenen randevuyu getir
@@ -237,7 +254,7 @@ export class MySQLStorage implements IStorage {
 
   // Feedback methods
   async createFeedback(feedbackItem: InsertFeedback): Promise<Feedback> {
-    const result = await db.insert(feedback).values(feedbackItem);
+    const result = await db.insert(feedback).values(feedbackItem) as { insertId: number } & MySqlRawQueryResult;
     const insertedId = Number(result.insertId);
     
     const insertedFeedback = await db.select()
@@ -257,7 +274,7 @@ export class MySQLStorage implements IStorage {
 
   // Admin log methods
   async createAdminLog(log: InsertAdminLog): Promise<AdminLog> {
-    const result = await db.insert(adminLogs).values(log);
+    const result = await db.insert(adminLogs).values(log) as { insertId: number } & MySqlRawQueryResult;
     const insertedId = Number(result.insertId);
     
     const insertedLog = await db.select()
@@ -300,7 +317,7 @@ export class MySQLStorage implements IStorage {
   }
 
   async createSetting(setting: InsertSetting): Promise<Setting> {
-    const result = await db.insert(settings).values(setting);
+    const result = await db.insert(settings).values(setting) as { insertId: number } & MySqlRawQueryResult;
     const insertedId = Number(result.insertId);
     
     const insertedSetting = await db.select()
@@ -329,7 +346,7 @@ export class MySQLStorage implements IStorage {
   
   // Contact methods
   async createContact(contact: InsertContact): Promise<Contact> {
-    const result = await db.insert(contacts).values(contact);
+    const result = await db.insert(contacts).values(contact) as { insertId: number } & MySqlRawQueryResult;
     const insertedId = Number(result.insertId);
     
     const insertedContact = await db.select()
@@ -370,7 +387,7 @@ export class MySQLStorage implements IStorage {
   
   // Login verification code methods
   async createLoginVerificationCode(code: InsertLoginVerificationCode): Promise<LoginVerificationCode> {
-    const result = await db.insert(loginVerificationCodes).values(code);
+    const result = await db.insert(loginVerificationCodes).values(code) as { insertId: number } & MySqlRawQueryResult;
     const insertedId = Number(result.insertId);
     
     const insertedCode = await db.select()

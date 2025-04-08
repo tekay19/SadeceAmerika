@@ -3,7 +3,7 @@ import mysql from 'mysql2/promise';
 import * as schema from '@shared/mysql-schema';
 
 const isProduction = process.env.NODE_ENV === 'production';
-let pool;
+let pool: mysql.Pool;
 
 // Geliştirme ortamında mı, yoksa üretim ortamında mı olduğumuzu kontrol et
 if (isProduction) {
