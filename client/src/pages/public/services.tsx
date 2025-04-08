@@ -45,10 +45,9 @@ export default function ServicesPage() {
         {/* Hero */}
         <section className="relative py-28 overflow-hidden">
           <div className="absolute inset-0 z-0">
-            <RemoteImage 
-              src={STATUE_OF_LIBERTY_URL}
-              fallbackUrl={NEW_YORK_URL}
-              altText="Amerika Vize Hizmetleri"
+            <img 
+              src="/src/assets/images/statue_of_liberty.jpg"
+              alt="Amerika Vize Hizmetleri"
               className="w-full h-full object-cover opacity-20"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-blue-900/70 to-indigo-900/70"></div>

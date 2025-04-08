@@ -44,10 +44,9 @@ export default function HomePage() {
         {/* Hero Section */}
         <section className="relative bg-gradient-to-r from-blue-700 to-indigo-800 text-white overflow-hidden">
           <div className="absolute inset-0 opacity-20">
-            <RemoteImage 
-              src={STATUE_OF_LIBERTY_URL} 
-              fallbackUrl={NEW_YORK_URL}
-              altText="Amerika'da Özgürlük Anıtı" 
+            <img 
+              src="/src/assets/images/statue_of_liberty.jpg"
+              alt="Amerika'da Özgürlük Anıtı" 
               className="w-full h-full object-cover" 
             />
           </div>
