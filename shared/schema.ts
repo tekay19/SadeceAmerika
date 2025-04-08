@@ -1,170 +1,130 @@
-import { pgTable, text, serial, integer, boolean, date, timestamp, pgEnum, jsonb } from "drizzle-orm/pg-core";
+import { mysqlTable, varchar, text, int, boolean, datetime, timestamp, unique } from "drizzle-orm/mysql-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
+import { sql } from "drizzle-orm";
 
-// Role enum for user roles
-export const roleEnum = pgEnum('role', ['user', 'officer', 'admin']);
-
-// Status enum for application statuses
-export const applicationStatusEnum = pgEnum('status', [
-  'pending',
-  'reviewing',
-  'approved',
-  'rejected',
-  'completed'
-]);
-
-// Document status enum
-export const documentStatusEnum = pgEnum('document_status', [
-  'pending',
-  'approved',
-  'rejected'
-]);
-
-// Appointment status enum
-export const appointmentStatusEnum = pgEnum('appointment_status', [
-  'scheduled',
-  'completed',
-  'cancelled'
-]);
-
-// Settings category enum
-export const settingsCategoryEnum = pgEnum('settings_category', [
-  'general',
-  'email',
-  'security',
-  'logging'
-]);
-
-// Contact status enum
-export const contactStatusEnum = pgEnum('contact_status', [
-  'new',
-  'in_progress',
-  'completed'
-]);
+// Users table
+export const users = mysqlTable("users", {
+  id: int("id").primaryKey().autoincrement(),
+  username: varchar("username", { length: 255 }).notNull().unique(),
+  password: varchar("password", { length: 255 }).notNull(),
+  firstName: varchar("first_name", { length: 255 }).notNull(),
+  lastName: varchar("last_name", { length: 255 }).notNull(),
+  email: varchar("email", { length: 255 }).notNull().unique(),
+  phone: varchar("phone", { length: 100 }),
+  role: varchar("role", { length: 10 }).notNull().default('user'),
+  createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`)
+});
 
 // Password reset tokens table
-export const passwordResetTokens = pgTable("password_reset_tokens", {
-  id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull().references(() => users.id),
-  token: text("token").notNull().unique(),
-  expiresAt: timestamp("expires_at").notNull(),
-  createdAt: timestamp("created_at").notNull().defaultNow()
+export const passwordResetTokens = mysqlTable("password_reset_tokens", {
+  id: int("id").primaryKey().autoincrement(),
+  userId: int("user_id").notNull().references(() => users.id),
+  token: varchar("token", { length: 255 }).notNull().unique(),
+  expiresAt: datetime("expires_at").notNull(),
+  createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`)
 });
 
 // Login verification codes table
-export const loginVerificationCodes = pgTable("login_verification_codes", {
-  id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull().references(() => users.id),
-  email: text("email").notNull(),
-  code: text("code").notNull(),
+export const loginVerificationCodes = mysqlTable("login_verification_codes", {
+  id: int("id").primaryKey().autoincrement(),
+  userId: int("user_id").notNull().references(() => users.id),
+  email: varchar("email", { length: 255 }).notNull(),
+  code: varchar("code", { length: 100 }).notNull(),
   isUsed: boolean("is_used").notNull().default(false),
-  expiresAt: timestamp("expires_at").notNull(),
-  createdAt: timestamp("created_at").notNull().defaultNow()
-});
-
-// Users table
-export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
-  username: text("username").notNull().unique(),
-  password: text("password").notNull(),
-  firstName: text("first_name").notNull(),
-  lastName: text("last_name").notNull(),
-  email: text("email").notNull().unique(),
-  phone: text("phone"),
-  role: roleEnum("role").notNull().default('user'),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow()
+  expiresAt: datetime("expires_at").notNull(),
+  createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`)
 });
 
 // Visa types table
-export const visaTypes = pgTable("visa_types", {
-  id: serial("id").primaryKey(),
-  name: text("name").notNull().unique(),
+export const visaTypes = mysqlTable("visa_types", {
+  id: int("id").primaryKey().autoincrement(),
+  name: varchar("name", { length: 255 }).notNull().unique(),
   description: text("description").notNull(),
   requirements: text("requirements").notNull(),
-  processingTime: text("processing_time").notNull()
+  processingTime: varchar("processing_time", { length: 100 }).notNull()
 });
 
 // Applications table
-export const applications = pgTable("applications", {
-  id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull().references(() => users.id),
-  visaTypeId: integer("visa_type_id").notNull().references(() => visaTypes.id),
-  applicationDate: timestamp("application_date").notNull().defaultNow(),
-  status: applicationStatusEnum("status").notNull().default('pending'),
+export const applications = mysqlTable("applications", {
+  id: int("id").primaryKey().autoincrement(),
+  userId: int("user_id").notNull().references(() => users.id),
+  visaTypeId: int("visa_type_id").notNull().references(() => visaTypes.id),
+  applicationDate: timestamp("application_date").notNull().default(sql`CURRENT_TIMESTAMP`),
+  status: varchar("status", { length: 20 }).notNull().default('pending'),
   notes: text("notes"),
-  assignedOfficerId: integer("assigned_officer_id").references(() => users.id),
+  assignedOfficerId: int("assigned_officer_id").references(() => users.id),
   // Ek kişisel bilgiler
-  firstName: text("first_name"),
-  lastName: text("last_name"),
-  age: integer("age"),
-  phone: text("phone"),
-  occupation: text("occupation") // Yapılan iş/meslek
+  firstName: varchar("first_name", { length: 255 }),
+  lastName: varchar("last_name", { length: 255 }),
+  age: int("age"),
+  phone: varchar("phone", { length: 100 }),
+  occupation: varchar("occupation", { length: 255 }) // Yapılan iş/meslek
 });
 
 // Documents table
-export const documents = pgTable("documents", {
-  id: serial("id").primaryKey(),
-  applicationId: integer("application_id").notNull().references(() => applications.id),
-  name: text("name").notNull(),
-  filePath: text("file_path").notNull(),
-  uploadDate: timestamp("upload_date").notNull().defaultNow(),
-  status: documentStatusEnum("document_status").notNull().default('pending'),
+export const documents = mysqlTable("documents", {
+  id: int("id").primaryKey().autoincrement(),
+  applicationId: int("application_id").notNull().references(() => applications.id),
+  name: varchar("name", { length: 255 }).notNull(),
+  filePath: varchar("file_path", { length: 500 }).notNull(),
+  uploadDate: timestamp("upload_date").notNull().default(sql`CURRENT_TIMESTAMP`),
+  status: varchar("status", { length: 20 }).notNull().default('pending'),
   notes: text("notes")
 });
 
 // Appointments table
-export const appointments = pgTable("appointments", {
-  id: serial("id").primaryKey(),
-  applicationId: integer("application_id").notNull().references(() => applications.id),
-  date: timestamp("date").notNull(),
-  time: text("time").notNull(),
-  location: text("location").notNull(),
-  purpose: text("purpose").notNull(),
-  status: appointmentStatusEnum("status").notNull().default('scheduled')
+export const appointments = mysqlTable("appointments", {
+  id: int("id").primaryKey().autoincrement(),
+  applicationId: int("application_id").notNull().references(() => applications.id),
+  date: datetime("date").notNull(),
+  time: varchar("time", { length: 50 }).notNull(),
+  location: varchar("location", { length: 255 }).notNull(),
+  purpose: varchar("purpose", { length: 255 }).notNull(),
+  status: varchar("status", { length: 20 }).notNull().default('scheduled')
 });
 
 // Feedback table
-export const feedback = pgTable("feedback", {
-  id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull().references(() => users.id),
+export const feedback = mysqlTable("feedback", {
+  id: int("id").primaryKey().autoincrement(),
+  userId: int("user_id").notNull().references(() => users.id),
   content: text("content").notNull(),
-  rating: integer("rating").notNull(),
-  createdAt: timestamp("created_at").notNull().defaultNow()
+  rating: int("rating").notNull(),
+  createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`)
 });
 
 // Admin logs table
-export const adminLogs = pgTable("admin_logs", {
-  id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull().references(() => users.id),
-  action: text("action").notNull(),
+export const adminLogs = mysqlTable("admin_logs", {
+  id: int("id").primaryKey().autoincrement(),
+  userId: int("user_id").notNull().references(() => users.id),
+  action: varchar("action", { length: 255 }).notNull(),
   details: text("details"),
-  timestamp: timestamp("timestamp").notNull().defaultNow()
+  timestamp: timestamp("timestamp").notNull().default(sql`CURRENT_TIMESTAMP`)
 });
 
 // Settings table
-export const settings = pgTable("settings", {
-  id: serial("id").primaryKey(),
-  category: settingsCategoryEnum("category").notNull(),
-  key: text("key").notNull(),
+export const settings = mysqlTable("settings", {
+  id: int("id").primaryKey().autoincrement(),
+  category: varchar("category", { length: 20 }).notNull().default('general'),
+  key: varchar("key", { length: 255 }).notNull(),
   value: text("value").notNull(),
-  description: text("description"),
+  description: text("description")
 });
 
 // Contact table
-export const contacts = pgTable("contacts", {
-  id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-  email: text("email").notNull(),
-  phone: text("phone"),
-  subject: text("subject").notNull(),
+export const contacts = mysqlTable("contacts", {
+  id: int("id").primaryKey().autoincrement(),
+  name: varchar("name", { length: 255 }).notNull(),
+  email: varchar("email", { length: 255 }).notNull(),
+  phone: varchar("phone", { length: 100 }),
+  subject: varchar("subject", { length: 255 }).notNull(),
   message: text("message").notNull(),
-  status: contactStatusEnum("status").notNull().default('new'),
-  assignedToId: integer("assigned_to_id").references(() => users.id),
+  status: varchar("status", { length: 20 }).notNull().default('new'),
+  assignedToId: int("assigned_to_id").references(() => users.id),
   responseNotes: text("response_notes"),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow()
+  createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").notNull().default(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`)
 });
 
 // Schema for user insert

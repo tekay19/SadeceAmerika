@@ -1,41 +1,29 @@
-import { drizzle } from 'drizzle-orm/node-postgres';
-import pg from 'pg';
+import { drizzle } from 'drizzle-orm/mysql2';
+import mysql from 'mysql2/promise';
 import * as schema from '@shared/schema';
 
-const { Pool } = pg;
-
-// Check if necessary PostgreSQL env variables are defined
-if (!process.env.PGUSER || !process.env.PGPASSWORD || !process.env.PGHOST || !process.env.PGPORT || !process.env.PGDATABASE) {
-  console.error('PostgreSQL environment variables are not properly defined');
+// Check if necessary MySQL env variables are defined
+if (!process.env.DB_HOST || !process.env.DB_USER || !process.env.DB_PASSWORD || !process.env.DB_NAME) {
+  console.error('MySQL environment variables are not properly defined');
   process.exit(1);
 }
 
-// Create a PostgreSQL connection pool - using individual environment variables
-// We had an invalid DATABASE_URL, so we'll use individual environment variables instead
-const pool = new Pool({
-  user: process.env.PGUSER,
-  password: process.env.PGPASSWORD,
-  host: process.env.PGHOST,
-  port: parseInt(process.env.PGPORT || '5432'),
-  database: process.env.PGDATABASE,
-  max: 10, // Maximum number of clients in the pool
-  idleTimeoutMillis: 30000, // How long a client is allowed to remain idle before being closed
-  connectionTimeoutMillis: 10000, // Increased connection timeout to 10 seconds
-  ssl: { rejectUnauthorized: false } // SSL required but don't reject unauthorized
+// Create a MySQL connection pool
+const pool = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
 
-// Log when pool connects or has an error
-pool.on('connect', () => {
-  console.log('Connected to PostgreSQL database');
-});
-
-pool.on('error', (err) => {
-  console.error('Unexpected error on idle PostgreSQL client', err);
-  process.exit(-1);
-});
+// Log database connection
+console.log('Connecting to MySQL database');
 
 // Create a drizzle instance with the pool and schema
-export const db = drizzle(pool, { schema });
+export const db = drizzle(pool, { schema, mode: 'default' });
 
-// Export the pool to allow graceful shutdown
+// For compatibility with the rest of the code
 export { pool };

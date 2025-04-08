@@ -1,0 +1,2 @@
+# This file is here to make sure Git creates the uploads directory
+# Git doesn't track empty directories, so we need this placeholder file

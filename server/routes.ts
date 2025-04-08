@@ -2,6 +2,7 @@ import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage as memStorage } from "./storage"; // Hafıza tabanlı depolamayı içe aktarıyoruz
 import { initializeDrizzleStorage } from "./drizzle-storage"; // Drizzle tabanlı depolamayı içe aktarıyoruz
+import { initializeMySQLStorage } from "./mysql-storage"; // MySQL tabanlı depolamayı içe aktarıyoruz
 import { setupAuth, generateHashForPassword } from "./auth";
 import { IStorage } from "./storage";
 import { scrypt, timingSafeEqual } from "crypto";
@@ -87,18 +88,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     next();
   });
   
-  // Depolama seçimi: Eğer DATABASE_URL varsa PostgreSQL, yoksa MemStorage kullan
+  // Depolama seçimi: PostgreSQL, MySQL veya MemStorage
   let activeStorage: IStorage;
   
   try {
-    if (process.env.PGUSER && process.env.PGPASSWORD && process.env.PGHOST && process.env.PGPORT && process.env.PGDATABASE) {
+    // MySQL için öncelik veriyoruz (Hostinger'da MySQL kullanılacak)
+    if (process.env.DB_HOST && process.env.DB_USER && process.env.DB_PASSWORD && process.env.DB_NAME) {
+      console.log('Using MySQL database with connection variables');
+      activeStorage = await initializeMySQLStorage();
+      
+      // Hafıza tabanlı depolama yerine MySQL depolamayı kullan
+      global.storage = activeStorage;
+    }
+    // PostgreSQL eski desteği
+    else if (process.env.PGUSER && process.env.PGPASSWORD && process.env.PGHOST && process.env.PGPORT && process.env.PGDATABASE) {
       console.log('Using PostgreSQL database with connection variables');
       activeStorage = await initializeDrizzleStorage();
       
       // Hafıza tabanlı depolama yerine PostgreSQL depolamayı kullan
       global.storage = activeStorage;
     } else {
-      console.log('PostgreSQL connection variables not found, using in-memory storage');
+      console.log('Database connection variables not found, using in-memory storage');
       activeStorage = memStorage;
       global.storage = memStorage;
     }
