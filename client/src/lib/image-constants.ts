@@ -17,7 +17,7 @@ export const VISA_FORM_URL = "https://images.unsplash.com/photo-1551836022-deb49
 // Şehir ve seyahat görselleri
 export const NEW_YORK_URL = "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?q=80&w=1000&auto=format&fit=crop";
 export const GOLDEN_GATE_URL = "https://images.unsplash.com/photo-1495319958063-20b9d5fbfa6e?q=80&w=1000&auto=format&fit=crop";
-export const STATUE_OF_LIBERTY_URL = "https://images.unsplash.com/photo-1524313305120-a53e6d2ab7f3?q=80&w=1000&auto=format&fit=crop";
+export const STATUE_OF_LIBERTY_URL = "https://images.unsplash.com/photo-1565880104406-4cad468ab3a6?q=80&w=1000&auto=format&fit=crop";
 export const GRAND_CANYON_URL = "https://images.unsplash.com/photo-1535052288192-701d3ff46ca7?q=80&w=1000&auto=format&fit=crop";
 
 // İş ve eğitim görselleri
