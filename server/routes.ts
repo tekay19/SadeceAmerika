@@ -92,26 +92,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
   let activeStorage: IStorage;
   
   try {
-    // MySQL için öncelik veriyoruz (Hostinger'da MySQL kullanılacak)
-    if (process.env.DB_HOST && process.env.DB_USER && process.env.DB_PASSWORD && process.env.DB_NAME) {
-      console.log('Using MySQL database with connection variables');
-      activeStorage = await initializeMySQLStorage();
-      
-      // Hafıza tabanlı depolama yerine MySQL depolamayı kullan
-      global.storage = activeStorage;
-    }
-    // PostgreSQL eski desteği
-    else if (process.env.PGUSER && process.env.PGPASSWORD && process.env.PGHOST && process.env.PGPORT && process.env.PGDATABASE) {
-      console.log('Using PostgreSQL database with connection variables');
-      activeStorage = await initializeDrizzleStorage();
-      
-      // Hafıza tabanlı depolama yerine PostgreSQL depolamayı kullan
-      global.storage = activeStorage;
+    // Geliştirme ortamında mı, yoksa üretim ortamında mı olduğumuzu kontrol et
+    const isProduction = process.env.NODE_ENV === 'production';
+    
+    if (isProduction) {
+      // Üretim modu (Hostinger) - MySQL kullan
+      if (process.env.DB_HOST && process.env.DB_USER && process.env.DB_PASSWORD && process.env.DB_NAME) {
+        console.log('Using MySQL database (production mode)');
+        activeStorage = await initializeMySQLStorage();
+      } else {
+        throw new Error('MySQL environment variables not defined in production mode');
+      }
     } else {
-      console.log('Database connection variables not found, using in-memory storage');
+      // Geliştirme modu (Replit) - MemStorage kullan
+      console.log('Using in-memory storage (development mode)');
       activeStorage = memStorage;
-      global.storage = memStorage;
     }
+    
+    // Global olarak depolamayı ayarla
+    global.storage = activeStorage;
   } catch (error) {
     console.error('Failed to initialize database:', error);
     console.log('Falling back to in-memory storage');

@@ -1,6 +1,6 @@
 import { drizzle } from 'drizzle-orm/mysql2';
 import mysql from 'mysql2/promise';
-import * as schema from '@shared/schema';
+import * as schema from '@shared/mysql-schema';
 
 const isProduction = process.env.NODE_ENV === 'production';
 let pool;

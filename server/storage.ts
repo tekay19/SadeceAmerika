@@ -9,7 +9,7 @@ import {
   visaTypes, VisaType, InsertVisaType,
   contacts, Contact, InsertContact,
   loginVerificationCodes, LoginVerificationCode, InsertLoginVerificationCode
-} from "@shared/schema";
+} from "@shared/mysql-schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
 

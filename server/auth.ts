@@ -5,7 +5,7 @@ import session from "express-session";
 import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
 import { IStorage } from "./storage";
-import { User } from "@shared/schema";
+import { User } from "@shared/mysql-schema";
 
 // Use global storage initialized in routes.ts
 declare global {
@@ -14,7 +14,18 @@ declare global {
 
 declare global {
   namespace Express {
-    interface User extends User {}
+    interface User {
+      id: number;
+      username: string;
+      firstName: string;
+      lastName: string;
+      email: string;
+      phone: string | null;
+      role: string;
+      password: string;
+      createdAt: Date;
+      updatedAt: Date;
+    }
   }
 }
 
