@@ -101,10 +101,9 @@ export default function HomePage() {
           <div className="container mx-auto px-4">
             <div className="grid md:grid-cols-2 gap-8 items-center max-w-5xl mx-auto">
               <div className="relative rounded-xl overflow-hidden shadow-lg h-80">
-                <RemoteImage 
-                  src={DIVERSE_PEOPLE_URL} 
-                  fallbackUrl={GOLDEN_GATE_URL}
-                  altText="Green Card Profesyoneller" 
+                <img 
+                  src="/src/assets/images/usa-everyday.jpg" 
+                  alt="Green Card Profesyoneller" 
                   className="w-full h-full object-cover" 
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
@@ -391,10 +390,9 @@ export default function HomePage() {
         {/* CTA Section */}
         <section className="py-16 bg-blue-700 text-white relative overflow-hidden">
           <div className="absolute inset-0 opacity-20">
-            <RemoteImage 
-              src={AIRPLANE_URL}
-              fallbackUrl={AIRPORT_URL} 
-              altText="ABD Vize Başvurusu" 
+            <img 
+              src="/src/assets/images/usa-everyday.jpg"
+              alt="ABD Vize Başvurusu" 
               className="w-full h-full object-cover" 
             />
           </div>
