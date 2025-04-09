@@ -9,6 +9,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Redirect, useLocation, Link } from "wouter";
 import { Loader2, ArrowLeft } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { PrivacyPolicy } from "@/components/admin/privacy-policy";
 
 const loginSchema = z.object({
   username: z.string().min(3, "Kullanıcı adı en az 3 karakter olmalıdır."),
@@ -23,6 +25,9 @@ const registerSchema = z.object({
   lastName: z.string().min(2, "Soyad en az 2 karakter olmalıdır."),
   email: z.string().email("Geçerli bir e-posta adresi giriniz."),
   phone: z.string().optional(),
+  terms: z.boolean().refine(val => val === true, {
+    message: "Gizlilik sözleşmesini kabul etmelisiniz",
+  }),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Şifreler eşleşmiyor.",
   path: ["confirmPassword"],
@@ -50,6 +55,7 @@ export default function AuthPage() {
       lastName: "",
       email: "",
       phone: "",
+      terms: false,
     },
   });
   
@@ -58,7 +64,7 @@ export default function AuthPage() {
   };
   
   const onRegisterSubmit = (values: z.infer<typeof registerSchema>) => {
-    const { confirmPassword, ...registerData } = values;
+    const { confirmPassword, terms, ...registerData } = values;
     registerMutation.mutate(registerData);
   };
 
@@ -137,7 +143,7 @@ export default function AuthPage() {
                       
                       <div className="flex justify-between items-center mt-2">
                         <div className="flex items-center space-x-2">
-                          <input type="checkbox" id="remember" className="rounded border-gray-300 text-blue-600" />
+                          <Checkbox id="remember" />
                           <label htmlFor="remember" className="text-sm text-gray-600">Beni Hatırla</label>
                         </div>
                         <Link href="/forgot-password" className="text-sm text-blue-600 hover:text-blue-800">Şifremi Unuttum</Link>
@@ -270,12 +276,26 @@ export default function AuthPage() {
                         />
                       </div>
                       
-                      <div className="flex items-center space-x-2 mt-2">
-                        <input type="checkbox" id="terms" className="rounded border-gray-300 text-blue-600" />
-                        <label htmlFor="terms" className="text-sm text-gray-600">
-                          <span>Kullanım şartlarını ve <a href="#" className="text-blue-600 hover:text-blue-800">gizlilik politikasını</a> kabul ediyorum</span>
-                        </label>
-                      </div>
+                      <FormField
+                        control={registerForm.control}
+                        name="terms"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-row items-start space-x-3 space-y-0 mt-4">
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                              />
+                            </FormControl>
+                            <div className="space-y-1 leading-none">
+                              <FormLabel className="text-sm text-gray-600">
+                                Kullanım şartlarını ve <PrivacyPolicy /> kabul ediyorum
+                              </FormLabel>
+                              <FormMessage />
+                            </div>
+                          </FormItem>
+                        )}
+                      />
                       
                       <Button 
                         type="submit" 
