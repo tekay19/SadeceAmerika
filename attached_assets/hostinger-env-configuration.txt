@@ -1,0 +1,24 @@
+# Hostinger .env Dosyası Yapılandırması
+# Bu dosyayı kendi Hostinger sunucunuzda .env olarak kaydedin veya mevcut .env dosyasını bu bilgilerle güncelleyin
+
+# MySQL Veritabanı Yapılandırması
+DB_HOST=localhost
+DB_USER=u490038051_tekayVisa
+DB_PASSWORD=<BURAYA_VERITABANI_SIFRENIZI_YAZIN>
+DB_NAME=u490038051_VisaNav
+
+# Node.js Ortamı (üretim olarak ayarlayın)
+NODE_ENV=production
+
+# Uygulama URL (Sizin domaininiz)
+APP_URL=https://sadeceamerikavizesi.com
+
+# SMTP Yapılandırması (E-posta Servisi)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=465
+SMTP_USER=info@mese.us
+SMTP_PASS=ojtu twys oqti afmi
+EMAIL_FROM=info@mese.us
+
+JWT_SECRET=d7e32a4b3fcb44259a5b9f61d284f891ef41c7f064b8bfc2c39cb2e5a1d926c0
+SESSION_SECRET=3e9689ba3e1c4b3d8e203cd64db1c6ae48c66c319ffca657a12db0ebea8df182
