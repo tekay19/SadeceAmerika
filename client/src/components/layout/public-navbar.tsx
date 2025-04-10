@@ -14,7 +14,10 @@ import {
   LogIn,
   UserPlus,
   MapPin,
-  Music
+  Shield,
+  Clock,
+  Award,
+  Check
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -74,33 +77,92 @@ export function PublicNavbar() {
     <div className="relative z-20">
       {/* Contact Bar */}
       <motion.div 
-        className="bg-primary hidden md:block text-white py-2 overflow-hidden"
+        className="bg-gradient-to-r from-primary to-primary/90 hidden md:block text-white py-2 overflow-hidden"
         initial={{ height: 0, opacity: 0 }}
         animate={{ height: 'auto', opacity: 1 }}
         transition={{ duration: 0.3 }}
       >
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center text-sm">
-            <div className="flex items-center space-x-4">
-              <a href="tel:+905321393459" className="flex items-center hover:text-blue-100 transition-colors">
-                <Phone className="w-4 h-4 mr-1" />
+            <div className="flex items-center divide-x divide-blue-400/30">
+              <motion.a 
+                href="tel:+905321393459" 
+                className="flex items-center hover:text-blue-100 transition-colors pr-4 group"
+                whileHover={{ x: 2 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <motion.div 
+                  className="w-6 h-6 bg-blue-500/20 rounded-full flex items-center justify-center mr-2"
+                  whileHover={{ scale: 1.1, backgroundColor: "rgba(59, 130, 246, 0.3)" }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                >
+                  <Phone className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
+                </motion.div>
                 <span>+90 532 139 34 59</span>
-              </a>
-              <a href="mailto:can@mese.us" className="flex items-center hover:text-blue-100 transition-colors">
-                <Mail className="w-4 h-4 mr-1" />
+              </motion.a>
+              <motion.a 
+                href="mailto:can@mese.us" 
+                className="flex items-center hover:text-blue-100 transition-colors px-4 group"
+                whileHover={{ x: 2 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <motion.div 
+                  className="w-6 h-6 bg-blue-500/20 rounded-full flex items-center justify-center mr-2"
+                  whileHover={{ scale: 1.1, backgroundColor: "rgba(59, 130, 246, 0.3)" }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                >
+                  <Mail className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
+                </motion.div>
                 <span>can@mese.us</span>
-              </a>
+              </motion.a>
             </div>
-            <div className="flex items-center space-x-4">
-              <a href="https://travel.state.gov" target="_blank" rel="noopener noreferrer" className="hover:text-blue-100 transition-colors">
-                <Globe className="w-4 h-4 mr-1 inline-block" />
-                <span>ABD Resmi Vize Bilgileri</span>
-              </a>
-              <span className="text-blue-100">|</span>
-              <a href="https://tr.usembassy.gov/" target="_blank" rel="noopener noreferrer" className="hover:text-blue-100 transition-colors">
-                <MapPin className="w-4 h-4 mr-1 inline-block" />
-                <span>ABD Ankara Büyükelçiliği</span>
-              </a>
+            
+            <div className="flex items-center space-x-1">
+              <div className="flex items-center space-x-3 px-4 py-0.5 bg-blue-600/20 rounded-full border border-blue-400/20">
+                <motion.div
+                  className="flex items-center space-x-1"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  <Clock className="h-3.5 w-3.5 text-blue-200" />
+                  <span className="text-xs text-blue-100">7/24 Hizmet</span>
+                </motion.div>
+                <span className="text-blue-300 text-xs">•</span>
+                <motion.div
+                  className="flex items-center space-x-1"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  <Check className="h-3.5 w-3.5 text-blue-200" />
+                  <span className="text-xs text-blue-100">%94 Başarı</span>
+                </motion.div>
+              </div>
+              
+              <motion.a 
+                href="https://travel.state.gov" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="flex items-center hover:text-blue-100 transition-colors px-3 py-0.5 rounded-full hover:bg-blue-600/10"
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Globe className="w-4 h-4 mr-1" />
+                <span>ABD Vize Bilgileri</span>
+              </motion.a>
+              
+              <motion.a 
+                href="https://tr.usembassy.gov/" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="flex items-center hover:text-blue-100 transition-colors px-3 py-0.5 rounded-full hover:bg-blue-600/10"
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <MapPin className="w-4 h-4 mr-1" />
+                <span>Büyükelçilik</span>
+              </motion.a>
             </div>
           </div>
         </div>
@@ -130,66 +192,179 @@ export function PublicNavbar() {
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
               <Link href="/" className="flex items-center">
-                <img 
-                  src="/logo.jpg" 
-                  alt="SadeceAmerika logo" 
+                <motion.div
                   className={cn(
-                    "transition-all duration-300 mr-2 rounded-md",
-                    isScrolled ? "h-9" : "h-10"
+                    "transition-all duration-300 mr-3 rounded-lg shadow-sm overflow-hidden",
+                    isScrolled ? "h-9 w-9" : "h-10 w-10"
                   )}
-                />
+                  whileHover={{ 
+                    boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+                    scale: 1.05, 
+                    rotate: 5 
+                  }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <img 
+                    src="/logo.jpg" 
+                    alt="SadeceAmerika logo" 
+                    className="w-full h-full object-cover"
+                  />
+                </motion.div>
                 <div className="flex flex-col">
-                  <span className={cn(
-                    "font-semibold text-gray-800 transition-all duration-300",
-                    isScrolled ? "text-base" : "text-lg"
-                  )}>SadeceAmerika</span>
-                  <span className="text-xs text-gray-500 hidden md:block">Vize & Göçmenlik Danışmanlığı</span>
+                  <div className="flex items-center">
+                    <span className={cn(
+                      "font-bold text-gray-800 transition-all duration-300",
+                      isScrolled ? "text-base" : "text-lg"
+                    )}>
+                      <span className="text-blue-600">Sadece</span>Amerika
+                    </span>
+                    {!isScrolled && <motion.div 
+                      className="ml-1.5 bg-blue-100 text-blue-600 text-xs px-1.5 py-0.5 rounded-full font-medium"
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.2 }}
+                    >
+                      Pro
+                    </motion.div>}
+                  </div>
+                  <span className="text-xs text-gray-500 hidden md:block">
+                    Vize & Göçmenlik Danışmanlığı
+                  </span>
                 </div>
               </Link>
             </motion.div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-1">
-              <NavLink href="/" text={t('common.home')} isActive={isActive("/")} icon={<Flag className="w-4 h-4 mr-1" />} />
-              <NavLink href="/services" text={t('common.services')} isActive={isActive("/services")} icon={<Plane className="w-4 h-4 mr-1" />} />
-              <NavLink href="/about" text={t('common.about')} isActive={isActive("/about")} icon={<Users className="w-4 h-4 mr-1" />} />
-              <NavLink href="/contact" text={t('common.contact')} isActive={isActive("/contact")} icon={<Mail className="w-4 h-4 mr-1" />} />
+            <nav className="hidden md:flex items-center space-x-2">
+              <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+                <NavLink href="/" text={t('common.home')} isActive={isActive("/")} icon={<Flag className="w-4 h-4 mr-1" />} />
+              </motion.div>
+              <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+                <NavLink href="/services" text={t('common.services')} isActive={isActive("/services")} icon={<Plane className="w-4 h-4 mr-1" />} />
+              </motion.div>
+              <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+                <NavLink href="/about" text={t('common.about')} isActive={isActive("/about")} icon={<Users className="w-4 h-4 mr-1" />} />
+              </motion.div>
+              <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
+                <NavLink href="/contact" text={t('common.contact')} isActive={isActive("/contact")} icon={<Mail className="w-4 h-4 mr-1" />} />
+              </motion.div>
+              
+              <motion.div 
+                className="h-6 mx-2 border-l border-gray-200"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 24 }}
+                transition={{ delay: 0.5 }}
+              />
+              
+              <motion.div
+                className="flex items-center text-xs text-gray-500 space-x-1 px-2 py-1 rounded-full bg-gray-50"
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.6 }}
+                whileHover={{ backgroundColor: "rgba(243, 244, 246, 1)" }}
+              >
+                <Shield className="w-3.5 h-3.5 text-blue-600" />
+                <span>Güvenilir</span>
+                <div className="bg-blue-600 w-1 h-1 rounded-full" />
+                <Award className="w-3.5 h-3.5 text-blue-600" />
+                <span>Uzman</span>
+              </motion.div>
             </nav>
 
             {/* Auth Buttons - Desktop */}
             <div className="hidden md:flex items-center space-x-3">
-              <LanguageSwitcher />
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.7 }}
+              >
+                <LanguageSwitcher />
+              </motion.div>
               
-              <Link href="/auth">
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
-                  <Button variant="outline" size="sm" className="font-medium px-4">
-                    <LogIn className="w-4 h-4 mr-1.5" />
-                    <span>{t('auth.login')}</span>
-                  </Button>
-                </motion.div>
-              </Link>
-              <Link href="/auth?mode=register">
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
-                  <Button size="sm" className="font-medium px-4">
-                    <UserPlus className="w-4 h-4 mr-1.5" />
-                    <span>{t('auth.register')}</span>
-                  </Button>
-                </motion.div>
-              </Link>
+              <motion.div 
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.8 }}
+              >
+                <Link href="/auth">
+                  <motion.div 
+                    whileHover={{ scale: 1.05, boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)" }} 
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Button variant="ghost" size="sm" className="font-medium px-4 border border-gray-200">
+                      <LogIn className="w-4 h-4 mr-1.5 text-blue-600" />
+                      <span>{t('auth.login')}</span>
+                    </Button>
+                  </motion.div>
+                </Link>
+              </motion.div>
+              
+              <motion.div 
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.9 }}
+              >
+                <Link href="/auth?mode=register">
+                  <motion.div 
+                    whileHover={{ 
+                      scale: 1.05, 
+                      boxShadow: "0 10px 15px -3px rgba(59, 130, 246, 0.2), 0 4px 6px -2px rgba(59, 130, 246, 0.1)" 
+                    }} 
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Button 
+                      size="sm" 
+                      className="font-medium px-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
+                    >
+                      <UserPlus className="w-4 h-4 mr-1.5" />
+                      <span>{t('auth.register')}</span>
+                    </Button>
+                  </motion.div>
+                </Link>
+              </motion.div>
             </div>
 
             {/* Mobile Menu Button */}
             <motion.button
-              className="md:hidden text-gray-500 hover:text-gray-700 focus:outline-none"
+              className="md:hidden bg-gray-100 hover:bg-gray-200 text-blue-600 focus:outline-none p-2 rounded-lg relative overflow-hidden"
               onClick={toggleMobileMenu}
               aria-label="Toggle mobile menu"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
-              {isMobileMenuOpen ? (
-                <X className="w-6 h-6" />
-              ) : (
-                <Menu className="w-6 h-6" />
+              <AnimatePresence mode="wait">
+                {isMobileMenuOpen ? (
+                  <motion.div
+                    key="close"
+                    initial={{ rotate: -90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: 90, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <X className="w-5 h-5" />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="menu"
+                    initial={{ rotate: 90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: -90, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <Menu className="w-5 h-5" />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              
+              {/* Animated background ripple effect on click */}
+              {isMobileMenuOpen && (
+                <motion.div
+                  layoutId="menuButtonRipple"
+                  className="absolute inset-0 bg-blue-100 z-[-1] rounded-lg"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 0.7 }}
+                  exit={{ opacity: 0 }}
+                />
               )}
             </motion.button>
           </div>
@@ -211,67 +386,157 @@ export function PublicNavbar() {
                 animate={{ y: 0 }}
                 transition={{ duration: 0.3, delay: 0.1 }}
               >
-                <nav className="flex flex-col py-3">
-                  <MobileNavLink 
-                    href="/" 
-                    text={t('common.home')}
-                    isActive={isActive("/")}
-                    icon={<Flag className="w-4 h-4 mr-2" />}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  />
-                  <MobileNavLink 
-                    href="/services" 
-                    text={t('common.services')}
-                    isActive={isActive("/services")}
-                    icon={<Plane className="w-4 h-4 mr-2" />}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  />
-                  <MobileNavLink 
-                    href="/about" 
-                    text={t('common.about')}
-                    isActive={isActive("/about")}
-                    icon={<Users className="w-4 h-4 mr-2" />}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  />
-                  <MobileNavLink 
-                    href="/contact" 
-                    text={t('common.contact')}
-                    isActive={isActive("/contact")}
-                    icon={<Mail className="w-4 h-4 mr-2" />}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  />
-                  
-                  <div className="flex flex-col space-y-2 mt-4 pt-4 border-t border-gray-100">
-                    <div className="flex items-center space-x-2 text-sm text-gray-500 mb-2">
-                      <Phone className="w-4 h-4" />
-                      <span>+90 532 139 34 59</span>
-                    </div>
+                <div className="pt-4 pb-2">
+                  <div className="flex items-center justify-between mb-4">
+                    <motion.div 
+                      className="flex items-center space-x-2"
+                      initial={{ x: -20, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      transition={{ delay: 0.1 }}
+                    >
+                      <div className="w-10 h-10 bg-blue-600 text-white rounded-lg flex items-center justify-center shadow-md">
+                        <Flag className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-gray-900">Amerika Vizesi</h3>
+                        <p className="text-xs text-gray-500">Profesyonel Danışmanlık</p>
+                      </div>
+                    </motion.div>
                     
-                    <div className="flex justify-center mb-3">
+                    <motion.div
+                      className="flex items-center space-x-2"
+                      initial={{ x: 20, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      transition={{ delay: 0.2 }}
+                    >
+                      <div className="bg-blue-50 text-blue-600 text-xs px-2 py-1 rounded-md flex items-center">
+                        <Award className="w-3 h-3 mr-1" />
+                        <span>%94</span>
+                      </div>
                       <LanguageSwitcher />
+                    </motion.div>
+                  </div>
+                  
+                  <motion.div 
+                    className="bg-gradient-to-r from-blue-50 to-white rounded-lg p-3 mb-4 border border-blue-100"
+                    initial={{ y: 10, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                  >
+                    <div className="flex items-start space-x-3">
+                      <div className="bg-blue-100 p-1.5 rounded-full">
+                        <Phone className="w-4 h-4 text-blue-600" />
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-gray-800 text-sm">Bize Ulaşın</h4>
+                        <p className="text-sm text-gray-600">+90 532 139 34 59</p>
+                        <p className="text-xs text-gray-500 mt-1">7/24 Hizmetinizdeyiz</p>
+                      </div>
                     </div>
+                  </motion.div>
+                </div>
+                
+                <nav className="flex flex-col py-1">
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4 }}
+                  >
+                    <MobileNavLink 
+                      href="/" 
+                      text={t('common.home')}
+                      isActive={isActive("/")}
+                      icon={<Flag className="w-4 h-4 mr-2" />}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    />
+                  </motion.div>
+                  
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 }}
+                  >
+                    <MobileNavLink 
+                      href="/services" 
+                      text={t('common.services')}
+                      isActive={isActive("/services")}
+                      icon={<Plane className="w-4 h-4 mr-2" />}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    />
+                  </motion.div>
+                  
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.6 }}
+                  >
+                    <MobileNavLink 
+                      href="/about" 
+                      text={t('common.about')}
+                      isActive={isActive("/about")}
+                      icon={<Users className="w-4 h-4 mr-2" />}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    />
+                  </motion.div>
+                  
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.7 }}
+                  >
+                    <MobileNavLink 
+                      href="/contact" 
+                      text={t('common.contact')}
+                      isActive={isActive("/contact")}
+                      icon={<Mail className="w-4 h-4 mr-2" />}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    />
+                  </motion.div>
+                  
+                  <div className="mt-3 pt-3 border-t border-gray-100 space-y-3">
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.8 }}
+                    >
+                      <Link href="/auth">
+                        <Button 
+                          variant="outline" 
+                          className="w-full justify-center group"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          <LogIn className="w-4 h-4 mr-1.5 text-blue-600 group-hover:scale-110 transition-transform" />
+                          <span>{t('auth.login')}</span>
+                        </Button>
+                      </Link>
+                    </motion.div>
                     
-                    <Link href="/auth">
-                      <Button 
-                        variant="outline" 
-                        className="w-full justify-center"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        <LogIn className="w-4 h-4 mr-1.5" />
-                        {t('auth.login')}
-                      </Button>
-                    </Link>
-                    <Link href="/auth?mode=register">
-                      <Button 
-                        className="w-full justify-center"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        <UserPlus className="w-4 h-4 mr-1.5" />
-                        {t('auth.register')}
-                      </Button>
-                    </Link>
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.9 }}
+                    >
+                      <Link href="/auth?mode=register">
+                        <Button 
+                          className="w-full justify-center group bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          <UserPlus className="w-4 h-4 mr-1.5 group-hover:scale-110 transition-transform" />
+                          <span>{t('auth.register')}</span>
+                        </Button>
+                      </Link>
+                    </motion.div>
                   </div>
                 </nav>
+              </motion.div>
+              
+              <motion.div
+                className="bg-gray-50 mt-4 py-3 px-4 text-center text-xs text-gray-500"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1 }}
+              >
+                <p>© 2025 SadeceAmerika | Tüm Hakları Saklıdır</p>
               </motion.div>
             </motion.div>
           )}

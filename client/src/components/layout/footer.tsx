@@ -77,86 +77,175 @@ export function Footer() {
       </AnimatePresence>
       
       {/* Footer top with gradient */}
-      <div className="bg-gradient-to-b from-white to-gray-50 py-12">
+      <div className="bg-gradient-to-b from-white to-gray-50 pt-16 pb-12">
         <div className="container mx-auto px-4">
           {/* Logo and intro section */}
           <motion.div 
-            className="text-center mb-12"
-            initial={{ opacity: 0, y: 20 }}
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6 }}
           >
             <motion.div 
-              className="flex items-center justify-center mb-3"
-              whileHover={{ scale: 1.05 }}
+              className="flex flex-col items-center justify-center mb-5"
+              whileHover={{ scale: 1.03 }}
               transition={{ type: "spring", stiffness: 300, damping: 10 }}
             >
-              <img 
-                src="/logo.jpg" 
-                alt="SadeceAmerika logo" 
-                className="w-14 h-14 mr-3 rounded-md shadow-sm" 
-              />
-              <span className="text-3xl font-bold text-gray-800 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                SadeceAmerika
-              </span>
+              <div className="relative mb-3">
+                <motion.div
+                  className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl blur-md opacity-70"
+                  animate={{ 
+                    scale: [1, 1.05, 1],
+                    opacity: [0.5, 0.7, 0.5]
+                  }}
+                  transition={{ 
+                    repeat: Infinity,
+                    repeatType: "reverse",
+                    duration: 3
+                  }}
+                />
+                <div className="relative flex items-center bg-white rounded-lg p-2">
+                  <img 
+                    src="/logo.jpg" 
+                    alt="SadeceAmerika logo" 
+                    className="w-12 h-12 rounded-md shadow-sm mr-3" 
+                  />
+                  <span className="text-3xl font-extrabold text-gray-800 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                    SadeceAmerika
+                  </span>
+                </div>
+              </div>
+              <div className="max-w-xl mx-auto">
+                <p className="text-gray-600 text-xl leading-relaxed">
+                  Amerika Birleşik Devletleri vize başvuru süreçlerinizde
+                  <span className="text-blue-600 font-semibold"> profesyonel danışmanlık </span>
+                  hizmetleri
+                </p>
+                <div className="mt-6 flex items-center justify-center">
+                  <motion.div
+                    className="flex items-center space-x-1 px-4 py-1 border border-blue-200 rounded-full text-sm text-gray-600 bg-blue-50"
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.4 }}
+                    whileHover={{ backgroundColor: "rgba(239, 246, 255, 0.8)" }}
+                  >
+                    <span className="font-medium">Başarı Oranı:</span>
+                    <span className="text-blue-600 font-bold">%94</span>
+                    <div className="w-1.5 h-1.5 rounded-full bg-blue-600" />
+                    <span className="font-medium">5000+</span>
+                    <span>Mutlu Müşteri</span>
+                  </motion.div>
+                </div>
+              </div>
             </motion.div>
-            <p className="text-gray-600 max-w-md mx-auto text-lg">
-              Amerika Birleşik Devletleri vize başvuru süreçlerinizde yanınızdayız
-            </p>
             
             {/* Features */}
-            <div className="mt-8 grid grid-cols-1 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+            <div className="mt-10 grid grid-cols-1 md:grid-cols-4 gap-4 gap-y-6 max-w-4xl mx-auto">
               <motion.div 
-                className="bg-white p-4 rounded-lg shadow-sm flex flex-col items-center"
-                whileHover={{ y: -5, boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)' }}
+                className="bg-white p-5 rounded-xl shadow-md flex flex-col items-center relative overflow-hidden group"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+                whileHover={{ 
+                  y: -5, 
+                  boxShadow: '0 15px 30px -10px rgba(59, 130, 246, 0.3)',
+                  transition: { duration: 0.2 }
+                }}
               >
-                <div className="bg-blue-100 p-2 rounded-full mb-3">
-                  <Award className="w-6 h-6 text-blue-600" />
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300" />
+                <div className="bg-blue-100 p-3 rounded-full mb-4 group-hover:bg-blue-200 transition-colors">
+                  <Award className="w-7 h-7 text-blue-600" />
                 </div>
-                <h4 className="font-medium text-gray-800">Güvenilir</h4>
-                <p className="text-sm text-gray-500 text-center mt-1">Profesyonel yaklaşım</p>
+                <h4 className="font-bold text-gray-800 text-lg">Güvenilir</h4>
+                <p className="text-gray-600 text-center mt-2 leading-relaxed">Profesyonel ve şeffaf yaklaşım</p>
               </motion.div>
               
               <motion.div 
-                className="bg-white p-4 rounded-lg shadow-sm flex flex-col items-center"
-                whileHover={{ y: -5, boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)' }}
+                className="bg-white p-5 rounded-xl shadow-md flex flex-col items-center relative overflow-hidden group"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                whileHover={{ 
+                  y: -5, 
+                  boxShadow: '0 15px 30px -10px rgba(16, 185, 129, 0.3)',
+                  transition: { duration: 0.2 }
+                }}
               >
-                <div className="bg-green-100 p-2 rounded-full mb-3">
-                  <Headphones className="w-6 h-6 text-green-600" />
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-400 to-green-600 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300" />
+                <div className="bg-green-100 p-3 rounded-full mb-4 group-hover:bg-green-200 transition-colors">
+                  <Headphones className="w-7 h-7 text-green-600" />
                 </div>
-                <h4 className="font-medium text-gray-800">Destek</h4>
-                <p className="text-sm text-gray-500 text-center mt-1">7/24 danışmanlık</p>
+                <h4 className="font-bold text-gray-800 text-lg">7/24 Destek</h4>
+                <p className="text-gray-600 text-center mt-2 leading-relaxed">Her aşamada sizinle birlikteyiz</p>
               </motion.div>
               
               <motion.div 
-                className="bg-white p-4 rounded-lg shadow-sm flex flex-col items-center"
-                whileHover={{ y: -5, boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)' }}
+                className="bg-white p-5 rounded-xl shadow-md flex flex-col items-center relative overflow-hidden group"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                whileHover={{ 
+                  y: -5, 
+                  boxShadow: '0 15px 30px -10px rgba(99, 102, 241, 0.3)',
+                  transition: { duration: 0.2 }
+                }}
               >
-                <div className="bg-indigo-100 p-2 rounded-full mb-3">
-                  <Calendar className="w-6 h-6 text-indigo-600" />
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-400 to-indigo-600 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300" />
+                <div className="bg-indigo-100 p-3 rounded-full mb-4 group-hover:bg-indigo-200 transition-colors">
+                  <Calendar className="w-7 h-7 text-indigo-600" />
                 </div>
-                <h4 className="font-medium text-gray-800">Hızlı</h4>
-                <p className="text-sm text-gray-500 text-center mt-1">Verimli süreç</p>
+                <h4 className="font-bold text-gray-800 text-lg">Hızlı Süreç</h4>
+                <p className="text-gray-600 text-center mt-2 leading-relaxed">Verimli ve hızlı başvuru işlemi</p>
               </motion.div>
               
               <motion.div 
-                className="bg-white p-4 rounded-lg shadow-sm flex flex-col items-center"
-                whileHover={{ y: -5, boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)' }}
+                className="bg-white p-5 rounded-xl shadow-md flex flex-col items-center relative overflow-hidden group"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+                whileHover={{ 
+                  y: -5, 
+                  boxShadow: '0 15px 30px -10px rgba(239, 68, 68, 0.3)',
+                  transition: { duration: 0.2 }
+                }}
               >
-                <div className="bg-red-100 p-2 rounded-full mb-3">
-                  <Star className="w-6 h-6 text-red-600" />
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-400 to-red-600 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300" />
+                <div className="bg-red-100 p-3 rounded-full mb-4 group-hover:bg-red-200 transition-colors">
+                  <Star className="w-7 h-7 text-red-600" />
                 </div>
-                <h4 className="font-medium text-gray-800">Profesyonel</h4>
-                <p className="text-sm text-gray-500 text-center mt-1">Uzman ekip</p>
+                <h4 className="font-bold text-gray-800 text-lg">Profesyonel</h4>
+                <p className="text-gray-600 text-center mt-2 leading-relaxed">Uzman ekibimizle size özel çözümler</p>
               </motion.div>
             </div>
             
-            {/* Social buttons */}
-            <div className="mt-10 flex justify-center space-x-5">
-              <SocialButton icon={<Facebook />} color="blue" href="https://facebook.com" />
-              <SocialButton icon={<Instagram />} color="pink" href="https://instagram.com" />
-              <SocialButton icon={<Twitter />} color="sky" href="https://twitter.com" />
+            {/* Social buttons with animation */}
+            <div className="mt-12 flex flex-col items-center">
+              <motion.p 
+                className="text-gray-500 mb-4 text-sm"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.6 }}
+              >
+                Sosyal medyada bizi takip edin
+              </motion.p>
+              <motion.div 
+                className="flex justify-center space-x-3"
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.7 }}
+              >
+                <SocialButton icon={<Facebook />} color="blue" href="https://facebook.com" />
+                <SocialButton icon={<Instagram />} color="pink" href="https://instagram.com" />
+                <SocialButton icon={<Twitter />} color="sky" href="https://twitter.com" />
+              </motion.div>
             </div>
           </motion.div>
         
