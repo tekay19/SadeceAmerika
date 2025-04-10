@@ -10,16 +10,28 @@ import {
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
+type PrivacyPolicyProps = {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  trigger?: React.ReactNode;
+};
+
 /**
  * Gizlilik Sözleşmesi bileşeni
  * Kullanıcı kayıt formunda ve ayarlarda kullanılabilir
  */
-export function PrivacyPolicy() {
+export function PrivacyPolicy({ open, onOpenChange, trigger }: PrivacyPolicyProps) {
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="link" className="h-auto p-0 text-primary">Gizlilik Sözleşmesi</Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      {trigger ? (
+        <DialogTrigger asChild>
+          {trigger}
+        </DialogTrigger>
+      ) : (
+        <DialogTrigger asChild>
+          <Button variant="link" className="h-auto p-0 text-primary">Gizlilik Sözleşmesi</Button>
+        </DialogTrigger>
+      )}
       <DialogContent className="sm:max-w-[700px] max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>Gizlilik Sözleşmesi</DialogTitle>
