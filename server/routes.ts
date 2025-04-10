@@ -1017,6 +1017,69 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // E-posta yapılandırma durumunu kontrol et (Admin)
+  app.get('/api/admin/email-status', isAdmin, async (req, res) => {
+    try {
+      // E-posta servisi modülünü import et
+      const { emailService } = await import('./email-service');
+      
+      // Çevresel değişkenleri kontrol et (hassas bilgileri göstermeden)
+      const emailConfig = {
+        env: {
+          EMAIL_USER: process.env.EMAIL_USER ? '✅ Mevcut' : '❌ Yok',
+          EMAIL_PASS: process.env.EMAIL_PASS ? '✅ Mevcut' : '❌ Yok',
+          EMAIL_SERVICE: process.env.EMAIL_SERVICE || 'gmail (varsayılan)',
+          EMAIL_HOST: process.env.EMAIL_HOST || 'smtp.gmail.com (varsayılan)',
+          EMAIL_PORT: process.env.EMAIL_PORT || '465 (varsayılan)',
+          EMAIL_SECURE: process.env.EMAIL_SECURE !== 'false' ? 'true (varsayılan)' : 'false',
+          EMAIL_FROM_NAME: process.env.EMAIL_FROM_NAME || 'Sadece Amerika (varsayılan)',
+          NODE_ENV: process.env.NODE_ENV || 'development',
+        }
+      };
+      
+      // E-posta servisinin durumunu kontrol et
+      const serviceStatus = await emailService.checkStatus();
+      
+      // Veritabanı ayarlarını kontrol et (güvenli bir şekilde)
+      let dbSettings = [];
+      if (db) {
+        try {
+          const emailDbSettings = await db.select({
+            id: settings.id,
+            key: settings.key,
+            category: settings.category,
+          }).from(settings).where(eq(settings.category, 'email'));
+          
+          dbSettings = emailDbSettings.map(s => ({
+            key: s.key,
+            hasValue: s.key ? true : false
+          }));
+        } catch (error) {
+          console.error('Veritabanından e-posta ayarları alınamadı:', error);
+          dbSettings = [{ key: 'error', hasValue: false, message: 'Ayarlar alınamadı: ' + (error instanceof Error ? error.message : String(error)) }];
+        }
+      } else {
+        dbSettings = [{ key: 'db', hasValue: false, message: 'Veritabanı bağlantısı yok' }];
+      }
+      
+      res.json({
+        success: true,
+        status: {
+          emailConfig,
+          serviceStatus,
+          dbSettings
+        }
+      });
+    } catch (error) {
+      console.error('E-posta durum kontrolü sırasında hata:', error);
+      res.status(500).json({
+        success: false,
+        message: 'E-posta durum kontrolü sırasında hata oluştu',
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+  
   // Genel test e-postası gönder (Admin)
   app.post('/api/admin/send-test-email', isAdmin, async (req, res) => {
     try {

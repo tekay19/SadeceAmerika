@@ -402,6 +402,59 @@ class EmailService {
       html
     });
   }
+  
+  /**
+   * Email servisinin durumunu kontrol eder ve durum bilgisini döndürür
+   */
+  async checkStatus(): Promise<any> {
+    try {
+      // Servis başlatılmadıysa bekle
+      if (!this.initialized && this.initializationPromise) {
+        try {
+          await this.initializationPromise;
+        } catch (error) {
+          return {
+            initialized: false,
+            initError: error instanceof Error ? error.message : String(error),
+            status: 'error',
+            transporterExists: !!this.transporter
+          };
+        }
+      }
+
+      // Durum bilgisini oluştur
+      const status = {
+        initialized: this.initialized,
+        transporterExists: !!this.transporter,
+        configLoaded: this.configLoaded,
+        emailUser: this.emailUser ? (this.emailUser.includes('@') ? this.emailUser : '***kullanıcı***') : null,
+        status: this.initialized ? 'ready' : (this.transporter ? 'configured_not_verified' : 'not_configured'),
+        verifyResult: null as any
+      };
+
+      // Eğer transporter varsa doğrulamayı dene
+      if (this.transporter) {
+        try {
+          await this.transporter.verify();
+          status.verifyResult = { success: true, message: 'SMTP connection verified successfully' };
+        } catch (error) {
+          status.verifyResult = { 
+            success: false, 
+            message: 'SMTP verification failed',
+            error: error instanceof Error ? error.message : String(error)
+          };
+        }
+      }
+
+      return status;
+    } catch (error) {
+      return {
+        status: 'error',
+        message: 'Error checking email service status',
+        error: error instanceof Error ? error.message : String(error)
+      };
+    }
+  }
 }
 
 // Tek bir örnek (singleton) oluştur
