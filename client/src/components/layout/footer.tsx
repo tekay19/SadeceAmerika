@@ -711,68 +711,260 @@ export function Footer() {
         </div>
       </div>
       
+      {/* Pre-footer newsletter section */}
+      <div className="relative -mb-1 overflow-hidden">
+        <div 
+          className="absolute inset-0 z-0 bg-gradient-to-r from-blue-700 via-indigo-600 to-blue-700"
+          style={{ 
+            backgroundSize: '200% 200%',
+            animation: 'footer-gradient-animation 15s ease infinite'
+          }}
+        >
+          <div className="absolute inset-0 opacity-10 mix-blend-overlay">
+            <svg width="100%" height="100%">
+              <pattern id="dotPattern" patternUnits="userSpaceOnUse" width="20" height="20" patternTransform="rotate(45)">
+                <circle cx="3" cy="3" r="1" fill="rgba(255,255,255,0.4)" />
+              </pattern>
+              <rect x="0" y="0" width="100%" height="100%" fill="url(#dotPattern)"></rect>
+            </svg>
+          </div>
+        </div>
+        
+        <div className="container mx-auto px-4 py-16 relative z-10">
+          <div className="max-w-5xl mx-auto bg-white/10 backdrop-blur-lg p-8 rounded-2xl shadow-xl border border-white/20">
+            <div className="grid md:grid-cols-5 gap-10 items-center">
+              <div className="md:col-span-3 text-white">
+                <motion.div 
+                  className="space-y-4"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6 }}
+                >
+                  <h3 className="text-2xl md:text-3xl font-bold">
+                    Amerika Vizenizi Bugün Alın
+                  </h3>
+                  <p className="text-blue-100 leading-relaxed">
+                    Ücretsiz danışmanlık ve fırsatlardan haberdar olmak için abone olun.
+                    Size özel bilgilendirmeler için e-posta listemize katılın.
+                  </p>
+                </motion.div>
+              </div>
+              
+              <div className="md:col-span-2">
+                <motion.div 
+                  className="relative"
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                >
+                  <div className="flex">
+                    <input 
+                      type="email" 
+                      placeholder="E-posta adresiniz" 
+                      className="w-full rounded-l-lg border-none focus:ring-2 focus:ring-white/50 bg-white/20 text-white placeholder-blue-100/80 py-3 px-4"
+                    />
+                    <button className="bg-white text-blue-700 py-3 px-6 rounded-r-lg font-medium hover:bg-blue-50 transition-colors shadow-lg hover:shadow-xl">
+                      Abone Ol
+                    </button>
+                  </div>
+                  <p className="text-xs text-blue-100/80 mt-2">
+                    E-posta adresinizi asla üçüncü şahıslarla paylaşmayacağız.
+                  </p>
+                </motion.div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Wave effect at bottom */}
+        <svg className="fill-white w-full h-12 transform translate-y-1" preserveAspectRatio="none" viewBox="0 0 1440 54">
+          <path d="M0 0L48 5.33333C96 10.6667 192 21.3333 288 32C384 42.6667 480 53.3333 576 48C672 42.6667 768 21.3333 864 10.6667C960 0 1056 0 1152 5.33333C1248 10.6667 1344 21.3333 1392 26.6667L1440 32V54H1392C1344 54 1248 54 1152 54C1056 54 960 54 864 54C768 54 672 54 576 54C480 54 384 54 288 54C192 54 96 54 48 54H0V0Z"/>
+        </svg>
+      </div>
+      
       {/* Bottom bar with copyright */}
       <motion.div 
-        className="bg-gradient-to-r from-blue-900 to-indigo-900 text-white py-8"
+        className="bg-white py-12 border-t border-gray-100"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
         <div className="container mx-auto px-4">
-          <div className="md:flex justify-between items-center">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
+            {/* Logo & description & social */}
             <motion.div 
-              className="text-center md:text-left mb-6 md:mb-0"
-              initial={{ x: -20, opacity: 0 }}
-              whileInView={{ x: 0, opacity: 1 }}
+              className="md:col-span-4"
+              initial={{ y: 20, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
-              <div className="flex items-center justify-center md:justify-start mb-3">
-                <img 
-                  src="/logo.jpg" 
-                  alt="SadeceAmerika logo" 
-                  className="w-8 h-8 mr-2 rounded-md" 
-                />
-                <span className="text-xl font-semibold text-white">SadeceAmerika</span>
+              <div className="flex items-center mb-5">
+                <div className="relative">
+                  <div className="absolute -inset-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg blur-sm opacity-50"></div>
+                  <img 
+                    src="/logo.jpg" 
+                    alt="SadeceAmerika logo" 
+                    className="w-10 h-10 relative rounded-md shadow-sm" 
+                  />
+                </div>
+                <span className="ml-3 text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">SadeceAmerika</span>
               </div>
-              <p className="text-sm text-blue-100">
-                &copy; {currentYear} SadeceAmerika. Tüm hakları saklıdır.
-              </p>
-            </motion.div>
-            
-            <motion.div 
-              className="text-center md:text-right text-sm"
-              initial={{ x: 20, opacity: 0 }}
-              whileInView={{ x: 0, opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-            >
-              <p className="text-blue-100">
-                SadeceAmerika, Amerika merkezli Mese Consultancy'nin Türkiye uzantısıdır.
-              </p>
-              <p className="mt-2 text-xs text-blue-200">
-                Bu site profesyonel danışmanlık hizmetleri sunmak amacıyla oluşturulmuştur.
+              
+              <p className="text-gray-600 mb-6 leading-relaxed">
+                SadeceAmerika, Amerika merkezli Mese Consultancy'nin Türkiye uzantısı olarak vize başvuruları, iş kurma, yatırım ve göç konularında danışmanlık hizmeti sunmaktadır.
               </p>
               
-              {/* Footer links */}
-              <div className="mt-4 flex justify-center md:justify-end space-x-4">
-                <Link href="/privacy-policy">
-                  <Button variant="link" size="sm" className="text-blue-100 hover:text-white p-0 h-auto">Gizlilik</Button>
-                </Link>
-                <span className="text-blue-400">|</span>
-                <Link href="/about">
-                  <Button variant="link" size="sm" className="text-blue-100 hover:text-white p-0 h-auto">Hakkımızda</Button>
-                </Link>
-                <span className="text-blue-400">|</span>
-                <Link href="/contact">
-                  <Button variant="link" size="sm" className="text-blue-100 hover:text-white p-0 h-auto">İletişim</Button>
-                </Link>
+              <div className="flex space-x-2">
+                <a 
+                  href="#" 
+                  className="w-9 h-9 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center transition-all duration-200 hover:bg-blue-600 hover:text-white hover:scale-110"
+                >
+                  <Facebook size={18} />
+                </a>
+                <a 
+                  href="#" 
+                  className="w-9 h-9 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center transition-all duration-200 hover:bg-pink-600 hover:text-white hover:scale-110"
+                >
+                  <Instagram size={18} />
+                </a>
+                <a 
+                  href="#" 
+                  className="w-9 h-9 rounded-full bg-sky-100 text-sky-600 flex items-center justify-center transition-all duration-200 hover:bg-sky-600 hover:text-white hover:scale-110"
+                >
+                  <Twitter size={18} />
+                </a>
               </div>
             </motion.div>
+            
+            {/* Quick Links */}
+            <motion.div 
+              className="md:col-span-2"
+              initial={{ y: 20, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+            >
+              <h4 className="text-sm font-bold text-gray-800 uppercase tracking-wider mb-5 flex items-center">
+                <span className="inline-block w-8 h-px bg-blue-600 mr-2"></span>
+                Sayfalar
+              </h4>
+              <ul className="space-y-3">
+                <FooterLink href="/" text="Anasayfa" />
+                <FooterLink href="/services" text="Hizmetlerimiz" />
+                <FooterLink href="/about" text="Hakkımızda" />
+                <FooterLink href="/contact" text="İletişim" />
+              </ul>
+            </motion.div>
+            
+            {/* Services */}
+            <motion.div 
+              className="md:col-span-2"
+              initial={{ y: 20, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.5 }}
+            >
+              <h4 className="text-sm font-bold text-gray-800 uppercase tracking-wider mb-5 flex items-center">
+                <span className="inline-block w-8 h-px bg-blue-600 mr-2"></span>
+                Vize Tipleri
+              </h4>
+              <ul className="space-y-3">
+                <FooterLink href="/services#eb5" text="Yatırımcı Vizesi (EB-5)" />
+                <FooterLink href="/services#b1" text="Turizm Vizesi (B1/B2)" />
+                <FooterLink href="/services#f1" text="Öğrenci Vizesi (F1)" />
+                <FooterLink href="/services#diversity" text="Green Card (DV)" />
+              </ul>
+            </motion.div>
+            
+            {/* Contact Info */}
+            <motion.div 
+              className="md:col-span-4"
+              initial={{ y: 20, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+            >
+              <h4 className="text-sm font-bold text-gray-800 uppercase tracking-wider mb-5 flex items-center">
+                <span className="inline-block w-8 h-px bg-blue-600 mr-2"></span>
+                İletişim Bilgileri
+              </h4>
+              <ul className="space-y-4">
+                <li className="flex items-start">
+                  <div className="mt-1 bg-blue-100 text-blue-600 p-2 rounded-full mr-3">
+                    <MapPin size={16} />
+                  </div>
+                  <div>
+                    <h5 className="font-medium text-gray-900">Türkiye Ofisi</h5>
+                    <p className="text-gray-600 text-sm">Nish Istanbul, Çobançeşme, Sanayi Cd. No: 44, B Block 60. Ofis, PK:34196 Bahçelievler/İstanbul</p>
+                  </div>
+                </li>
+                <li className="flex items-start">
+                  <div className="mt-1 bg-green-100 text-green-600 p-2 rounded-full mr-3">
+                    <Phone size={16} />
+                  </div>
+                  <div>
+                    <h5 className="font-medium text-gray-900">Telefon</h5>
+                    <p className="text-gray-600 text-sm">
+                      +90 532 139 34 59 (TR)
+                      <br/>
+                      +1 (469) 607-8667 (US)
+                    </p>
+                  </div>
+                </li>
+                <li className="flex items-start">
+                  <div className="mt-1 bg-indigo-100 text-indigo-600 p-2 rounded-full mr-3">
+                    <Mail size={16} />
+                  </div>
+                  <div>
+                    <h5 className="font-medium text-gray-900">E-posta</h5>
+                    <p className="text-gray-600 text-sm">can@mese.us</p>
+                  </div>
+                </li>
+              </ul>
+            </motion.div>
+          </div>
+          
+          {/* Bottom copy */}
+          <div className="border-t border-gray-200 mt-12 pt-8">
+            <div className="flex flex-col md:flex-row justify-between items-center">
+              <p className="text-gray-500 text-sm mb-4 md:mb-0">
+                &copy; {currentYear} SadeceAmerika. Tüm hakları saklıdır.
+              </p>
+              
+              <div className="flex space-x-6">
+                <Link href="/privacy-policy">
+                  <span className="text-gray-500 hover:text-blue-600 text-sm transition-colors cursor-pointer">Gizlilik Politikası</span>
+                </Link>
+                <Link href="/terms">
+                  <span className="text-gray-500 hover:text-blue-600 text-sm transition-colors cursor-pointer">Kullanım Şartları</span>
+                </Link>
+                <a 
+                  href="https://travel.state.gov" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-gray-500 hover:text-blue-600 text-sm transition-colors flex items-center"
+                >
+                  ABD Resmi Kaynaklar
+                  <ExternalLink size={14} className="ml-1" />
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </motion.div>
+      
+      {/* Gradient animation style */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes footer-gradient-animation {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+      `}} />
     </footer>
   );
 }
@@ -865,42 +1057,48 @@ type FooterLinkProps = {
 
 function FooterLink({ href, text, icon }: FooterLinkProps) {
   return (
-    <Link href={href}>
-      <motion.div 
-        className="text-sm text-gray-600 hover:text-primary flex items-center transition-colors py-1.5 group relative"
-        whileHover={{ x: 5 }}
-        transition={{ type: "spring", stiffness: 400, damping: 17 }}
-      >
-        {/* Animated icon */}
-        <motion.div
-          className="mr-2 text-primary transition-transform duration-200 group-hover:scale-110"
-          whileHover={{ rotate: [0, -10, 10, -5, 0] }}
-          transition={{ duration: 0.4 }}
-        >
-          {icon}
-        </motion.div>
-        
-        {/* Link text */}
-        <span className="relative">
-          {text}
-          
-          {/* Animated underline on hover */}
+    <div className="w-full">
+      <Link href={href}>
+        <div>
           <motion.div 
-            className="absolute bottom-0 left-0 w-full h-0.5 bg-primary/30 rounded-full transform origin-left scale-x-0 group-hover:scale-x-100"
-            transition={{ duration: 0.2 }}
-          />
-        </span>
-        
-        {/* Arrow indicator on hover */}
-        <motion.div
-          className="ml-1 opacity-0 group-hover:opacity-100 transition-opacity text-primary"
-          initial={{ x: -5 }}
-          animate={{ x: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <ChevronRight className="h-3 w-3" />
-        </motion.div>
-      </motion.div>
-    </Link>
+            className="text-sm text-gray-600 hover:text-primary flex items-center transition-colors py-1.5 group relative cursor-pointer"
+            whileHover={{ x: 5 }}
+            transition={{ type: "spring", stiffness: 400, damping: 17 }}
+          >
+            {/* Animated icon */}
+            {icon && (
+              <motion.div
+                className="mr-2 text-primary transition-transform duration-200 group-hover:scale-110"
+                whileHover={{ rotate: [0, -10, 10, -5, 0] }}
+                transition={{ duration: 0.4 }}
+              >
+                {icon}
+              </motion.div>
+            )}
+            
+            {/* Link text */}
+            <span className="relative">
+              {text}
+              
+              {/* Animated underline on hover */}
+              <motion.div 
+                className="absolute bottom-0 left-0 w-full h-0.5 bg-primary/30 rounded-full transform origin-left scale-x-0 group-hover:scale-x-100"
+                transition={{ duration: 0.2 }}
+              />
+            </span>
+            
+            {/* Arrow indicator on hover */}
+            <motion.div
+              className="ml-1 opacity-0 group-hover:opacity-100 transition-opacity text-primary"
+              initial={{ x: -5 }}
+              animate={{ x: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <ChevronRight className="h-3 w-3" />
+            </motion.div>
+          </motion.div>
+        </div>
+      </Link>
+    </div>
   );
 }
