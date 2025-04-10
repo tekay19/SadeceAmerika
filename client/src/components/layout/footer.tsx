@@ -891,11 +891,12 @@ function FooterLink({ href, text, icon }: FooterLinkProps) {
           />
         </span>
         
-        {/* Subtle arrow indicator on hover */}
+        {/* Arrow indicator on hover */}
         <motion.div
           className="ml-1 opacity-0 group-hover:opacity-100 transition-opacity text-primary"
           initial={{ x: -5 }}
           animate={{ x: 0 }}
+          transition={{ duration: 0.3 }}
         >
           <ChevronRight className="h-3 w-3" />
         </motion.div>
