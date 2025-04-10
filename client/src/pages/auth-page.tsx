@@ -14,23 +14,23 @@ import { PrivacyPolicy } from "@/components/admin/privacy-policy";
 import { useTranslation } from "react-i18next";
 
 const loginSchema = z.object({
-  username: z.string().min(3, "Kullanıcı adı en az 3 karakter olmalıdır."),
-  password: z.string().min(6, "Şifre en az 6 karakter olmalıdır."),
+  username: z.string().min(3, {message: "validations.usernameMin"}),
+  password: z.string().min(6, {message: "validations.passwordMin"}),
 });
 
 const registerSchema = z.object({
-  username: z.string().min(3, "Kullanıcı adı en az 3 karakter olmalıdır."),
-  password: z.string().min(6, "Şifre en az 6 karakter olmalıdır."),
-  confirmPassword: z.string().min(6, "Şifre en az 6 karakter olmalıdır."),
-  firstName: z.string().min(2, "Ad en az 2 karakter olmalıdır."),
-  lastName: z.string().min(2, "Soyad en az 2 karakter olmalıdır."),
-  email: z.string().email("Geçerli bir e-posta adresi giriniz."),
+  username: z.string().min(3, {message: "validations.usernameMin"}),
+  password: z.string().min(6, {message: "validations.passwordMin"}),
+  confirmPassword: z.string().min(6, {message: "validations.passwordMin"}),
+  firstName: z.string().min(2, {message: "validations.nameMin"}),
+  lastName: z.string().min(2, {message: "validations.nameMin"}),
+  email: z.string().email({message: "validations.email"}),
   phone: z.string().optional(),
   terms: z.boolean().refine(val => val === true, {
-    message: "Gizlilik sözleşmesini kabul etmelisiniz",
+    message: "auth.acceptTerms",
   }),
 }).refine((data) => data.password === data.confirmPassword, {
-  message: "Şifreler eşleşmiyor.",
+  message: "auth.passwordMismatch",
   path: ["confirmPassword"],
 });
 
@@ -133,7 +133,7 @@ export default function AuthPage() {
                             <FormLabel className="font-medium">{t("auth.username")}</FormLabel>
                             <FormControl>
                               <Input 
-                                placeholder="kullanici_adi" 
+                                placeholder="username" 
                                 {...field} 
                                 className="rounded-lg border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all" 
                               />
@@ -213,7 +213,7 @@ export default function AuthPage() {
                               <FormLabel className="font-medium">{t("auth.firstName")}</FormLabel>
                               <FormControl>
                                 <Input 
-                                  placeholder="Ahmet" 
+                                  placeholder="John" 
                                   {...field} 
                                   className="rounded-lg border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all" 
                                 />
@@ -231,7 +231,7 @@ export default function AuthPage() {
                               <FormLabel className="font-medium">{t("auth.lastName")}</FormLabel>
                               <FormControl>
                                 <Input 
-                                  placeholder="Yılmaz" 
+                                  placeholder="Doe" 
                                   {...field}
                                   className="rounded-lg border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all" 
                                 />
@@ -251,7 +251,7 @@ export default function AuthPage() {
                             <FormControl>
                               <Input 
                                 type="email" 
-                                placeholder="ornek@mail.com" 
+                                placeholder="example@mail.com" 
                                 {...field} 
                                 className="rounded-lg border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all" 
                               />
@@ -269,7 +269,7 @@ export default function AuthPage() {
                             <FormLabel className="font-medium">{t("auth.phone")}</FormLabel>
                             <FormControl>
                               <Input 
-                                placeholder="+90 555 123 4567" 
+                                placeholder="+1 555 123 4567" 
                                 {...field} 
                                 className="rounded-lg border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all" 
                               />
@@ -287,7 +287,7 @@ export default function AuthPage() {
                             <FormLabel className="font-medium">{t("auth.username")}</FormLabel>
                             <FormControl>
                               <Input 
-                                placeholder="kullanici_adi" 
+                                placeholder="username" 
                                 {...field} 
                                 className="rounded-lg border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all" 
                               />
