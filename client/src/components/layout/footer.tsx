@@ -19,7 +19,8 @@ import {
   Calendar,
   Headphones,
   Award,
-  Star
+  Star,
+  ChevronRight
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -336,53 +337,67 @@ export function Footer() {
           
           {/* Mobile Accordion */}
           <motion.div 
-            className="md:hidden space-y-4 mt-8 border-t border-gray-200 pt-8"
+            className="md:hidden space-y-6 mt-10 border-t border-gray-200 pt-8"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
+            <div className="text-center mb-6">
+              <div className="h-12 w-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center text-white mx-auto shadow-lg shadow-blue-600/20">
+                <Globe className="h-6 w-6" />
+              </div>
+              <h2 className="text-lg font-bold text-gray-800 mt-3">Bize Ulaşın</h2>
+              <p className="text-sm text-gray-500 mt-1 max-w-xs mx-auto">
+                Amerika vizesi için ihtiyacınız olan profesyonel danışmanlık hizmetlerimizden yararlanın
+              </p>
+            </div>
+            
             {/* Hakkımızda - Mobile Accordion */}
-            <motion.div 
-              className="border-t border-gray-200 pt-4"
+            <motion.div
+              className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100"
               initial={{ y: 20, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
             >
               <motion.div 
-                className="flex justify-between items-center cursor-pointer" 
+                className="flex justify-between items-center cursor-pointer p-4 bg-gray-50" 
                 onClick={() => toggleSection('about')}
-                whileHover={{ x: 3 }}
-                whileTap={{ scale: 0.98 }}
+                whileHover={{ backgroundColor: "rgba(243, 244, 246, 0.7)" }}
+                whileTap={{ scale: 0.99 }}
               >
-                <h3 className="font-semibold text-gray-800 text-base flex items-center">
-                  <Users className="w-5 h-5 mr-2 text-primary" />
+                <h3 className="font-bold text-gray-800 text-base flex items-center">
+                  <div className="h-8 w-8 rounded-md bg-blue-100 flex items-center justify-center mr-3 text-blue-600">
+                    <Users className="w-4 h-4" />
+                  </div>
                   Hakkımızda
                 </h3>
-                <AnimatePresence initial={false}>
-                  {expandedSection === 'about' ? (
-                    <motion.div
-                      key="up"
-                      initial={{ rotate: 0 }}
-                      animate={{ rotate: 0 }}
-                      exit={{ rotate: 90 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <ChevronUp className="h-5 w-5 text-gray-500" />
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      key="down"
-                      initial={{ rotate: -90 }}
-                      animate={{ rotate: 0 }}
-                      exit={{ rotate: -90 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <ChevronDown className="h-5 w-5 text-gray-500" />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                <div className={`h-6 w-6 rounded-full flex items-center justify-center transition-colors duration-300 ${expandedSection === 'about' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-400'}`}>
+                  <AnimatePresence mode="wait" initial={false}>
+                    {expandedSection === 'about' ? (
+                      <motion.div
+                        key="up"
+                        initial={{ rotate: 90, opacity: 0 }}
+                        animate={{ rotate: 0, opacity: 1 }}
+                        exit={{ rotate: -90, opacity: 0 }}
+                        transition={{ duration: 0.3, type: "spring" }}
+                      >
+                        <ChevronUp className="h-4 w-4" />
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="down"
+                        initial={{ rotate: -90, opacity: 0 }}
+                        animate={{ rotate: 0, opacity: 1 }}
+                        exit={{ rotate: 90, opacity: 0 }}
+                        transition={{ duration: 0.3, type: "spring" }}
+                      >
+                        <ChevronDown className="h-4 w-4" />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               </motion.div>
               
               <AnimatePresence>
@@ -769,11 +784,31 @@ type SocialButtonProps = {
 };
 
 function SocialButton({ icon, color, href }: SocialButtonProps) {
-  const colorClasses = {
-    blue: "text-blue-600 hover:text-white hover:bg-blue-600",
-    pink: "text-pink-500 hover:text-white hover:bg-pink-500",
-    sky: "text-sky-500 hover:text-white hover:bg-sky-500"
+  const colorVariants = {
+    blue: {
+      gradient: "from-blue-500 to-blue-600",
+      hover: "hover:from-blue-600 hover:to-blue-700",
+      shadow: "shadow-blue-500/20",
+      border: "border-blue-200",
+      icon: "text-blue-500"
+    },
+    pink: {
+      gradient: "from-pink-500 to-pink-600",
+      hover: "hover:from-pink-600 hover:to-pink-700",
+      shadow: "shadow-pink-500/20",
+      border: "border-pink-200",
+      icon: "text-pink-500"
+    },
+    sky: {
+      gradient: "from-sky-500 to-sky-600",
+      hover: "hover:from-sky-600 hover:to-sky-700",
+      shadow: "shadow-sky-500/20",
+      border: "border-sky-200",
+      icon: "text-sky-500"
+    }
   };
+  
+  const variant = colorVariants[color];
   
   return (
     <motion.a 
@@ -781,16 +816,43 @@ function SocialButton({ icon, color, href }: SocialButtonProps) {
       target="_blank" 
       rel="noopener noreferrer"
       className={cn(
-        "w-12 h-12 rounded-full flex items-center justify-center border-2 border-gray-200 transition-all duration-300 shadow-sm",
-        colorClasses[color]
+        "relative w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all duration-300 overflow-hidden group",
+        variant.border
       )}
       whileHover={{ 
-        scale: 1.1,
-        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
+        scale: 1.05,
+        boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.2)',
+        y: -2
       }}
       whileTap={{ scale: 0.95 }}
     >
-      {icon}
+      {/* Hover background */}
+      <motion.div 
+        className={cn(
+          "absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-300",
+          variant.gradient,
+          variant.hover
+        )}
+      />
+      
+      {/* Icon with animation */}
+      <motion.div 
+        className={cn(
+          "relative z-10 group-hover:text-white transition-colors duration-300",
+          variant.icon
+        )}
+        animate={{ 
+          scale: [1, 1.08, 1],
+        }}
+        transition={{ 
+          repeat: Infinity, 
+          repeatType: "reverse", 
+          duration: 2,
+          repeatDelay: 1
+        }}
+      >
+        {icon}
+      </motion.div>
     </motion.a>
   );
 }
@@ -805,12 +867,38 @@ function FooterLink({ href, text, icon }: FooterLinkProps) {
   return (
     <Link href={href}>
       <motion.div 
-        className="text-sm text-gray-600 hover:text-primary flex items-center transition-colors py-1"
-        whileHover={{ x: 3 }}
+        className="text-sm text-gray-600 hover:text-primary flex items-center transition-colors py-1.5 group relative"
+        whileHover={{ x: 5 }}
         transition={{ type: "spring", stiffness: 400, damping: 17 }}
       >
-        {icon}
-        {text}
+        {/* Animated icon */}
+        <motion.div
+          className="mr-2 text-primary transition-transform duration-200 group-hover:scale-110"
+          whileHover={{ rotate: [0, -10, 10, -5, 0] }}
+          transition={{ duration: 0.4 }}
+        >
+          {icon}
+        </motion.div>
+        
+        {/* Link text */}
+        <span className="relative">
+          {text}
+          
+          {/* Animated underline on hover */}
+          <motion.div 
+            className="absolute bottom-0 left-0 w-full h-0.5 bg-primary/30 rounded-full transform origin-left scale-x-0 group-hover:scale-x-100"
+            transition={{ duration: 0.2 }}
+          />
+        </span>
+        
+        {/* Subtle arrow indicator on hover */}
+        <motion.div
+          className="ml-1 opacity-0 group-hover:opacity-100 transition-opacity text-primary"
+          initial={{ x: -5 }}
+          animate={{ x: 0 }}
+        >
+          <ChevronRight className="h-3 w-3" />
+        </motion.div>
       </motion.div>
     </Link>
   );
