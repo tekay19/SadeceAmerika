@@ -18,11 +18,14 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
+import { LanguageSwitcher } from "@/components/ui/language-switcher";
 
 export function PublicNavbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [location] = useLocation();
+  const { t } = useTranslation();
 
   // Scroll event listener to detect scrolling
   useEffect(() => {
@@ -147,19 +150,21 @@ export function PublicNavbar() {
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-1">
-              <NavLink href="/" text="Anasayfa" isActive={isActive("/")} icon={<Flag className="w-4 h-4 mr-1" />} />
-              <NavLink href="/services" text="Hizmetlerimiz" isActive={isActive("/services")} icon={<Plane className="w-4 h-4 mr-1" />} />
-              <NavLink href="/about" text="Hakkımızda" isActive={isActive("/about")} icon={<Users className="w-4 h-4 mr-1" />} />
-              <NavLink href="/contact" text="İletişim" isActive={isActive("/contact")} icon={<Mail className="w-4 h-4 mr-1" />} />
+              <NavLink href="/" text={t('common.home')} isActive={isActive("/")} icon={<Flag className="w-4 h-4 mr-1" />} />
+              <NavLink href="/services" text={t('common.services')} isActive={isActive("/services")} icon={<Plane className="w-4 h-4 mr-1" />} />
+              <NavLink href="/about" text={t('common.about')} isActive={isActive("/about")} icon={<Users className="w-4 h-4 mr-1" />} />
+              <NavLink href="/contact" text={t('common.contact')} isActive={isActive("/contact")} icon={<Mail className="w-4 h-4 mr-1" />} />
             </nav>
 
             {/* Auth Buttons - Desktop */}
             <div className="hidden md:flex items-center space-x-3">
+              <LanguageSwitcher />
+              
               <Link href="/auth">
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
                   <Button variant="outline" size="sm" className="font-medium px-4">
                     <LogIn className="w-4 h-4 mr-1.5" />
-                    <span>Giriş Yap</span>
+                    <span>{t('auth.login')}</span>
                   </Button>
                 </motion.div>
               </Link>
@@ -167,7 +172,7 @@ export function PublicNavbar() {
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
                   <Button size="sm" className="font-medium px-4">
                     <UserPlus className="w-4 h-4 mr-1.5" />
-                    <span>Kayıt Ol</span>
+                    <span>{t('auth.register')}</span>
                   </Button>
                 </motion.div>
               </Link>
@@ -209,28 +214,28 @@ export function PublicNavbar() {
                 <nav className="flex flex-col py-3">
                   <MobileNavLink 
                     href="/" 
-                    text="Anasayfa"
+                    text={t('common.home')}
                     isActive={isActive("/")}
                     icon={<Flag className="w-4 h-4 mr-2" />}
                     onClick={() => setIsMobileMenuOpen(false)}
                   />
                   <MobileNavLink 
                     href="/services" 
-                    text="Hizmetlerimiz"
+                    text={t('common.services')}
                     isActive={isActive("/services")}
                     icon={<Plane className="w-4 h-4 mr-2" />}
                     onClick={() => setIsMobileMenuOpen(false)}
                   />
                   <MobileNavLink 
                     href="/about" 
-                    text="Hakkımızda"
+                    text={t('common.about')}
                     isActive={isActive("/about")}
                     icon={<Users className="w-4 h-4 mr-2" />}
                     onClick={() => setIsMobileMenuOpen(false)}
                   />
                   <MobileNavLink 
                     href="/contact" 
-                    text="İletişim"
+                    text={t('common.contact')}
                     isActive={isActive("/contact")}
                     icon={<Mail className="w-4 h-4 mr-2" />}
                     onClick={() => setIsMobileMenuOpen(false)}
@@ -242,6 +247,10 @@ export function PublicNavbar() {
                       <span>+90 532 139 34 59</span>
                     </div>
                     
+                    <div className="flex justify-center mb-3">
+                      <LanguageSwitcher />
+                    </div>
+                    
                     <Link href="/auth">
                       <Button 
                         variant="outline" 
@@ -249,7 +258,7 @@ export function PublicNavbar() {
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         <LogIn className="w-4 h-4 mr-1.5" />
-                        Giriş Yap
+                        {t('auth.login')}
                       </Button>
                     </Link>
                     <Link href="/auth?mode=register">
@@ -258,7 +267,7 @@ export function PublicNavbar() {
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         <UserPlus className="w-4 h-4 mr-1.5" />
-                        Kayıt Ol
+                        {t('auth.register')}
                       </Button>
                     </Link>
                   </div>

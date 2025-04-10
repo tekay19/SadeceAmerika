@@ -1,0 +1,76 @@
+{
+  "common": {
+    "appName": "ABD Vize Başvuru Sistemi",
+    "backToHome": "Ana Sayfaya Dön",
+    "loading": "Yükleniyor...",
+    "errorTitle": "Hata oluştu",
+    "successTitle": "İşlem başarılı",
+    "submit": "Gönder",
+    "cancel": "İptal",
+    "save": "Kaydet",
+    "close": "Kapat",
+    "change": "Değiştir",
+    "edit": "Düzenle",
+    "delete": "Sil",
+    "confirmDelete": "Silmek istediğinize emin misiniz?",
+    "yes": "Evet",
+    "no": "Hayır",
+    "home": "Anasayfa",
+    "services": "Hizmetlerimiz",
+    "about": "Hakkımızda",
+    "contact": "İletişim"
+  },
+  "auth": {
+    "login": "Giriş Yap",
+    "loginToAccount": "Hesabınıza Giriş Yapın",
+    "loginDescription": "Vize başvurunuzu yönetmek için giriş yapın.",
+    "register": "Kayıt Ol",
+    "registerForAccount": "Yeni Hesap Oluşturun",
+    "registerDescription": "Vize başvurusu yapabilmek için kaydolun.",
+    "username": "Kullanıcı Adı",
+    "password": "Şifre",
+    "confirmPassword": "Şifre (Tekrar)",
+    "firstName": "Ad",
+    "lastName": "Soyad",
+    "email": "E-posta",
+    "phone": "Telefon",
+    "rememberMe": "Beni Hatırla",
+    "forgotPassword": "Şifremi Unuttum",
+    "terms": "Kullanım şartlarını ve gizlilik politikasını kabul ediyorum",
+    "passwordMismatch": "Şifreler eşleşmiyor.",
+    "privacyPolicy": "Gizlilik Sözleşmesi",
+    "acceptTerms": "Gizlilik sözleşmesini kabul etmelisiniz"
+  },
+  "dashboard": {
+    "welcome": "Hoş Geldiniz",
+    "applications": "Başvurularım",
+    "documents": "Belgelerim",
+    "appointments": "Randevularım",
+    "profile": "Profilim",
+    "settings": "Ayarlar",
+    "logout": "Çıkış Yap"
+  },
+  "hero": {
+    "title": "ABD Vize Başvurusu Kolaylaştı",
+    "description": "Yenilikçi ve kullanıcı dostu arayüzümüz ile vize başvuru sürecinizi kolayca yönetin.",
+    "feature1Title": "Kolay Başvuru",
+    "feature1Desc": "Adım adım yönlendirmeler ile hızlı ve hatasız başvuru yapın.",
+    "feature2Title": "Gerçek Zamanlı Takip",
+    "feature2Desc": "Başvurunuzun durumunu anlık olarak takip edin.",
+    "feature3Title": "Güvenli Belge Yönetimi",
+    "feature3Desc": "Belgelerinizi güvenle yükleyin ve durumlarını kontrol edin."
+  },
+  "validations": {
+    "required": "Bu alan zorunludur.",
+    "minLength": "En az {{min}} karakter olmalıdır.",
+    "email": "Geçerli bir e-posta adresi giriniz.",
+    "usernameMin": "Kullanıcı adı en az 3 karakter olmalıdır.",
+    "passwordMin": "Şifre en az 6 karakter olmalıdır.",
+    "nameMin": "Ad en az 2 karakter olmalıdır."
+  },
+  "language": {
+    "tr": "Türkçe",
+    "en": "İngilizce",
+    "switchLanguage": "Dili Değiştir"
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "common": {
+    "appName": "US Visa Application System",
+    "backToHome": "Back to Home",
+    "loading": "Loading...",
+    "errorTitle": "An error occurred",
+    "successTitle": "Operation successful",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "close": "Close",
+    "change": "Change",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirmDelete": "Are you sure you want to delete?",
+    "yes": "Yes",
+    "no": "No",
+    "home": "Home",
+    "services": "Services",
+    "about": "About Us",
+    "contact": "Contact"
+  },
+  "auth": {
+    "login": "Login",
+    "loginToAccount": "Login to Your Account",
+    "loginDescription": "Login to manage your visa application.",
+    "register": "Register",
+    "registerForAccount": "Create New Account",
+    "registerDescription": "Register to apply for a visa.",
+    "username": "Username",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "phone": "Phone",
+    "rememberMe": "Remember Me",
+    "forgotPassword": "Forgot Password",
+    "terms": "I accept the terms of use and privacy policy",
+    "passwordMismatch": "Passwords do not match.",
+    "privacyPolicy": "Privacy Policy",
+    "acceptTerms": "You must accept the privacy policy"
+  },
+  "dashboard": {
+    "welcome": "Welcome",
+    "applications": "My Applications",
+    "documents": "My Documents",
+    "appointments": "My Appointments",
+    "profile": "My Profile",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
+  "hero": {
+    "title": "US Visa Application Made Easy",
+    "description": "Easily manage your visa application process with our innovative and user-friendly interface.",
+    "feature1Title": "Easy Application",
+    "feature1Desc": "Apply quickly and error-free with step-by-step guidance.",
+    "feature2Title": "Real-Time Tracking",
+    "feature2Desc": "Track the status of your application in real-time.",
+    "feature3Title": "Secure Document Management",
+    "feature3Desc": "Upload your documents securely and check their status."
+  },
+  "validations": {
+    "required": "This field is required.",
+    "minLength": "Must be at least {{min}} characters.",
+    "email": "Please enter a valid email address.",
+    "usernameMin": "Username must be at least 3 characters.",
+    "passwordMin": "Password must be at least 6 characters.",
+    "nameMin": "Name must be at least 2 characters."
+  },
+  "language": {
+    "tr": "Turkish",
+    "en": "English",
+    "switchLanguage": "Switch Language"
+  }
+}
