@@ -11,7 +11,9 @@ import {
   MessagesSquare, 
   Plane, 
   Landmark,
-  Building2
+  Building2,
+  FileText,
+  CalendarCheck
 } from "lucide-react";
 import { RemoteImage } from "@/components/ui/remote-image";
 
@@ -41,34 +43,116 @@ export default function ServicesPage() {
     <PublicLayout>
       <PageTransition>
         {/* Hero */}
-        <section className="relative py-24 overflow-hidden">
+        <section className="relative py-28 overflow-hidden">
           <div className="absolute inset-0 z-0">
-            <RemoteImage 
-              src={STATUE_OF_LIBERTY_URL}
-              fallbackUrl={NEW_YORK_URL}
-              altText="Amerika Vize Hizmetleri"
-              className="w-full h-full object-cover opacity-25"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-900/60 to-indigo-900/60"></div>
+            {/* Parallax background effect */}
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-800 via-blue-700 to-indigo-800">
+              <div className="absolute inset-0 opacity-20">
+                <RemoteImage 
+                  src={STATUE_OF_LIBERTY_URL}
+                  fallbackUrl={NEW_YORK_URL}
+                  altText="Amerika Vize Hizmetleri"
+                  className="w-full h-full object-cover" 
+                />
+              </div>
+              {/* Animated gradient overlay */}
+              <div 
+                className="absolute inset-0 bg-gradient-to-tr from-blue-900/40 to-transparent"
+                style={{ 
+                  backgroundSize: '400% 400%',
+                  animation: 'gradient-animation 15s ease infinite'
+                }}
+              />
+              {/* Decorative elements */}
+              <div className="absolute top-20 left-10 w-64 h-64 rounded-full bg-blue-500/20 blur-3xl"></div>
+              <div className="absolute bottom-10 right-10 w-80 h-80 rounded-full bg-indigo-500/20 blur-3xl"></div>
+            </div>
           </div>
           
           <div className="container mx-auto px-4 relative z-10">
-            <div className="max-w-3xl mx-auto text-center">
-              <h1 className="text-4xl font-bold text-white mb-6">Vize Hizmetlerimiz</h1>
-              <p className="text-xl text-white/90">
-                Sadece Amerika olarak, ABD vize başvuru süreçlerinizde size destek oluyoruz. 
-                Amerika merkezli Mese Consultancy'nin Türkiye uzantısı olarak, göçmenlik hukuku alanındaki tecrübemizle vize başvurunuzu başarıyla tamamlamanıza yardımcı oluyoruz.
-              </p>
+            <div className="max-w-4xl mx-auto text-center">
+              {/* Top badges */}
+              <div className="flex justify-center mb-8 space-x-3">
+                <div className="flex items-center bg-white/10 backdrop-blur-sm px-4 py-1.5 rounded-full border border-white/20 text-white">
+                  <div className="w-2 h-2 rounded-full bg-green-400 mr-2 animate-pulse"></div>
+                  <span className="text-sm font-medium">%94 Başarı Oranı</span>
+                </div>
+                <div className="hidden md:flex items-center bg-white/10 backdrop-blur-sm px-4 py-1.5 rounded-full border border-white/20 text-white">
+                  <Globe className="w-4 h-4 mr-2 text-blue-300" />
+                  <span className="text-sm font-medium">Tüm Vize Türleri</span>
+                </div>
+              </div>
+            
+              {/* Main content with staggered animation */}
+              <div className="text-center text-white">
+                <h1 className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
+                  <span className="block">Profesyonel </span>
+                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-200">
+                    Vize Hizmetlerimiz
+                  </span>
+                </h1>
+                
+                <p className="text-xl md:text-2xl mb-10 text-blue-100 leading-relaxed max-w-3xl mx-auto">
+                  Amerika merkezli 
+                  <span className="font-semibold text-white"> Mese Consultancy</span>'nin 
+                  Türkiye uzantısı olarak, göçmenlik hukuku alanındaki tecrübemizle vize başvurunuzu
+                  başarıyla tamamlamanıza yardımcı oluyoruz.
+                </p>
+                
+                <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+                  <Link href="/auth?mode=register">
+                    <Button size="lg" className="bg-white text-blue-700 hover:bg-blue-50 font-bold shadow-lg shadow-blue-900/30 px-8 py-6 text-base transition-all duration-300 hover:scale-105">
+                      Hemen Başvur
+                      <Plane className="ml-2 h-5 w-5" />
+                    </Button>
+                  </Link>
+                  <Link href="/contact">
+                    <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/20 font-medium px-8 py-6 text-base backdrop-blur-sm">
+                      İletişime Geçin
+                      <MessagesSquare className="ml-2 h-5 w-5" />
+                    </Button>
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
+          
+          {/* Wave effect at bottom */}
+          <div className="absolute bottom-0 left-0 right-0 h-16 bg-white transform -translate-y-1">
+            <svg className="absolute -top-16 w-full h-16 text-white" preserveAspectRatio="none" viewBox="0 0 1440 54">
+              <path fill="currentColor" d="M0 0L48 5.33333C96 10.6667 192 21.3333 288 32C384 42.6667 480 53.3333 576 48C672 42.6667 768 21.3333 864 10.6667C960 0 1056 0 1152 5.33333C1248 10.6667 1344 21.3333 1392 26.6667L1440 32V54H1392C1344 54 1248 54 1152 54C1056 54 960 54 864 54C768 54 672 54 576 54C480 54 384 54 288 54C192 54 96 54 48 54H0V0Z"/>
+            </svg>
+          </div>
+          
+          {/* Add CSS for gradient animation */}
+          <style dangerouslySetInnerHTML={{ __html: `
+            @keyframes gradient-animation {
+              0% { background-position: 0% 50%; }
+              50% { background-position: 100% 50%; }
+              100% { background-position: 0% 50%; }
+            }
+          `}} />
         </section>
 
         {/* Visa Services */}
-        <section className="py-16">
+        <section className="py-24">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center mb-16">Vize Kategorileri</h2>
+            {/* Section Header */}
+            <div className="text-center mb-16">
+              <div className="inline-block px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold mb-3">
+                Uzman Danışmanlık
+              </div>
+              <h2 className="text-4xl font-bold text-gray-900 mb-4">
+                ABD Vize <span className="text-blue-600">Kategorileri</span>
+              </h2>
+              <div className="w-24 h-1.5 bg-gradient-to-r from-blue-500 to-indigo-600 mx-auto rounded-full mb-6"></div>
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+                Geniş deneyimimizle her türlü Amerika Birleşik Devletleri vize başvurusunda
+                <span className="font-medium text-gray-800"> profesyonel destek </span> sağlıyoruz.
+              </p>
+            </div>
             
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
               {/* B1/B2 Visa */}
               <div className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
                 <div className="h-2 bg-blue-600"></div>
@@ -259,52 +343,142 @@ export default function ServicesPage() {
         </section>
         
         {/* Process Section */}
-        <section className="py-16 bg-gray-50">
-          <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center mb-16">Başvuru Süreci</h2>
+        <section className="py-24 bg-gradient-to-r from-blue-50 to-indigo-50 relative overflow-hidden">
+          {/* Decorative Elements */}
+          <div className="absolute left-0 top-0 w-64 h-64 bg-blue-100 rounded-full -ml-20 -mt-20 opacity-50"></div>
+          <div className="absolute right-0 bottom-0 w-96 h-96 bg-indigo-100 rounded-full -mr-40 -mb-40 opacity-50"></div>
+          
+          <div className="container mx-auto px-4 relative z-10">
+            {/* Section Header */}
+            <div className="text-center mb-16">
+              <div className="inline-block px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold mb-3">
+                Kolay & Profesyonel
+              </div>
+              <h2 className="text-4xl font-bold text-gray-900 mb-4">
+                Başvuru <span className="text-blue-600">Süreci</span>
+              </h2>
+              <div className="w-24 h-1.5 bg-gradient-to-r from-blue-500 to-indigo-600 mx-auto rounded-full mb-6"></div>
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+                Vize başvuru sürecinizi sizin için kolaylaştırıyoruz. Adım adım rehberlikle
+                endişesiz bir deneyim sunuyoruz.
+              </p>
+            </div>
             
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
-              <div className="text-center">
-                <div className="w-16 h-16 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center mx-auto mb-4 relative">
-                  <span className="text-xl font-bold">1</span>
-                  <div className="hidden lg:block absolute w-full h-0.5 bg-blue-200 right-0 top-1/2 -z-10 -mr-5 transform translate-x-full"></div>
+            <div className="max-w-5xl mx-auto">
+              {/* Process Steps */}
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 relative group">
+                  {/* Number step */}
+                  <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-full flex items-center justify-center text-white font-bold shadow-md group-hover:scale-110 transition-transform duration-300">
+                    1
+                  </div>
+                  
+                  {/* Connection line */}
+                  <div className="hidden lg:block absolute h-0.5 bg-gradient-to-r from-blue-300 to-blue-200 right-0 top-10 w-full -mr-4 transform translate-x-1/2 z-0"></div>
+                  
+                  <div className="text-center mt-6">
+                    <div className="bg-blue-100 text-blue-700 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                      <Users size={28} />
+                    </div>
+                    <h3 className="text-xl font-bold mb-3 text-gray-800">Üyelik Oluşturma</h3>
+                    <p className="text-gray-600">
+                      Sistemimize üye olarak vize başvuru sürecinizi başlatın ve profesyonel danışmanlık hizmetlerimizden faydalanın.
+                    </p>
+                  </div>
                 </div>
-                <h3 className="text-lg font-semibold mb-2">Üyelik Oluşturma</h3>
-                <p className="text-gray-600">Sistemimize üye olarak başvuru sürecinizi başlatın.</p>
+                
+                <div className="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 relative group">
+                  {/* Number step */}
+                  <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-full flex items-center justify-center text-white font-bold shadow-md group-hover:scale-110 transition-transform duration-300">
+                    2
+                  </div>
+                  
+                  {/* Connection line */}
+                  <div className="hidden lg:block absolute h-0.5 bg-gradient-to-r from-blue-300 to-blue-200 right-0 top-10 w-full -mr-4 transform translate-x-1/2 z-0"></div>
+                  
+                  <div className="text-center mt-6">
+                    <div className="bg-blue-100 text-blue-700 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                      <FileText size={28} />
+                    </div>
+                    <h3 className="text-xl font-bold mb-3 text-gray-800">Bilgi ve Belge Girişi</h3>
+                    <p className="text-gray-600">
+                      Vize başvurunuz için gerekli tüm bilgi ve belgeleri güvenli sistemimize yükleyin ve başvurunuzu tamamlayın.
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 relative group">
+                  {/* Number step */}
+                  <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-full flex items-center justify-center text-white font-bold shadow-md group-hover:scale-110 transition-transform duration-300">
+                    3
+                  </div>
+                  
+                  {/* Connection line */}
+                  <div className="hidden lg:block absolute h-0.5 bg-gradient-to-r from-blue-300 to-blue-200 right-0 top-10 w-full -mr-4 transform translate-x-1/2 z-0"></div>
+                  
+                  <div className="text-center mt-6">
+                    <div className="bg-blue-100 text-blue-700 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                      <GraduationCap size={28} />
+                    </div>
+                    <h3 className="text-xl font-bold mb-3 text-gray-800">Uzman İncelemesi</h3>
+                    <p className="text-gray-600">
+                      Göçmenlik hukuku uzmanlarımız başvurunuzu detaylı şekilde inceleyip gerekli düzeltmeleri yapar ve stratejik öneriler sunar.
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 relative group">
+                  {/* Number step */}
+                  <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-full flex items-center justify-center text-white font-bold shadow-md group-hover:scale-110 transition-transform duration-300">
+                    4
+                  </div>
+                  
+                  <div className="text-center mt-6">
+                    <div className="bg-blue-100 text-blue-700 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                      <CalendarCheck size={28} />
+                    </div>
+                    <h3 className="text-xl font-bold mb-3 text-gray-800">Vize Mülakatı ve Takip</h3>
+                    <p className="text-gray-600">
+                      Büyükelçilik randevunuzu organize eder, mülakat hazırlığı sağlar ve başvuru sürecinizi adım adım takip ederiz.
+                    </p>
+                  </div>
+                </div>
               </div>
               
-              <div className="text-center">
-                <div className="w-16 h-16 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center mx-auto mb-4 relative">
-                  <span className="text-xl font-bold">2</span>
-                  <div className="hidden lg:block absolute w-full h-0.5 bg-blue-200 right-0 top-1/2 -z-10 -mr-5 transform translate-x-full"></div>
-                </div>
-                <h3 className="text-lg font-semibold mb-2">Bilgi ve Belge Girişi</h3>
-                <p className="text-gray-600">Vize başvurunuz için gerekli bilgi ve belgeleri sisteme yükleyin.</p>
-              </div>
-              
-              <div className="text-center">
-                <div className="w-16 h-16 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center mx-auto mb-4 relative">
-                  <span className="text-xl font-bold">3</span>
-                  <div className="hidden lg:block absolute w-full h-0.5 bg-blue-200 right-0 top-1/2 -z-10 -mr-5 transform translate-x-full"></div>
-                </div>
-                <h3 className="text-lg font-semibold mb-2">Uzman İncelemesi</h3>
-                <p className="text-gray-600">Uzmanlarımız başvurunuzu inceleyip gerekli düzeltmeleri yapar.</p>
-              </div>
-              
-              <div className="text-center">
-                <div className="w-16 h-16 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center mx-auto mb-4">
-                  <span className="text-xl font-bold">4</span>
-                </div>
-                <h3 className="text-lg font-semibold mb-2">Vize Mülakatı ve Takip</h3>
-                <p className="text-gray-600">Büyükelçilik randevunuzu alıp, vize görüşmenize hazırlanın.</p>
+              {/* Call to Action */}
+              <div className="text-center mt-16">
+                <Link href="/auth?mode=register">
+                  <Button size="lg" className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium shadow-lg shadow-blue-300/30 px-8">
+                    Hemen Başvuruya Başlayın
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
         </section>
         
         {/* Investor Visa Special Section */}
-        <section className="py-16 bg-gradient-to-r from-indigo-50 to-purple-50">
-          <div className="container mx-auto px-4">
+        <section className="py-24 bg-gradient-to-br from-indigo-50 via-purple-50 to-blue-50 relative overflow-hidden">
+          {/* Decorative elements */}
+          <div className="absolute left-0 top-20 w-72 h-72 bg-gradient-to-br from-purple-200 to-purple-300/30 rounded-full -ml-20 opacity-70 blur-2xl"></div>
+          <div className="absolute right-0 bottom-20 w-96 h-96 bg-gradient-to-br from-indigo-200 to-blue-200/30 rounded-full -mr-40 opacity-70 blur-2xl"></div>
+          
+          <div className="container mx-auto px-4 relative z-10">
+            {/* Section Header */}
+            <div className="text-center mb-16">
+              <div className="inline-block px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-semibold mb-3">
+                Özel Hizmet
+              </div>
+              <h2 className="text-4xl font-bold bg-gradient-to-r from-purple-700 via-indigo-700 to-blue-700 bg-clip-text text-transparent mb-4">
+                Amerika'da Yatırımcı Olarak Yaşam
+              </h2>
+              <div className="w-24 h-1.5 bg-gradient-to-r from-purple-500 to-indigo-500 mx-auto rounded-full mb-6"></div>
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+                Yatırımcı vizeleri ile ABD'de iş kurma, yaşama ve çalışma fırsatlarından yararlanın.
+                Ailenizle birlikte Amerika'da yeni bir hayata başlayın.
+              </p>
+            </div>
+            
             <div className="grid lg:grid-cols-2 gap-10 items-center">
               <div className="order-2 lg:order-1">
                 <h2 className="text-3xl font-bold mb-6">Amerika'da Yatırımcı Vizesi ile Yaşamak ve İş Kurmak</h2>
