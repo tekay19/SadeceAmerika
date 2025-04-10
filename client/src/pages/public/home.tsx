@@ -492,7 +492,7 @@ export default function HomePage() {
                           <div className="bg-white/80 rounded-xl p-4 shadow-sm">
                             <h4 className="font-bold text-green-700 mb-3 flex items-center">
                               <span className="bg-green-100 p-1.5 rounded-lg mr-2">
-                                <Users className="h-4 w-4 text-green-600" />
+                                <UserCheck className="h-4 w-4 text-green-600" />
                               </span>
                               Sosyal Entegrasyon
                             </h4>
@@ -612,7 +612,7 @@ export default function HomePage() {
                           <div className="bg-white/80 rounded-xl p-4 shadow-sm">
                             <h4 className="font-bold text-blue-700 mb-3 flex items-center">
                               <span className="bg-blue-100 p-1.5 rounded-lg mr-2">
-                                <MapPin className="h-4 w-4 text-blue-600" />
+                                <Building className="h-4 w-4 text-blue-600" />
                               </span>
                               Konaklama Hizmetleri
                             </h4>
@@ -646,7 +646,7 @@ export default function HomePage() {
                           <div className="bg-white/80 rounded-xl p-4 shadow-sm">
                             <h4 className="font-bold text-blue-700 mb-3 flex items-center">
                               <span className="bg-blue-100 p-1.5 rounded-lg mr-2">
-                                <Flag className="h-4 w-4 text-blue-600" />
+                                <ArrowRight className="h-4 w-4 text-blue-600" />
                               </span>
                               Araç Kiralama
                             </h4>
