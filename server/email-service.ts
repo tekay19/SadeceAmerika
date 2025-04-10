@@ -14,6 +14,8 @@ class EmailService {
   private transporter: nodemailer.Transporter | null = null;
   private initialized = false;
   private initializationPromise: Promise<void> | null = null;
+  private emailUser: string = '';
+  private configLoaded = false;
 
   constructor() {
     this.initializationPromise = this.initialize();
@@ -21,49 +23,113 @@ class EmailService {
 
   private async initialize(): Promise<void> {
     try {
-      // E-posta ayarlarını veritabanından al
-      const emailSettings = await db.select().from(settings)
-        .where(eq(settings.category, 'email'));
+      // Environment variables'dan e-posta bilgilerini al
+      const emailUser = process.env.EMAIL_USER;
+      const emailPass = process.env.EMAIL_PASS;
+      const emailService = process.env.EMAIL_SERVICE || 'gmail';
+      const emailHost = process.env.EMAIL_HOST || 'smtp.gmail.com';
+      const emailPort = parseInt(process.env.EMAIL_PORT || '465');
+      const emailSecure = process.env.EMAIL_SECURE !== 'false';
+
+      // Environment variables varsa onları kullan
+      if (emailUser && emailPass) {
+        this.configLoaded = true;
+        this.emailUser = emailUser;
+        
+        console.log('Environment variables kullanılarak e-posta ayarları yapılandırılıyor...');
+        
+        // Nodemailer transport oluştur
+        this.transporter = nodemailer.createTransport({
+          service: emailService,
+          host: emailHost,
+          port: emailPort,
+          secure: emailSecure,
+          auth: {
+            user: emailUser,
+            pass: emailPass,
+          }
+        });
+      } 
+      // Environment variables yoksa veritabanından almayı dene
+      else if (db) {
+        try {
+          console.log('Veritabanından e-posta ayarları alınıyor...');
+          const emailSettings = await db.select().from(settings)
+            .where(eq(settings.category, 'email'));
+          
+          if (emailSettings.length === 0) {
+            console.warn('Veritabanında e-posta ayarları bulunamadı');
+          } else {
+            // Ayarları bir objeye dönüştür
+            const config = emailSettings.reduce((acc, setting) => {
+              acc[setting.key] = setting.value;
+              return acc;
+            }, {} as Record<string, string>);
+            
+            // Fallback değerler - NOT: Üretimde güvenlik için bu değerler environment variables ile değiştirilmelidir
+            const configUser = config['smtp_user'] || process.env.EMAIL_USER;
+            const configPass = config['smtp_pass'] || process.env.EMAIL_PASS;
+            
+            if (configUser && configPass) {
+              this.configLoaded = true;
+              this.emailUser = configUser;
+              
+              console.log('Veritabanı ayarları kullanılarak e-posta yapılandırılıyor...');
+              
+              // Nodemailer transport oluştur
+              this.transporter = nodemailer.createTransport({
+                service: config['smtp_service'] || 'gmail',
+                host: config['smtp_host'] || 'smtp.gmail.com',
+                port: parseInt(config['smtp_port'] || '465'),
+                secure: config['smtp_secure'] !== 'false',
+                auth: {
+                  user: configUser,
+                  pass: configPass,
+                }
+              });
+            }
+          }
+        } catch (dbError) {
+          console.warn('Veritabanından e-posta ayarları alınırken hata:', dbError);
+        }
+      }
       
-      if (emailSettings.length === 0) {
-        console.error('E-posta ayarları bulunamadı');
-        return;
+      // Eğer hiçbir yapılandırma bulunamazsa, geçici test yapılandırması kullan (dev ortamında)
+      if (!this.configLoaded && process.env.NODE_ENV !== 'production') {
+        console.warn('Hiçbir e-posta yapılandırması bulunamadı, test modu kullanılıyor...');
+        
+        // Geliştirme ortamı için geçici test amaçlı bir yapılandırma
+        this.transporter = nodemailer.createTransport({
+          host: 'smtp.ethereal.email',
+          port: 587,
+          secure: false,
+          auth: {
+            user: 'ethereal.user@ethereal.email',
+            pass: 'ethereal_pass',
+          }
+        });
+        
+        this.emailUser = 'test@example.com';
+        console.log('Test e-posta yapılandırması kullanılıyor. Gerçek e-postalar gönderilmeyecek.');
       }
 
-      // Ayarları bir objeye dönüştür
-      const config = emailSettings.reduce((acc, setting) => {
-        acc[setting.key] = setting.value;
-        return acc;
-      }, {} as Record<string, string>);
-
-      // Gmail SMTP ayarları
-      const emailUser = "info@mese.us";
-      const emailPass = "xctp iqoa httu nupq";
-
-      // Nodemailer transport oluştur
-      this.transporter = nodemailer.createTransport({
-        service: 'gmail',  // Gmail servisi kullan
-        host: 'smtp.gmail.com',
-        port: 465,
-        secure: true, // SSL kullan
-        auth: {
-          user: emailUser,
-          pass: emailPass,
+      // SMTP bağlantısını doğrula (eğer yapılandırıldıysa)
+      if (this.transporter) {
+        try {
+          await this.transporter.verify();
+          console.log('✅ SMTP bağlantısı kuruldu ve doğrulandı');
+          this.initialized = true;
+        } catch (verifyError) {
+          console.error('❌ SMTP doğrulama hatası:', verifyError);
+          // Hatayı fırlatmak yerine sadece log kayıt et, böylece uygulama çalışmaya devam edebilir
+          // Ancak initialized = false durumunda kalacak
         }
-      });
-
-      // Test et
-      try {
-        await this.transporter.verify();
-        console.log('SMTP bağlantısı kuruldu ve doğrulandı');
-        this.initialized = true;
-      } catch (error) {
-        console.error('SMTP doğrulama hatası:', error);
-        throw error;
+      } else {
+        console.warn('⚠️ E-posta transport yapılandırılamadı. E-posta gönderimi devre dışı.');
       }
     } catch (error) {
-      console.error('E-posta servisi başlatma hatası:', error);
-      throw new Error('E-posta servisi başlatılamadı');
+      console.error('❌ E-posta servisi başlatma hatası:', error);
+      // Ana hatayı fırlatma - uygulamanın çalışmaya devam etmesine izin ver
     }
   }
 
@@ -74,30 +140,34 @@ class EmailService {
     try {
       // Servis başlatılmadıysa bekle
       if (!this.initialized && this.initializationPromise) {
-        await this.initializationPromise;
+        try {
+          await this.initializationPromise;
+        } catch (error) {
+          console.warn('E-posta servisi başlatma beklemesi sırasında hata:', error);
+        }
       }
 
       if (!this.transporter || !this.initialized) {
-        console.error('E-posta servisine bağlanılamadı');
+        console.error('⚠️ E-posta servisine bağlanılamadı - posta gönderilemedi');
         return false;
       }
 
-      // Sabit e-posta bilgileri (sağlanan değerleri kullan)
-      const emailUser = "info@mese.us";
+      // From adresi için emailUser kullan (initialize sırasında ayarlanmıştı)
+      const fromName = process.env.EMAIL_FROM_NAME || 'Sadece Amerika';
 
       // E-posta gönder
       const result = await this.transporter.sendMail({
-        from: `"Sadece Amerika" <${emailUser}>`,
+        from: `"${fromName}" <${this.emailUser}>`,
         to: options.to,
         subject: options.subject,
         text: options.text || '',
         html: options.html || '',
       });
 
-      console.log('E-posta gönderildi:', result.messageId);
+      console.log('✅ E-posta gönderildi:', result.messageId);
       return true;
     } catch (error) {
-      console.error('E-posta gönderme hatası:', error);
+      console.error('❌ E-posta gönderme hatası:', error);
       return false;
     }
   }
